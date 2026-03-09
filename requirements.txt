@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+sentence-transformers
+faiss-cpu
+pydantic
+python-dotenv
+chromadb
+sqlite-utils
+pytest
+hypothesis
+requests
+langchain

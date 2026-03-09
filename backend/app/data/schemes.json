@@ -1,0 +1,68 @@
+{
+  "schemes": [
+    {
+      "name": "PM-KISAN",
+      "description": "Pradhan Mantri Kisan Samman Nidhi. An initiative by the government of India in which all farmers will get up to ₹6,000 per year as minimum income support.",
+      "eligibility": "Small and marginal farmers holding cultivable land.",
+      "benefits": "₹6,000 per year in three equal installments of ₹2,000 each.",
+      "documents": ["Aadhaar Card", "Bank Account Details", "Land Holding Papers"],
+      "target_group": "Farmers"
+    },
+    {
+      "name": "Ayushman Bharat",
+      "description": "Pradhan Mantri Jan Arogya Yojana. A national public health insurance fund of the Government of India that aims to provide free access to health insurance coverage for low income earners.",
+      "eligibility": "Economically weaker sections of society, identified through Socio-Economic Caste Census.",
+      "benefits": "Health insurance cover of up to ₹5 lakhs per family per year.",
+      "documents": ["Aadhaar Card", "Ration Card", "Income Certificate"],
+      "target_group": "Low-income families"
+    },
+    {
+      "name": "PM Awas Yojana",
+      "description": "Housing for All. An initiative to provide affordable housing to the urban poor with a target of building 20 million affordable houses.",
+      "eligibility": "Economically Weaker Section (EWS), Low Income Group (LIG), and Middle Income Group (MIG).",
+      "benefits": "Interest subsidy on home loans varying from 3% to 6.5%.",
+      "documents": ["Aadhaar Card", "Income Proof", "Bank Statement"],
+      "target_group": "Urban Poor, EWS, LIG"
+    },
+    {
+      "name": "Startup India",
+      "description": "Flagship initiative to build a strong eco-system for nurturing innovation and Startups in the country that will drive sustainable economic growth.",
+      "eligibility": "Entity incorporated as a Private Limited Company or a Registered Partnership Firm.",
+      "benefits": "Tax exemptions, easy compliance, and IPR support.",
+      "documents": ["Certificate of Incorporation", "Partnership Deed"],
+      "target_group": "Entrepreneurs"
+    },
+    {
+      "name": "Mudra Loan",
+      "description": "Pradhan Mantri Mudra Yojana. A scheme to provide loans up to ₹10 Lakhs to non-corporate, non-farm small/micro enterprises.",
+      "eligibility": "Any Indian citizen with a business plan for non-farm sector income generating activity.",
+      "benefits": "Loans from ₹50,000 to ₹10 Lakhs.",
+      "documents": ["Identity Proof", "Address Proof", "Business Plan"],
+      "target_group": "Small Business Owners"
+    },
+    {
+      "name": "PM Kaushal Vikas Yojana",
+      "description": "Skill certification scheme that aims to train Indian youth in industry-relevant skills.",
+      "eligibility": "Any Indian national, especially unemployed youth or school/college dropouts.",
+      "benefits": "Free skill training, certification, and placement assistance.",
+      "documents": ["Aadhaar Card", "Educational Certificates"],
+      "target_group": "Unemployed Youth"
+    },
+    {
+      "name": "Ujjwala Yojana",
+      "description": "Pradhan Mantri Ujjwala Yojana. Distributes subsidized LPG connections to poor households.",
+      "eligibility": "Women belonging to BPL families.",
+      "benefits": "Free LPG connection with financial support of ₹1,600 per connection.",
+      "documents": ["BPL Ration Card", "Aadhaar Card", "Bank Account Details"],
+      "target_group": "BPL Women"
+    },
+    {
+      "name": "Digital India",
+      "description": "A campaign to ensure the Government's services are made available to citizens electronically.",
+      "eligibility": "All Indian citizens.",
+      "benefits": "Digital access to various government services, broadband access.",
+      "documents": ["Varies largely per specific service"],
+      "target_group": "All Citizens"
+    }
+  ]
+}
