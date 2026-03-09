@@ -71,7 +71,19 @@ async function processQuery(query) {
 
 // Format and display response from backend
 function displayResponse(data) {
-    let htmlContent = `<div class="message-content">${data.answer}</div>`;
+    let htmlContent = `
+        <div class="flex items-end gap-3 max-w-[90%] bot-message mb-4">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-sm shrink-0">
+                <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+            </div>
+            <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-slate-500 dark:text-slate-400 ml-1">SaarthiAI</span>
+                <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-bl-sm p-4 shadow-sm">
+                    <p class="text-[15px] leading-relaxed text-slate-800 dark:text-slate-200 message-content">${data.answer}</p>
+                </div>
+            </div>
+        </div>
+    `;
     
     // Speak the answer aloud
     if (window.speakText) {
@@ -79,12 +91,12 @@ function displayResponse(data) {
     }
     
     if (data.recommended_schemes && data.recommended_schemes.length > 0) {
-        htmlContent += '<div class="recommendations"><strong>कुछ अनुशंसित योजनाएं (Recommended Schemes):</strong>';
+        htmlContent += '<div class="flex flex-col gap-2 mb-4 ml-11"><strong class="text-sm text-slate-600 dark:text-slate-300">अनुशंसित योजनाएं (Recommended Schemes):</strong>';
         data.recommended_schemes.forEach(scheme => {
             htmlContent += `
-                <div class="recommendation-card">
-                    <h4>${scheme.name}</h4>
-                    <p>${scheme.description}</p>
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-sm">
+                    <h4 class="font-semibold text-primary text-[15px] mb-1">${scheme.name}</h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-snug">${scheme.description}</p>
                 </div>
             `;
         });
@@ -96,20 +108,43 @@ function displayResponse(data) {
 
 // Add simple text message to chat
 function addMessageToChat(text, sender) {
-    const htmlContent = `<div class="message-content">${text}</div>`;
+    let htmlContent = "";
+    if (sender === "user") {
+        htmlContent = `
+        <div class="flex items-end justify-end gap-3 w-full mb-4">
+            <div class="flex flex-col gap-1 items-end max-w-[85%]">
+                <span class="text-xs font-medium text-slate-500 dark:text-slate-400 mr-1">You</span>
+                <div class="bg-primary text-white rounded-2xl rounded-br-sm p-3 shadow-sm">
+                    <p class="text-[15px] leading-relaxed">${text}</p>
+                </div>
+            </div>
+        </div>`;
+    } else {
+        htmlContent = `
+        <div class="flex items-end gap-3 max-w-[90%] bot-message mb-4">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-sm shrink-0">
+                <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+            </div>
+            <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-slate-500 dark:text-slate-400 ml-1">SaarthiAI</span>
+                <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-bl-sm p-4 shadow-sm">
+                    <p class="text-[15px] leading-relaxed text-slate-800 dark:text-slate-200">${text}</p>
+                </div>
+            </div>
+        </div>`;
+    }
+    
     addRawHtmlToChat(htmlContent, sender);
 }
 
-// Add raw HTML to chat (for formatted bot responses)
+// Add raw HTML to chat
 function addRawHtmlToChat(htmlContent, sender) {
     const chatBox = document.getElementById("chat-box");
-    const messageDiv = document.createElement("div");
-    messageDiv.className = `message ${sender}-message`;
-    messageDiv.innerHTML = htmlContent;
-    chatBox.appendChild(messageDiv);
+    // Just append the raw HTML structure directly since we are building it with Tailwind fully inside the string
+    chatBox.insertAdjacentHTML('beforeend', htmlContent);
     
     // Scroll to bottom
-    const chatContainer = document.querySelector('.chat-container');
+    const chatContainer = document.getElementById('chat-container');
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
