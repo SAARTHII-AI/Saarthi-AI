@@ -50,14 +50,18 @@ micBtn.addEventListener("click", () => {
     if (isListening) {
         recognition.stop();
     } else {
-        // Set language based on selection
+        // Set language based on selection. Web Speech API requires a specific lang
         const langCode = languageSelect.value;
         if (langCode === 'hi') {
             recognition.lang = 'hi-IN';
         } else if (langCode === 'ta') {
             recognition.lang = 'ta-IN';
-        } else {
+        } else if (langCode === 'en') {
             recognition.lang = 'en-IN';
+        } else {
+            // For 'auto', we have to pick a default for the listener since it can't detect raw audio lang easily.
+            // Assuming Hindi as the default spoken interaction language for this demographic.
+            recognition.lang = 'hi-IN'; 
         }
         
         try {
@@ -74,7 +78,7 @@ function stopListening() {
 }
 
 // Text to Speech
-window.speakText = function(text) {
+window.speakText = function(text, responseLang = null) {
     if (!window.speechSynthesis) {
         console.warn("Speech Synthesis API not supported.");
         return;
@@ -85,8 +89,9 @@ window.speakText = function(text) {
     
     const utterance = new SpeechSynthesisUtterance(cleanText);
     
-    // Set language
-    const langCode = languageSelect.value;
+    // Determine language: use backend provided language if available, else fallback to dropdown
+    const langCode = responseLang || languageSelect.value;
+    
     if (langCode === 'hi') {
         utterance.lang = 'hi-IN';
     } else if (langCode === 'ta') {

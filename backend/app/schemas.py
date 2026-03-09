@@ -3,7 +3,7 @@ from typing import List, Optional
 
 class QueryRequest(BaseModel):
     query: str
-    language: Optional[str] = "hi"
+    language: Optional[str] = "auto"
     location: Optional[str] = None
     age: Optional[int] = None
     income: Optional[int] = None
@@ -18,3 +18,4 @@ class QueryResponse(BaseModel):
     intent: str
     answer: str
     recommended_schemes: List[SchemeRecommedation] = []
+    response_language: str = "en"
