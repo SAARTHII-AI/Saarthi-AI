@@ -63,6 +63,78 @@
       "benefits": "Digital access to various government services, broadband access.",
       "documents": ["Varies largely per specific service"],
       "target_group": "All Citizens"
+    },
+    {
+      "name": "Stand-Up India",
+      "description": "Facilitates bank loans for setting up a greenfield enterprise.",
+      "eligibility": "SC/ST and/or women entrepreneurs, above 18 years of age.",
+      "benefits": "Bank loans between ₹10 lakh and ₹1 crore.",
+      "documents": ["Aadhaar Card", "Caste Certificate", "Project Report"],
+      "target_group": "SC/ST and Women Entrepreneurs"
+    },
+    {
+      "name": "Beti Bachao Beti Padhao",
+      "description": "A campaign to generate awareness and improve the efficiency of welfare services intended for girls.",
+      "eligibility": "Families with a girl child.",
+      "benefits": "Financial incentives for education and health of the girl child.",
+      "documents": ["Birth Certificate of Girl Child", "Aadhaar Card of Parents", "Bank Account Details"],
+      "target_group": "Girl Children and their Families"
+    },
+    {
+      "name": "PM Jeevan Jyoti Bima Yojana",
+      "description": "A one-year life insurance scheme renewable from year to year offering coverage for death due to any reason.",
+      "eligibility": "People in the age group of 18 to 50 years having a bank account.",
+      "benefits": "Life cover of ₹2 lakhs at a premium of ₹436 per annum.",
+      "documents": ["Aadhaar Card", "Linked Bank Account"],
+      "target_group": "All Citizens (18-50 years)"
+    },
+    {
+      "name": "PM Suraksha Bima Yojana",
+      "description": "An accident insurance scheme offering accidental death and disability cover.",
+      "eligibility": "People in the age group 18 to 70 years with a bank account.",
+      "benefits": "Risk coverage of ₹2 lakh for accidental death and full disability and ₹1 lakh for partial disability, premium is ₹20 per annum.",
+      "documents": ["Aadhaar Card", "Linked Bank Account"],
+      "target_group": "All Citizens (18-70 years)"
+    },
+    {
+      "name": "Atal Pension Yojana",
+      "description": "A pension scheme primarily targeted at the unorganized sector.",
+      "eligibility": "All citizens between 18-40 years.",
+      "benefits": "Guaranteed minimum monthly pension of ₹1,000 to ₹5,000 after 60 years of age.",
+      "documents": ["Aadhaar Card", "Savings Bank Account"],
+      "target_group": "Unorganized Sector Workers"
+    },
+    {
+      "name": "Sukanya Samriddhi Yojana",
+      "description": "A small deposit scheme for the girl child launched as a part of the 'Beti Bachao Beti Padhao' campaign.",
+      "eligibility": "Parents or legal guardians of a girl child up to 10 years of age.",
+      "benefits": "High interest rate and tax benefits under Section 80C. Maturity on girl reaching 21 years of age.",
+      "documents": ["Birth Certificate of Girl Child", "Identity and Address proof of Depositor"],
+      "target_group": "Parents of Girl Children"
+    },
+    {
+      "name": "Make in India",
+      "description": "An initiative to encourage companies to manufacture their products in India and incentivize dedicated investments into manufacturing.",
+      "eligibility": "Domestic and foreign companies looking to invest/manufacture in India.",
+      "benefits": "Tax benefits, easier compliance, infrastructure support.",
+      "documents": ["Company Registration", "Investment Proposal"],
+      "target_group": "Businesses and Manufacturers"
+    },
+    {
+      "name": "Jal Jeevan Mission",
+      "description": "Envisioned to provide safe and adequate drinking water through individual household tap connections by 2024 to all households in rural India.",
+      "eligibility": "Rural households without a functional tap connection.",
+      "benefits": "Functional Household Tap Connection (FHTC) providing clean drinking water.",
+      "documents": ["Aadhaar Card", "Address Proof", "Ration Card"],
+      "target_group": "Rural Households"
+    },
+    {
+      "name": "PM Svanidhi",
+      "description": "A special micro-credit facility for street vendors.",
+      "eligibility": "Street vendors engaged in vending in urban areas as on or before March 24, 2020.",
+      "benefits": "Working capital loan up to ₹10,000, subsidized interest rate.",
+      "documents": ["Aadhaar Card", "Vending Certificate/ID Card issued by Urban Local Body"],
+      "target_group": "Street Vendors"
     }
   ]
 }
