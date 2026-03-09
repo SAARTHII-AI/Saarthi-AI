@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8000";
+const API_URL = "/api";
 
 // Handle Enter key for text input
 function handleEnterKeyPress(event) {

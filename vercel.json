@@ -1,0 +1,22 @@
+{
+  "buildCommand": "npm install && npm run build",
+  "env": {
+    "PYTHON_VERSION": "3.10"
+  },
+  "functions": {
+    "api/**/*.py": {
+      "memory": 3008,
+      "maxDuration": 300
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/$1"
+    }
+  ]
+}

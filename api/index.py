@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.app.api import health, schemes, query
-from backend.app.services.rag_engine import rag_engine
+from api.api import health, schemes, query
+from api.services.rag_engine import rag_engine
 
 app = FastAPI(title="SaarthiAI", description="Voice-first AI assistant for government schemes.")
 
@@ -14,9 +14,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(health.router, prefix="/health", tags=["health"])
-app.include_router(schemes.router, prefix="/schemes", tags=["schemes"])
-app.include_router(query.router, prefix="/query", tags=["query"])
+app.include_router(health.router, prefix="/api/health", tags=["health"])
+app.include_router(schemes.router, prefix="/api/schemes", tags=["schemes"])
+app.include_router(query.router, prefix="/api/query", tags=["query"])
 
 @app.on_event("startup")
 async def startup_event():
@@ -27,6 +27,6 @@ async def startup_event():
     except Exception as e:
         print(f"Error initializing RAG engine on startup: {e}")
 
-@app.get("/")
+@app.get("/api")
 def read_root():
-    return {"message": "Welcome to SaarthiAI Backend. Use /docs to view API documentation."}
+    return {"message": "Welcome to SaarthiAI Backend. Use /api/docs to view API documentation."}

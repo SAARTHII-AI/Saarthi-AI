@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend.app.services.scheme_loader import load_schemes
+from api.services.scheme_loader import load_schemes
 
 router = APIRouter()
 

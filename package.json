@@ -1,0 +1,8 @@
+{
+  "name": "community-access-platform",
+  "version": "1.0.0",
+  "description": "SaarthiAI - Voice-first Government Schemes Assistant",
+  "scripts": {
+    "build": "echo 'Build complete'"
+  }
+}
