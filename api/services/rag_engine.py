@@ -9,7 +9,7 @@ from api.config import settings
 class RAGEngine:
     def __init__(self):
         self.model_id = "sentence-transformers/all-MiniLM-L6-v2"
-        self.api_url = f"https://api-inference.huggingface.co/pipeline/feature-extraction/{self.model_id}"
+        self.api_url = f"https://api-inference.huggingface.co/models/{self.model_id}"
         self.headers = {"Authorization": f"Bearer {settings.huggingface_api_token}"} if settings.huggingface_api_token else {}
         self.index = None
         self.schemes = []
