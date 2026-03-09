@@ -85,9 +85,9 @@ function displayResponse(data) {
         </div>
     `;
     
-    // Speak the answer aloud
+    // Speak the answer aloud using the backend-provided language code if available
     if (window.speakText) {
-        window.speakText(data.answer);
+        window.speakText(data.answer, data.response_language);
     }
     
     if (data.recommended_schemes && data.recommended_schemes.length > 0) {
