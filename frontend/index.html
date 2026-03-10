@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html class="light" lang="hi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>SaarthiAI - Home Voice Interface</title>
+
+    <!-- Tailwind Configuration from Stitch -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+
+        /* Essential animations for microphone and scrolling */
+        .listening {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(74, 222, 128, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+        }
+        
+        #chat-box::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex justify-center">
+
+    <!-- Mobile Device Container -->
+    <div class="w-full max-w-[430px] h-screen max-h-[932px] bg-white dark:bg-slate-900 shadow-2xl relative flex flex-col overflow-hidden sm:rounded-[3rem] sm:my-8 border-x sm:border-y border-slate-200 dark:border-slate-800">
+
+        <!-- Top Header -->
+        <div class="flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-40 sticky top-0 border-b border-slate-100 dark:border-slate-800">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-md shadow-primary/20">
+                    <span class="material-symbols-outlined text-2xl">translate</span>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">SaarthiAI</h1>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <select id="language-select" class="appearance-none font-sans px-3 py-1 text-xs font-semibold rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 outline-none cursor-pointer text-center min-w-[100px]">
+                    <option value="auto">Auto Detect</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="ta">தமிழ்</option>
+                    <option value="en">Eng</option>
+                </select>
+                <button class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 overflow-hidden border border-slate-200 dark:border-slate-700">
+                    <span class="material-symbols-outlined pb-1">person</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div id="chat-container" class="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-6" style="scrollbar-width: none;">
+            
+            <!-- Chat Box (Wrapper for messages) -->
+            <div id="chat-box" class="flex flex-col gap-4">
+                
+                <!-- AI Welcome Message -->
+                <div class="flex items-end gap-3 max-w-[90%] bot-message">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-sm shrink-0">
+                        <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs font-medium text-slate-500 dark:text-slate-400 ml-1">SaarthiAI</span>
+                        <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-bl-sm p-4 shadow-sm">
+                            <p class="text-[15px] leading-relaxed text-slate-800 dark:text-slate-200 message-content">
+                                How can I help you today?<br/>
+                                <span class="text-slate-600 dark:text-slate-400 mt-1 block">मैं आज आपकी कैसे मदद कर सकता हूँ?</span>
+                                <span class="text-slate-500 mt-1 block text-sm">இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Suggestion Chips (Interactive) -->
+            <div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800">
+                <button onclick="document.getElementById('text-input').value='Tell me about Pension Schemes'; sendTextMessage();" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 shadow-sm active:bg-slate-50 dark:active:bg-slate-700 transition-colors flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px] text-primary">account_balance</span>
+                    Pension Schemes
+                </button>
+                <button onclick="document.getElementById('text-input').value='Education Loans schemes'; sendTextMessage();" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 shadow-sm active:bg-slate-50 dark:active:bg-slate-700 transition-colors flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px] text-orange-500">school</span>
+                    Education Loans
+                </button>
+                <button onclick="document.getElementById('text-input').value='PM Kisan yojana detail'; sendTextMessage();" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 shadow-sm active:bg-slate-50 dark:active:bg-slate-700 transition-colors flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px] text-green-500">agriculture</span>
+                    Farmer Subsidies
+                </button>
+                <button onclick="document.getElementById('text-input').value='Ayushman bharat scheme benefits'; sendTextMessage();" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 shadow-sm active:bg-slate-50 dark:active:bg-slate-700 transition-colors flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px] text-purple-500">local_hospital</span>
+                    Healthcare
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div class="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 pb-8 sm:pb-6 z-40 relative">
+            
+            <div id="status-indicator" class="absolute -top-16 left-0 w-full text-center text-sm font-semibold text-slate-500 dark:text-slate-400 h-6"></div>
+
+            <!-- Floating Mic Button (Voice First) -->
+            <div class="absolute -top-8 left-1/2 -translate-x-1/2">
+                <button id="mic-btn" class="w-16 h-16 rounded-full bg-gradient-to-tr from-primary via-blue-500 to-orange-400 flex items-center justify-center text-white shadow-lg shadow-primary/30 active:scale-95 transition-transform border-4 border-white dark:border-slate-900">
+                    <span class="material-symbols-outlined text-3xl">mic</span>
+                </button>
+            </div>
+
+            <!-- Text Input Area -->
+            <div class="flex items-center gap-3 mt-6 bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-full border border-slate-200 dark:border-slate-700">
+                <button class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+                    <span class="material-symbols-outlined">add_circle</span>
+                </button>
+                <input id="text-input" onkeypress="handleEnterKeyPress(event)" class="flex-1 bg-transparent border-none focus:ring-0 text-[15px] placeholder:text-slate-400 dark:text-white px-2 py-2 h-10 outline-none" placeholder="Type a message..." type="text"/>
+                <button id="send-btn" onclick="sendTextMessage()" class="p-2 bg-primary text-white rounded-full w-9 h-9 flex items-center justify-center shadow-sm hover:bg-primary/90 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">send</span>
+                </button>
+            </div>
+            
+            <!-- iOS Home Indicator -->
+            <div class="w-32 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mt-6 hidden sm:block"></div>
+        </div>
+
+    </div>
+
+    <!-- Integrate logic files -->
+    <script src="voice.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
