@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8000";
+const API_URL = "https://backend-saarthi.vercel.app";
 
 // Handle Enter key for text input
 function handleEnterKeyPress(event) {
