@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.app.api import health, schemes, query
-from backend.app.services.rag_engine import rag_engine
+from app.api import health, schemes, query
+from app.services.rag_engine import rag_engine
 
 app = FastAPI(title="SaarthiAI", description="Voice-first AI assistant for government schemes.")
 

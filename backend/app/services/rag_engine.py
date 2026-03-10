@@ -3,8 +3,8 @@ import faiss
 import numpy as np
 import json
 from sentence_transformers import SentenceTransformer
-from backend.app.services.scheme_loader import load_schemes
-from backend.app.config import settings
+from app.services.scheme_loader import load_schemes
+from app.config import settings
 
 class RAGEngine:
     def __init__(self):

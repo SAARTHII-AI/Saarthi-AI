@@ -41,7 +41,7 @@ python scripts/ingest_schemes.py
 4. Run the FastAPI development server:
 
 ```bash
-uvicorn backend.app.main:app --reload
+uvicorn app.main:app --reload
 ```
 
 5. Open `frontend/index.html` in your browser.
