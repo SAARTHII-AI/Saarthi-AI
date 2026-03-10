@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8000";
+const API_URL = "https://zm4zps3rk6.ap-south-1.awsapprunner.com";
 
 // Handle Enter key for text input
 function handleEnterKeyPress(event) {
