@@ -2,6 +2,7 @@ from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import health, schemes, query
 from app.services.rag_engine import rag_engine
+from mangum import Mangum
 
 app = FastAPI(title="SaarthiAI", description="Voice-first AI assistant for government schemes.")
 
@@ -39,3 +40,6 @@ async def startup_event():
 @app.get("/")
 def read_root():
     return {"message": "Welcome to SaarthiAI Backend. Use /docs to view API documentation."}
+
+# AWS Lambda handler
+handler = Mangum(app)
