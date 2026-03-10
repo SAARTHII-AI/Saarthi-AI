@@ -3,7 +3,7 @@ import pytest
 # The actual logic is mostly tested through the endpoints in test_api.py
 
 def test_recommendation_engine():
-    from backend.app.services.recommendation_engine import recommend_schemes
+    from app.services.recommendation_engine import recommend_schemes
     
     user_data = {"occupation": "student", "age": 20}
     results = recommend_schemes(user_data)

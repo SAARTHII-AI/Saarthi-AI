@@ -4,7 +4,7 @@ import sys
 # Add the project root to the python path so we can import backend packages
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from backend.app.services.rag_engine import rag_engine
+from app.services.rag_engine import rag_engine
 
 def ingest_data():
     print("Starting data ingestion process...")

@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
-from backend.app.main import app
-from backend.app.services.intent_detection import detect_intent
-from backend.app.services.rag_engine import rag_engine
+from app.main import app
+from app.services.intent_detection import detect_intent
+from app.services.rag_engine import rag_engine
 
 client = TestClient(app)
 
