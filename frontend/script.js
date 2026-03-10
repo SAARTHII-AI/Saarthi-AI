@@ -1,4 +1,4 @@
-const API_URL = "https://mxnfq3nu7x.ap-south-1.awsapprunner.com";
+const API_URL = "https://pcececm8va.ap-south-1.awsapprunner.com";
 
 // Handle Enter key for text input
 function handleEnterKeyPress(event) {
