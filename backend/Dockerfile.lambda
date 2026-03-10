@@ -1,0 +1,25 @@
+FROM public.ecr.aws/lambda/python:3.11
+
+# Install system dependencies for FAISS and other libraries
+RUN yum install -y \
+    gcc \
+    gcc-c++ \
+    && yum clean all
+
+# Copy requirements and install
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the application code
+COPY backend ./backend
+
+# The Lambda base image uses /var/task as the working directory
+# We need to ensure the structure allows importing backend.app.main
+ENV PYTHONPATH=/var/task
+
+# Pre-load or ensure vector store is available if it's baked into the image
+# If the index is large, better to fetch from S3 at runtime, but for MVP we bake it in
+# Assuming d:\SaarthiAi\saarthi-ai\backend\app\vector_store exists locally
+
+# Command to run the handler
+CMD ["backend.app.main.handler"]
