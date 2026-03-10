@@ -1,8 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
-from backend.app.api import health, schemes, query
-from backend.app.services.rag_engine import rag_engine
-from mangum import Mangum
+from app.api import health, schemes, query
+from app.services.rag_engine import rag_engine
 
 app = FastAPI(title="SaarthiAI", description="Voice-first AI assistant for government schemes.")
 
@@ -15,6 +14,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# API Router with /api prefix (for Vercel)
+api_router = APIRouter(prefix="/api")
+api_router.include_router(health.router, prefix="/health", tags=["health"])
+api_router.include_router(schemes.router, prefix="/schemes", tags=["schemes"])
+api_router.include_router(query.router, prefix="/query", tags=["query"])
+
+app.include_router(api_router)
+
+# Also keep routes without prefix for local dev and backward compatibility
 app.include_router(health.router, prefix="/health", tags=["health"])
 app.include_router(schemes.router, prefix="/schemes", tags=["schemes"])
 app.include_router(query.router, prefix="/query", tags=["query"])
@@ -31,6 +39,3 @@ async def startup_event():
 @app.get("/")
 def read_root():
     return {"message": "Welcome to SaarthiAI Backend. Use /docs to view API documentation."}
-
-# AWS Lambda handler
-handler = Mangum(app)
