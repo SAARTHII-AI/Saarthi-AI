@@ -1,9 +1,9 @@
 from fastapi import APIRouter
-from app.schemas import QueryRequest, QueryResponse
-from app.services.rag_engine import rag_engine
-from app.services.intent_detection import detect_intent
-from app.services.recommendation_engine import recommend_schemes
-from app.services.translator import translator_service
+from backend.app.schemas import QueryRequest, QueryResponse
+from backend.app.services.rag_engine import rag_engine
+from backend.app.services.intent_detection import detect_intent
+from backend.app.services.recommendation_engine import recommend_schemes
+from backend.app.services.translator import translator_service
 
 router = APIRouter()
 

@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from app.services.scheme_loader import load_schemes
+from backend.app.services.rag_engine import rag_engine
 router = APIRouter()
 
 @router.get("/")
 async def get_schemes():
-    schemes = load_schemes()
+    schemes = rag_engine()
     return {"schemes": schemes}
