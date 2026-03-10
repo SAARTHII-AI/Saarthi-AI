@@ -1,6 +1,6 @@
 import json
 import os
-from backend.app.config import settings
+from app.config import settings
 
 def load_schemes():
     filepath = settings.data_path
