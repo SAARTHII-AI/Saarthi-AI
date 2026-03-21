@@ -60,18 +60,28 @@ if (SpeechRecognition) {
 } else {
     // Mic not supported — show disabled state instead of hiding
     micBtn.disabled = true;
-    micBtn.title = "Voice not supported on this browser";
-    micBtn.setAttribute("aria-label", "Voice not supported on this browser");
     micBtn.classList.add("mic-disabled");
 
     // Replace inner icon with mic_off
     micBtn.innerHTML = '<span class="material-symbols-outlined text-3xl">mic_off</span>';
 
-    // Show a text hint below the input area
+    // Show a localised text hint (text set after script.js loads via updateMicHint)
     const hint = document.getElementById("mic-unsupported-hint");
     if (hint) {
         hint.classList.remove("hidden");
+        // Initial English text; script.js will update via updateMicHint() once i18n is ready
+        hint.textContent = "Voice not supported on this browser — please type your message.";
     }
+
+    // Tooltip/aria-label: also localised once script.js t() is ready
+    const setMicLabel = () => {
+        const msg = window.t ? window.t("micUnsupported") : "Voice not supported on this browser";
+        micBtn.title = msg;
+        micBtn.setAttribute("aria-label", msg);
+        if (hint) hint.textContent = msg;
+    };
+    // Attempt immediately (script.js loads after voice.js) and on DOMContentLoaded
+    document.addEventListener("DOMContentLoaded", setMicLabel);
 }
 
 function stopListening() {

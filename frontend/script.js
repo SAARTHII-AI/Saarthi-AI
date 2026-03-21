@@ -182,6 +182,17 @@ function pruneOldCacheEntries() {
     saveCacheMeta(meta);
 }
 
+function touchCacheMeta(cacheKey) {
+    let meta = loadCacheMeta();
+    const idx = meta.findIndex(m => m.key === cacheKey);
+    if (idx !== -1) {
+        const entry = meta.splice(idx, 1)[0];
+        entry.lastAccessed = Date.now();
+        meta.push(entry);
+        saveCacheMeta(meta);
+    }
+}
+
 function getCachedResponse(cacheKey) {
     try {
         const raw = localStorage.getItem(cacheKey);
@@ -191,6 +202,7 @@ function getCachedResponse(cacheKey) {
             localStorage.removeItem(cacheKey);
             return null;
         }
+        touchCacheMeta(cacheKey);
         return entry.data;
     } catch (e) {
         return null;
@@ -198,14 +210,16 @@ function getCachedResponse(cacheKey) {
 }
 
 function cacheResponse(cacheKey, data, query, language) {
-    const entry = { data, timestamp: Date.now(), query, language };
+    const now = Date.now();
+    const entry = { data, timestamp: now, query, language };
     localStorage.setItem(cacheKey, JSON.stringify(entry));
 
     let meta = loadCacheMeta();
     meta = meta.filter(m => m.key !== cacheKey);
-    meta.push({ key: cacheKey, timestamp: entry.timestamp });
+    meta.push({ key: cacheKey, timestamp: now, lastAccessed: now });
 
     if (meta.length > CACHE_MAX) {
+        meta.sort((a, b) => (a.lastAccessed || a.timestamp) - (b.lastAccessed || b.timestamp));
         const evicted = meta.shift();
         localStorage.removeItem(evicted.key);
     }
@@ -221,6 +235,7 @@ function findBestCachedAnswer(query, language) {
         try {
             const entry = JSON.parse(raw);
             if (entry.language === language && entry.query && entry.query.toLowerCase().includes(lq)) {
+                touchCacheMeta(meta[i].key);
                 return entry.data;
             }
         } catch (e) {}
@@ -231,6 +246,7 @@ function findBestCachedAnswer(query, language) {
         try {
             const entry = JSON.parse(raw);
             if (entry.query && entry.query.toLowerCase().includes(lq)) {
+                touchCacheMeta(meta[i].key);
                 return entry.data;
             }
         } catch (e) {}
@@ -355,7 +371,6 @@ async function processQuery(query) {
         cacheResponse(cacheKey, data, query, language);
         displayResponse(data, false);
     } catch (error) {
-        const isCancelled = error.name === "AbortError";
         const isNetworkErr = !navigator.onLine || error.message === "Failed to fetch";
 
         const fallback = findBestCachedAnswer(query, language);
@@ -480,5 +495,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("language-select").addEventListener("change", () => {
         updateConnectivityPill();
+        updateMicHint();
     });
 });
+
+function updateMicHint() {
+    const hint = document.getElementById("mic-unsupported-hint");
+    if (hint && !hint.classList.contains("hidden")) {
+        hint.textContent = t("micUnsupported");
+    }
+}
+
+window.updateMicHint = updateMicHint;
