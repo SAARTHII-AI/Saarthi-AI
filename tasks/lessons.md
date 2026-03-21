@@ -18,3 +18,4 @@ Append a short bullet when a correction or incident reveals a durable rule for t
 - **Security in frontend rendering**: Never interpolate API strings directly into `insertAdjacentHTML`; always escape text and validate URLs (allow only `http/https`) before rendering links.
 - **Test doubles & kwargs**: When mocking translator/service functions used in production with keyword args, define side effects that accept `*args, **kwargs` to avoid brittle TypeErrors.
 - **Connection parity**: Any BrightData-backed feature path should use `ConnectionManager` health gating and record success/failure so `/connection/status` reflects real service behavior.
+- **Detail-path parity**: Apply the same connection gating + success/failure telemetry on detail/secondary API calls (not just primary search calls), otherwise health status drifts from real usage.
