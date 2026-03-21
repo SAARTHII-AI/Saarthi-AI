@@ -3,6 +3,7 @@ import hashlib
 import time
 from typing import Optional, Dict, Any
 from app.services.scheme_loader import load_schemes
+from app.services.offline_answer_engine import generate_offline_answer
 from app.config import settings
 
 logger = logging.getLogger(__name__)
@@ -67,9 +68,8 @@ class RAGEngine:
             desc_lower = scheme.get('description', '').lower()
             target_lower = scheme.get('target_group', '').lower()
             elig_lower = scheme.get('eligibility', '').lower()
+            benefits_lower = scheme.get('benefits', '').lower()
             state_lower = (scheme.get('state') or '').lower()
-
-            searchable = f"{name_lower} {desc_lower} {target_lower} {elig_lower} {state_lower}"
 
             score = 0
 
@@ -80,7 +80,7 @@ class RAGEngine:
                     score += 3
                 elif word in target_lower:
                     score += 2
-                elif word in desc_lower or word in elig_lower:
+                elif word in desc_lower or word in elig_lower or word in benefits_lower:
                     score += 1
 
             if user_state and state_lower and user_state.lower() in state_lower:
@@ -129,10 +129,18 @@ class RAGEngine:
                     lines.append(f"  Description: {s['description']}")
                 if s.get('eligibility'):
                     lines.append(f"  Eligibility: {s['eligibility']}")
+                if s.get('benefits'):
+                    lines.append(f"  Benefits: {s['benefits']}")
                 if s.get('target_group'):
                     lines.append(f"  Target Group: {s['target_group']}")
+                if s.get('documents'):
+                    lines.append(f"  Documents Required: {', '.join(s['documents'][:6])}")
+                if s.get('helpline'):
+                    lines.append(f"  Helpline: {s['helpline']}")
+                if s.get('application_url') and s['application_url'].startswith('http'):
+                    lines.append(f"  Apply: {s['application_url']}")
                 if s.get('documents_links'):
-                    lines.append(f"  Official Links: {', '.join(s['documents_links'])}")
+                    lines.append(f"  Official Links: {', '.join(s['documents_links'][:3])}")
                 scheme_texts.append("\n".join(lines))
             parts.append("=== GOVERNMENT SCHEMES ===\n" + "\n\n".join(scheme_texts))
 
@@ -145,12 +153,9 @@ class RAGEngine:
         raw = f"{question}|{context[:500]}|{str(sorted((profile or {}).items()))}"
         return hashlib.md5(raw.encode()).hexdigest()
 
-    def generate_answer(self, context: str, question: str, farmer_profile: dict = None) -> str:
+    def generate_answer(self, context: str, question: str, farmer_profile: dict = None, language: str = "en", matched_schemes: list = None) -> str:
         if not context:
-            return (
-                "मुझे आपके सवाल के लिए कोई प्रासंगिक योजना (scheme) नहीं मिली। "
-                "I couldn't find a relevant scheme for your question."
-            )
+            return generate_offline_answer([], question, farmer_profile, language)
 
         cache_key = self._cache_key(context, question, farmer_profile)
         cached = _answer_cache.get(cache_key)
@@ -201,13 +206,20 @@ class RAGEngine:
                 _answer_cache[cache_key] = {"answer": answer, "ts": time.time()}
                 return answer
             except Exception as e:
-                logger.warning(f"Azure OpenAI call failed, using fallback: {e}")
+                logger.warning(f"Azure OpenAI call failed, using offline engine: {e}")
 
-        return (
-            f"यहाँ आपके सवाल के आधार पर कुछ जानकारी है:\n\n"
-            f"{context}\n\n"
-            f"यह जानकारी सरकारी स्रोतों के आधार पर है।"
+        answer = generate_offline_answer(
+            matched_schemes or [],
+            question,
+            farmer_profile,
+            language,
         )
+
+        if len(_answer_cache) >= _ANSWER_CACHE_MAX:
+            oldest = min(_answer_cache, key=lambda k: _answer_cache[k]["ts"])
+            del _answer_cache[oldest]
+        _answer_cache[cache_key] = {"answer": answer, "ts": time.time()}
+        return answer
 
 
 rag_engine = RAGEngine()

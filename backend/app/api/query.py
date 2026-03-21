@@ -77,7 +77,9 @@ async def handle_query(request: QueryRequest, raw_request: Request):
     english_answer = rag_engine.generate_answer(
         context,
         english_query,
-        farmer_profile=farmer_profile if farmer_profile else None
+        farmer_profile=farmer_profile if farmer_profile else None,
+        language=detected_lang,
+        matched_schemes=top_schemes,
     )
 
     final_answer = english_answer

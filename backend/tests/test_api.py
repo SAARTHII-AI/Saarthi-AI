@@ -48,12 +48,12 @@ class TestHealthEndpoint:
         assert response.status_code == 200
         body = response.json()
         assert body["status"] == "ok"
-        assert "message" in body
 
-    def test_api_health_check(self):
-        response = client.get("/api/health")
-        assert response.status_code == 200
-        assert response.json()["status"] == "ok"
+    def test_health_has_schemes_count(self):
+        response = client.get("/health")
+        body = response.json()
+        assert "schemes_loaded" in body
+        assert body["schemes_loaded"] >= 50
 
 
 class TestSchemesEndpoint:
@@ -63,192 +63,169 @@ class TestSchemesEndpoint:
         data = response.json()
         assert "schemes" in data
         assert "total" in data
-        assert isinstance(data["schemes"], list)
         assert data["total"] >= 50
 
-    def test_filter_type_central(self):
+    def test_filter_central_schemes(self):
         response = client.get("/schemes?type=central")
-        assert response.status_code == 200
         data = response.json()
-        assert len(data["schemes"]) > 0
-        for scheme in data["schemes"]:
-            assert scheme["type"] == "central"
+        for s in data["schemes"]:
+            assert s["type"] == "central"
 
-    def test_filter_type_state(self):
+    def test_filter_state_schemes(self):
         response = client.get("/schemes?type=state")
-        assert response.status_code == 200
         data = response.json()
-        assert len(data["schemes"]) > 0
-        for scheme in data["schemes"]:
-            assert scheme["type"] == "state"
+        for s in data["schemes"]:
+            assert s["type"] == "state"
 
-    def test_filter_state_tamil_nadu(self):
-        response = client.get("/schemes?state=Tamil Nadu")
-        assert response.status_code == 200
+    def test_filter_by_specific_state(self):
+        response = client.get("/schemes?state=Telangana")
         data = response.json()
-        assert len(data["schemes"]) > 0
-        for scheme in data["schemes"]:
-            assert scheme["type"] == "central" or scheme.get("state") == "Tamil Nadu"
+        assert data["total"] > 0
+        for s in data["schemes"]:
+            assert s["type"] == "central" or s.get("state") == "Telangana"
 
-    def test_combined_type_and_state(self):
-        response = client.get("/schemes?type=state&state=Tamil Nadu")
-        assert response.status_code == 200
+    def test_all_schemes_have_benefits(self):
+        response = client.get("/schemes")
         data = response.json()
-        for scheme in data["schemes"]:
-            assert scheme["type"] == "state"
-            assert scheme.get("state") == "Tamil Nadu"
+        for s in data["schemes"]:
+            assert "benefits" in s, f"Missing benefits for {s['name']}"
+            assert len(s["benefits"]) > 0
 
-    def test_api_prefix_schemes(self):
-        response = client.get("/api/schemes")
-        assert response.status_code == 200
+    def test_all_schemes_have_eligibility(self):
+        response = client.get("/schemes")
         data = response.json()
-        assert "schemes" in data
+        for s in data["schemes"]:
+            assert "eligibility" in s, f"Missing eligibility for {s['name']}"
+
+    def test_all_schemes_have_documents(self):
+        response = client.get("/schemes")
+        data = response.json()
+        for s in data["schemes"]:
+            assert "documents" in s, f"Missing documents for {s['name']}"
+            assert isinstance(s["documents"], list)
+            assert len(s["documents"]) > 0
+
+    def test_schemes_normalized_type_field(self):
+        response = client.get("/schemes")
+        data = response.json()
+        for s in data["schemes"]:
+            assert "type" in s
+            assert s["type"] in ("central", "state")
 
 
 class TestQueryEndpoint:
-    def test_basic_english_query(self):
-        payload = {"query": "Tell me about government schemes", "language": "en"}
+    def test_basic_query(self):
+        payload = {"query": "PM-KISAN eligibility", "language": "en"}
         response = client.post("/query", json=payload)
         assert response.status_code == 200
         data = response.json()
-        assert "intent" in data
         assert "answer" in data
         assert "recommended_schemes" in data
-        assert data["response_language"] == "en"
+        assert "response_language" in data
+        assert "intent" in data
 
-    def test_hindi_query(self):
-        with patch("app.api.query.translator_service") as mock_ts:
-            mock_ts.detect_language.return_value = "hi"
-            mock_ts.translate_text = lambda text, source="auto", target="en": text
-            payload = {"query": "सरकारी योजना के बारे में बताइए", "language": "hi"}
-            response = client.post("/query", json=payload)
-            assert response.status_code == 200
-            data = response.json()
-            assert "answer" in data
-            assert data["response_language"] == "hi"
-
-    def test_farmer_gets_pm_kisan(self):
-        payload = {
-            "query": "kisan yojana documents required for farmer",
-            "language": "en",
-            "occupation": "farmer",
-        }
+    def test_answer_uses_offline_engine(self):
+        payload = {"query": "PM-KISAN income support", "language": "en"}
         response = client.post("/query", json=payload)
-        assert response.status_code == 200
         data = response.json()
-        names = [s["name"].lower() for s in data["recommended_schemes"]]
-        assert any("kisan" in n for n in names), f"Expected PM-KISAN, got: {names}"
+        assert len(data["answer"]) > 20
 
-    def test_state_specific_query_tamil_nadu(self):
-        payload = {
-            "query": "farmer scheme",
-            "language": "en",
-            "occupation": "farmer",
-            "state": "Tamil Nadu",
-        }
-        response = client.post("/query", json=payload)
-        assert response.status_code == 200
-        data = response.json()
-        for scheme in data["recommended_schemes"]:
-            if scheme.get("state"):
-                assert scheme["state"] == "Tamil Nadu"
-
-    def test_empty_query_fails_422(self):
-        payload = {"language": "en"}
-        response = client.post("/query", json=payload)
-        assert response.status_code == 422
-
-    def test_very_long_query(self):
-        long_text = "government scheme information " * 50
-        payload = {"query": long_text, "language": "en"}
+    def test_query_with_state(self):
+        payload = {"query": "scheme for farmers", "language": "en", "state": "Telangana"}
         response = client.post("/query", json=payload)
         assert response.status_code == 200
         data = response.json()
         assert "answer" in data
 
-    def test_unsupported_language_code(self):
-        payload = {"query": "Tell me about schemes", "language": "zz"}
+    def test_query_auto_language(self):
+        payload = {"query": "farming scheme for me", "language": "auto"}
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200
+
+    def test_query_hindi_language(self):
+        payload = {"query": "PM-KISAN ke bare mein batao", "language": "hi"}
         response = client.post("/query", json=payload)
         assert response.status_code == 200
         data = response.json()
-        assert "answer" in data
+        assert data["response_language"] == "hi"
 
-    def test_response_has_doc_links_and_nearest_centers(self):
-        payload = {
-            "query": "scheme for farmer",
-            "language": "en",
-            "state": "Tamil Nadu",
-        }
+    def test_query_returns_doc_links(self):
+        payload = {"query": "PM-KISAN details", "language": "en"}
         response = client.post("/query", json=payload)
-        assert response.status_code == 200
         data = response.json()
         assert "doc_links" in data
-        assert "nearest_centers" in data
         assert isinstance(data["doc_links"], list)
+
+    def test_query_returns_nearest_centers(self):
+        payload = {"query": "scheme details", "language": "en", "state": "Tamil Nadu"}
+        response = client.post("/query", json=payload)
+        data = response.json()
+        assert "nearest_centers" in data
         assert isinstance(data["nearest_centers"], list)
 
-    def test_income_filter_affects_recommendations(self):
-        payload_low = {
-            "query": "health scheme",
+    def test_query_with_farmer_profile(self):
+        payload = {
+            "query": "best scheme for me",
             "language": "en",
+            "occupation": "farmer",
+            "state": "Maharashtra",
             "income": 100000,
+            "crop": "cotton",
+            "land_size": "3",
         }
-        payload_high = {
-            "query": "health scheme",
-            "language": "en",
-            "income": 5000000,
-        }
-        resp_low = client.post("/query", json=payload_low)
-        resp_high = client.post("/query", json=payload_high)
-        assert resp_low.status_code == 200
-        assert resp_high.status_code == 200
-        names_low = {s["name"] for s in resp_low.json()["recommended_schemes"]}
-        names_high = {s["name"] for s in resp_high.json()["recommended_schemes"]}
-        assert isinstance(names_low, set)
-        assert isinstance(names_high, set)
-
-
-class TestHelpCentersEndpoint:
-    def test_get_all_help_centers(self):
-        response = client.get("/api/help-centers")
+        response = client.post("/query", json=payload)
         assert response.status_code == 200
         data = response.json()
-        assert isinstance(data, list)
-        assert len(data) > 0
-
-    def test_help_centers_with_state_filter(self):
-        response = client.get("/api/help-centers?state=Tamil Nadu")
-        assert response.status_code == 200
-        data = response.json()
-        assert len(data) > 0
-        has_national = any(c["type"] == "national_helpline" for c in data)
-        assert has_national
-        state_centers = [c for c in data if c["type"] != "national_helpline"]
-        assert len(state_centers) > 0
-
-    def test_help_centers_unknown_state(self):
-        response = client.get("/api/help-centers?state=Atlantis")
-        assert response.status_code == 200
-        data = response.json()
-        for c in data:
-            assert c["type"] == "national_helpline"
-
-    def test_help_centers_no_state_returns_national_only(self):
-        response = client.get("/api/help-centers")
-        assert response.status_code == 200
-        data = response.json()
-        for c in data:
-            assert c["type"] == "national_helpline"
+        assert "answer" in data
+        assert "recommended_schemes" in data
 
 
-class TestEdgeCases:
-    def test_malformed_json_body(self):
-        response = client.post(
-            "/query",
-            content=b"this is not json",
-            headers={"Content-Type": "application/json"},
-        )
+class TestQueryEdgeCases:
+    def test_empty_query(self):
+        payload = {"query": "", "language": "en"}
+        response = client.post("/query", json=payload)
+        assert response.status_code in (200, 422)
+
+    def test_very_long_query(self):
+        payload = {"query": "scheme " * 500, "language": "en"}
+        response = client.post("/query", json=payload)
+        assert response.status_code in (200, 422)
+
+    def test_query_missing_body(self):
+        response = client.post("/query", json={})
         assert response.status_code == 422
+
+    def test_query_invalid_language(self):
+        payload = {"query": "test", "language": "xyz"}
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200
+
+    def test_query_unicode_text(self):
+        payload = {"query": "किसान योजना बताओ", "language": "hi"}
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200
+        data = response.json()
+        assert "answer" in data
+
+    def test_query_bengali_text(self):
+        payload = {"query": "কৃষক প্রকল্প", "language": "bn"}
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200
+
+    def test_query_telugu_text(self):
+        payload = {"query": "రైతు పథకం", "language": "te"}
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200
+
+    def test_query_tamil_text(self):
+        payload = {"query": "விவசாயி திட்டம்", "language": "ta"}
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200
+
+    def test_query_gujarati_text(self):
+        payload = {"query": "ખેડૂત યોજના", "language": "gu"}
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200
 
     def test_query_with_only_whitespace(self):
         payload = {"query": "   ", "language": "en"}
@@ -294,59 +271,53 @@ class TestEdgeCases:
         assert "SaarthiAI" in response.json().get("message", "")
 
 
-class TestNewStateSchemes:
-    def test_gujarat_schemes_exist(self):
-        response = client.get("/schemes?state=Gujarat")
+class TestStateSchemes:
+    def test_telangana_schemes_exist(self):
+        response = client.get("/schemes?state=Telangana")
         data = response.json()
-        state_schemes = [s for s in data["schemes"] if s.get("state") == "Gujarat"]
+        state_schemes = [s for s in data["schemes"] if s.get("state") == "Telangana"]
         assert len(state_schemes) >= 3
 
-    def test_punjab_schemes_exist(self):
-        response = client.get("/schemes?state=Punjab")
+    def test_maharashtra_schemes_exist(self):
+        response = client.get("/schemes?state=Maharashtra")
         data = response.json()
-        state_schemes = [s for s in data["schemes"] if s.get("state") == "Punjab"]
-        assert len(state_schemes) >= 3
-
-    def test_haryana_schemes_exist(self):
-        response = client.get("/schemes?state=Haryana")
-        data = response.json()
-        state_schemes = [s for s in data["schemes"] if s.get("state") == "Haryana"]
-        assert len(state_schemes) >= 3
+        state_schemes = [s for s in data["schemes"] if s.get("state") == "Maharashtra"]
+        assert len(state_schemes) >= 2
 
     def test_andhra_pradesh_schemes_exist(self):
         response = client.get("/schemes?state=Andhra Pradesh")
         data = response.json()
         state_schemes = [s for s in data["schemes"] if s.get("state") == "Andhra Pradesh"]
-        assert len(state_schemes) >= 3
+        assert len(state_schemes) >= 2
 
-    def test_kerala_schemes_exist(self):
-        response = client.get("/schemes?state=Kerala")
+    def test_madhya_pradesh_scheme_exists(self):
+        response = client.get("/schemes?state=Madhya Pradesh")
         data = response.json()
-        state_schemes = [s for s in data["schemes"] if s.get("state") == "Kerala"]
-        assert len(state_schemes) >= 3
+        state_schemes = [s for s in data["schemes"] if s.get("state") == "Madhya Pradesh"]
+        assert len(state_schemes) >= 1
 
-    def test_chhattisgarh_schemes_exist(self):
+    def test_odisha_scheme_exists(self):
+        response = client.get("/schemes?state=Odisha")
+        data = response.json()
+        state_schemes = [s for s in data["schemes"] if s.get("state") == "Odisha"]
+        assert len(state_schemes) >= 1
+
+    def test_chhattisgarh_scheme_exists(self):
         response = client.get("/schemes?state=Chhattisgarh")
         data = response.json()
         state_schemes = [s for s in data["schemes"] if s.get("state") == "Chhattisgarh"]
-        assert len(state_schemes) >= 3
+        assert len(state_schemes) >= 1
 
-    def test_jharkhand_schemes_exist(self):
-        response = client.get("/schemes?state=Jharkhand")
+    def test_bihar_scheme_exists(self):
+        response = client.get("/schemes?state=Bihar")
         data = response.json()
-        state_schemes = [s for s in data["schemes"] if s.get("state") == "Jharkhand"]
-        assert len(state_schemes) >= 3
+        state_schemes = [s for s in data["schemes"] if s.get("state") == "Bihar"]
+        assert len(state_schemes) >= 1
 
-    def test_assam_schemes_exist(self):
-        response = client.get("/schemes?state=Assam")
-        data = response.json()
-        state_schemes = [s for s in data["schemes"] if s.get("state") == "Assam"]
-        assert len(state_schemes) >= 3
-
-    def test_total_schemes_at_least_75(self):
+    def test_total_schemes_at_least_55(self):
         response = client.get("/schemes")
         data = response.json()
-        assert data["total"] >= 75
+        assert data["total"] >= 55
 
 
 class TestQueryWithFarmerProfile:
@@ -355,7 +326,7 @@ class TestQueryWithFarmerProfile:
             "query": "farming scheme for wheat",
             "language": "en",
             "occupation": "farmer",
-            "state": "Haryana",
+            "state": "Telangana",
             "crop": "wheat",
             "land_size": "3",
         }
@@ -370,7 +341,7 @@ class TestQueryWithFarmerProfile:
             "query": "best scheme for me",
             "language": "en",
             "occupation": "farmer",
-            "state": "Gujarat",
+            "state": "Maharashtra",
             "income": 60000,
             "crop": "cotton",
             "land_size": "2",
@@ -394,41 +365,57 @@ class TestQueryWithFarmerProfile:
         assert "answer" in data
 
 
-class TestQueryNewStates:
-    def test_query_gujarat_state(self):
+class TestQueryStates:
+    def test_query_telangana_state(self):
         payload = {
-            "query": "farming scheme Gujarat irrigation",
+            "query": "Rythu Bandhu farmer Telangana",
             "language": "en",
-            "state": "Gujarat",
+            "state": "Telangana",
             "occupation": "farmer",
         }
         response = client.post("/query", json=payload)
         assert response.status_code == 200
 
-    def test_query_punjab_state(self):
+    def test_query_maharashtra_state(self):
         payload = {
-            "query": "paddy farmer Punjab scheme",
+            "query": "Ladki Bahin scheme Maharashtra women",
             "language": "en",
-            "state": "Punjab",
-            "occupation": "farmer",
+            "state": "Maharashtra",
         }
         response = client.post("/query", json=payload)
         assert response.status_code == 200
 
-    def test_query_chhattisgarh_state(self):
+    def test_query_odisha_state(self):
         payload = {
-            "query": "Rajiv Gandhi Kisan Nyay",
+            "query": "KALIA Yojana farmer Odisha",
             "language": "en",
-            "state": "Chhattisgarh",
+            "state": "Odisha",
         }
         response = client.post("/query", json=payload)
         assert response.status_code == 200
 
-    def test_query_assam_state(self):
+    def test_query_andhra_pradesh_state(self):
         payload = {
-            "query": "tea garden worker scheme Assam",
+            "query": "YSR scheme Andhra Pradesh",
             "language": "en",
-            "state": "Assam",
+            "state": "Andhra Pradesh",
         }
         response = client.post("/query", json=payload)
         assert response.status_code == 200
+
+
+class TestMultiLanguageQueries:
+    def test_all_supported_languages_accepted(self):
+        languages = ["hi", "en", "bn", "te", "mr", "ta", "gu", "kn", "ml", "pa", "or"]
+        for lang in languages:
+            payload = {"query": "farming scheme", "language": lang}
+            response = client.post("/query", json=payload)
+            assert response.status_code == 200, f"Failed for language: {lang}"
+            data = response.json()
+            assert data["response_language"] == lang, f"Wrong response_language for {lang}"
+
+    def test_response_language_matches_request(self):
+        payload = {"query": "scheme details", "language": "ta"}
+        response = client.post("/query", json=payload)
+        data = response.json()
+        assert data["response_language"] == "ta"

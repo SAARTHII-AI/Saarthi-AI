@@ -6,7 +6,7 @@ const I18N = {
         listening:      "सुन रहा हूँ...",
         understood:     "समझ लिया!",
         offline:        "आप ऑफलाइन हैं। सहेजा गया उत्तर दिखा रहा है।",
-        noCache:        "आप ऑफलाइन हैं और कोई सहेजा गया उत्तर नहीं है।",
+        noCache:        "आप ऑफलाइन हैं। स्थानीय डेटा से उत्तर दे रहा हूँ।",
         serverError:    "सर्वर से संपर्क नहीं हो पा रहा है।",
         savedAnswer:    "सहेजा गया उत्तर",
         onlinePill:     "ऑनलाइन",
@@ -15,13 +15,21 @@ const I18N = {
         hearError:      "माफ़ करें, मैं सुन नहीं पाया।",
         schemesHeading: "अनुशंसित योजनाएं:",
         stopSpeaking:   "बोलना बंद करें",
+        offlineAnswer:  "ऑफलाइन उत्तर",
+        usefulLinks:    "उपयोगी लिंक",
+        nearbyCenters:  "नजदीकी केंद्र",
+        openMaps:       "नक्शे में देखें",
+        officialLink:   "आधिकारिक लिंक",
+        typeMessage:    "संदेश टाइप करें...",
+        allSchemes:     "सभी योजनाएं",
+        central:        "केंद्र",
     },
     en: {
         thinking:       "Thinking...",
         listening:      "Listening...",
         understood:     "Understood!",
         offline:        "You are offline. Showing saved answer.",
-        noCache:        "You are offline and no saved answer found.",
+        noCache:        "You are offline. Answering from local data.",
         serverError:    "Unable to contact the server.",
         savedAnswer:    "Saved answer",
         onlinePill:     "Online",
@@ -30,6 +38,221 @@ const I18N = {
         hearError:      "Sorry, I couldn't hear you.",
         schemesHeading: "Recommended Schemes:",
         stopSpeaking:   "Stop Speaking",
+        offlineAnswer:  "Offline answer",
+        usefulLinks:    "Useful Links",
+        nearbyCenters:  "Nearby Centers",
+        openMaps:       "Open in Maps",
+        officialLink:   "Official Link",
+        typeMessage:    "Type a message...",
+        allSchemes:     "All Schemes",
+        central:        "Central",
+    },
+    bn: {
+        thinking:       "ভাবছি...",
+        listening:      "শুনছি...",
+        understood:     "বুঝেছি!",
+        offline:        "আপনি অফলাইনে আছেন। সংরক্ষিত উত্তর দেখাচ্ছি।",
+        noCache:        "আপনি অফলাইনে আছেন। স্থানীয় তথ্য থেকে উত্তর দিচ্ছি।",
+        serverError:    "সার্ভারে যোগাযোগ করা যাচ্ছে না।",
+        savedAnswer:    "সংরক্ষিত উত্তর",
+        onlinePill:     "অনলাইন",
+        offlinePill:    "অফলাইন",
+        micUnsupported: "এই ব্রাউজারে ভয়েস ইনপুট সমর্থিত নয়। অনুগ্রহ করে টাইপ করুন।",
+        hearError:      "দুঃখিত, আমি শুনতে পাইনি।",
+        schemesHeading: "প্রস্তাবিত প্রকল্পসমূহ:",
+        stopSpeaking:   "কথা বলা বন্ধ করুন",
+        offlineAnswer:  "অফলাইন উত্তর",
+        usefulLinks:    "দরকারি লিংক",
+        nearbyCenters:  "নিকটবর্তী কেন্দ্র",
+        openMaps:       "মানচিত্রে দেখুন",
+        officialLink:   "অফিসিয়াল লিংক",
+        typeMessage:    "একটি বার্তা টাইপ করুন...",
+        allSchemes:     "সকল প্রকল্প",
+        central:        "কেন্দ্রীয়",
+    },
+    te: {
+        thinking:       "ఆలోచిస్తున్నాను...",
+        listening:      "వింటున్నాను...",
+        understood:     "అర్థమైంది!",
+        offline:        "మీరు ఆఫ్‌లైన్‌లో ఉన్నారు. సేవ్ చేసిన సమాధానం చూపిస్తున్నాను.",
+        noCache:        "మీరు ఆఫ్‌లైన్‌లో ఉన్నారు. స్థానిక డేటా నుండి సమాధానం ఇస్తున్నాను.",
+        serverError:    "సర్వర్‌ను సంప్రదించడం సాధ్యం కాలేదు.",
+        savedAnswer:    "సేవ్ చేసిన సమాధానం",
+        onlinePill:     "ఆన్‌లైన్",
+        offlinePill:    "ఆఫ్‌లైన్",
+        micUnsupported: "ఈ బ్రౌజర్‌లో వాయిస్ ఇన్‌పుట్ మద్దతు లేదు. దయచేసి టైప్ చేయండి.",
+        hearError:      "క్షమించండి, నేను వినలేకపోయాను.",
+        schemesHeading: "సిఫార్సు చేసిన పథకాలు:",
+        stopSpeaking:   "మాట్లాడటం ఆపండి",
+        offlineAnswer:  "ఆఫ్‌లైన్ సమాధానం",
+        usefulLinks:    "ఉపయోగకరమైన లింకులు",
+        nearbyCenters:  "సమీపంలోని కేంద్రాలు",
+        openMaps:       "మ్యాప్‌లో చూడండి",
+        officialLink:   "అధికారిక లింక్",
+        typeMessage:    "సందేశం టైప్ చేయండి...",
+        allSchemes:     "అన్ని పథకాలు",
+        central:        "కేంద్ర",
+    },
+    mr: {
+        thinking:       "विचार करत आहे...",
+        listening:      "ऐकत आहे...",
+        understood:     "समजले!",
+        offline:        "तुम्ही ऑफलाइन आहात. जतन केलेले उत्तर दाखवत आहे.",
+        noCache:        "तुम्ही ऑफलाइन आहात. स्थानिक डेटावरून उत्तर देत आहे.",
+        serverError:    "सर्व्हरशी संपर्क होऊ शकला नाही.",
+        savedAnswer:    "जतन केलेले उत्तर",
+        onlinePill:     "ऑनलाइन",
+        offlinePill:    "ऑफलाइन",
+        micUnsupported: "या ब्राउझरमध्ये व्हॉइस इनपुट समर्थित नाही. कृपया टाइप करा.",
+        hearError:      "माफ करा, मला ऐकू आले नाही.",
+        schemesHeading: "शिफारस केलेल्या योजना:",
+        stopSpeaking:   "बोलणे थांबवा",
+        offlineAnswer:  "ऑफलाइन उत्तर",
+        usefulLinks:    "उपयुक्त दुवे",
+        nearbyCenters:  "जवळचे केंद्र",
+        openMaps:       "नकाशावर पहा",
+        officialLink:   "अधिकृत दुवा",
+        typeMessage:    "संदेश टाइप करा...",
+        allSchemes:     "सर्व योजना",
+        central:        "केंद्र",
+    },
+    ta: {
+        thinking:       "யோசிக்கிறேன்...",
+        listening:      "கேட்கிறேன்...",
+        understood:     "புரிந்தது!",
+        offline:        "நீங்கள் ஆஃப்லைனில் உள்ளீர்கள். சேமிக்கப்பட்ட பதிலைக் காட்டுகிறேன்.",
+        noCache:        "நீங்கள் ஆஃப்லைனில் உள்ளீர்கள். உள்ளூர் தரவிலிருந்து பதிலளிக்கிறேன்.",
+        serverError:    "சர்வரை தொடர்பு கொள்ள இயலவில்லை.",
+        savedAnswer:    "சேமிக்கப்பட்ட பதில்",
+        onlinePill:     "ஆன்லைன்",
+        offlinePill:    "ஆஃப்லைன்",
+        micUnsupported: "இந்த உலாவியில் குரல் உள்ளீடு ஆதரிக்கப்படவில்லை. தயவுசெய்து தட்டச்சு செய்யுங்கள்.",
+        hearError:      "மன்னிக்கவும், என்னால் கேட்க இயலவில்லை.",
+        schemesHeading: "பரிந்துரைக்கப்பட்ட திட்டங்கள்:",
+        stopSpeaking:   "பேசுவதை நிறுத்துங்கள்",
+        offlineAnswer:  "ஆஃப்லைன் பதில்",
+        usefulLinks:    "பயனுள்ள இணைப்புகள்",
+        nearbyCenters:  "அருகிலுள்ள மையங்கள்",
+        openMaps:       "வரைபடத்தில் பாருங்கள்",
+        officialLink:   "அதிகாரப்பூர்வ இணைப்பு",
+        typeMessage:    "செய்தியை தட்டச்சு செய்யுங்கள்...",
+        allSchemes:     "அனைத்து திட்டங்கள்",
+        central:        "மத்திய",
+    },
+    gu: {
+        thinking:       "વિચારી રહ્યો છું...",
+        listening:      "સાંભળી રહ્યો છું...",
+        understood:     "સમજી ગયો!",
+        offline:        "તમે ઑફલાઇન છો. સાચવેલો જવાબ બતાવી રહ્યો છું.",
+        noCache:        "તમે ઑફલાઇન છો. સ્થાનિક ડેટામાંથી જવાબ આપી રહ્યો છું.",
+        serverError:    "સર્વર સાથે સંપર્ક કરી શકાયો નહીં.",
+        savedAnswer:    "સાચવેલો જવાબ",
+        onlinePill:     "ઑનલાઇન",
+        offlinePill:    "ઑફલાઇન",
+        micUnsupported: "આ બ્રાઉઝરમાં અવાજ ઇનપુટ સમર્થિત નથી. કૃપા કરીને ટાઇપ કરો.",
+        hearError:      "માફ કરશો, હું સાંભળી શક્યો નહીં.",
+        schemesHeading: "ભલામણ કરેલી યોજનાઓ:",
+        stopSpeaking:   "બોલવાનું બંધ કરો",
+        offlineAnswer:  "ઑફલાઇન જવાબ",
+        usefulLinks:    "ઉપયોગી લિંક્સ",
+        nearbyCenters:  "નજીકના કેન્દ્રો",
+        openMaps:       "નકશામાં જુઓ",
+        officialLink:   "અધિકૃત લિંક",
+        typeMessage:    "સંદેશ ટાઇપ કરો...",
+        allSchemes:     "બધી યોજનાઓ",
+        central:        "કેન્દ્ર",
+    },
+    kn: {
+        thinking:       "ಯೋಚಿಸುತ್ತಿದ್ದೇನೆ...",
+        listening:      "ಕೇಳುತ್ತಿದ್ದೇನೆ...",
+        understood:     "ಅರ್ಥವಾಯಿತು!",
+        offline:        "ನೀವು ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿದ್ದೀರಿ. ಉಳಿಸಿದ ಉತ್ತರವನ್ನು ತೋರಿಸುತ್ತಿದ್ದೇನೆ.",
+        noCache:        "ನೀವು ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿದ್ದೀರಿ. ಸ್ಥಳೀಯ ಡೇಟಾದಿಂದ ಉತ್ತರಿಸುತ್ತಿದ್ದೇನೆ.",
+        serverError:    "ಸರ್ವರ್ ಅನ್ನು ಸಂಪರ್ಕಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.",
+        savedAnswer:    "ಉಳಿಸಿದ ಉತ್ತರ",
+        onlinePill:     "ಆನ್‌ಲೈನ್",
+        offlinePill:    "ಆಫ್‌ಲೈನ್",
+        micUnsupported: "ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಧ್ವನಿ ಇನ್‌ಪುಟ್ ಬೆಂಬಲಿತವಲ್ಲ. ದಯವಿಟ್ಟು ಟೈಪ್ ಮಾಡಿ.",
+        hearError:      "ಕ್ಷಮಿಸಿ, ನನಗೆ ಕೇಳಲಾಗಲಿಲ್ಲ.",
+        schemesHeading: "ಶಿಫಾರಸು ಮಾಡಿದ ಯೋಜನೆಗಳು:",
+        stopSpeaking:   "ಮಾತನಾಡುವುದನ್ನು ನಿಲ್ಲಿಸಿ",
+        offlineAnswer:  "ಆಫ್‌ಲೈನ್ ಉತ್ತರ",
+        usefulLinks:    "ಉಪಯುಕ್ತ ಲಿಂಕ್‌ಗಳು",
+        nearbyCenters:  "ಹತ್ತಿರದ ಕೇಂದ್ರಗಳು",
+        openMaps:       "ನಕ್ಷೆಯಲ್ಲಿ ನೋಡಿ",
+        officialLink:   "ಅಧಿಕೃತ ಲಿಂಕ್",
+        typeMessage:    "ಸಂದೇಶ ಟೈಪ್ ಮಾಡಿ...",
+        allSchemes:     "ಎಲ್ಲಾ ಯೋಜನೆಗಳು",
+        central:        "ಕೇಂದ್ರ",
+    },
+    ml: {
+        thinking:       "ആലോചിക്കുന്നു...",
+        listening:      "കേൾക്കുന്നു...",
+        understood:     "മനസ്സിലായി!",
+        offline:        "നിങ്ങൾ ഓഫ്‌ലൈനിലാണ്. സേവ് ചെയ്ത ഉത്തരം കാണിക്കുന്നു.",
+        noCache:        "നിങ്ങൾ ഓഫ്‌ലൈനിലാണ്. ലോക്കൽ ഡാറ്റയിൽ നിന്ന് ഉത്തരം നൽകുന്നു.",
+        serverError:    "സെർവറുമായി ബന്ധപ്പെടാൻ കഴിയുന്നില്ല.",
+        savedAnswer:    "സേവ് ചെയ്ത ഉത്തരം",
+        onlinePill:     "ഓൺലൈൻ",
+        offlinePill:    "ഓഫ്‌ലൈൻ",
+        micUnsupported: "ഈ ബ്രൗസറിൽ വോയ്‌സ് ഇൻപുട്ട് പിന്തുണയ്ക്കുന്നില്ല. ദയവായി ടൈപ്പ് ചെയ്യുക.",
+        hearError:      "ക്ഷമിക്കണം, എനിക്ക് കേൾക്കാൻ കഴിഞ്ഞില്ല.",
+        schemesHeading: "ശുപാർശ ചെയ്ത പദ്ധതികൾ:",
+        stopSpeaking:   "സംസാരിക്കുന്നത് നിർത്തുക",
+        offlineAnswer:  "ഓഫ്‌ലൈൻ ഉത്തരം",
+        usefulLinks:    "ഉപയോഗപ്രദമായ ലിങ്കുകൾ",
+        nearbyCenters:  "സമീപത്തുള്ള കേന്ദ്രങ്ങൾ",
+        openMaps:       "മാപ്പിൽ കാണുക",
+        officialLink:   "ഔദ്യോഗിക ലിങ്ക്",
+        typeMessage:    "ഒരു സന്ദേശം ടൈപ്പ് ചെയ്യുക...",
+        allSchemes:     "എല്ലാ പദ്ധതികളും",
+        central:        "കേന്ദ്ര",
+    },
+    pa: {
+        thinking:       "ਸੋਚ ਰਿਹਾ ਹਾਂ...",
+        listening:      "ਸੁਣ ਰਿਹਾ ਹਾਂ...",
+        understood:     "ਸਮਝ ਲਿਆ!",
+        offline:        "ਤੁਸੀਂ ਔਫਲਾਈਨ ਹੋ। ਸੰਭਾਲਿਆ ਹੋਇਆ ਜਵਾਬ ਦਿਖਾ ਰਿਹਾ ਹਾਂ।",
+        noCache:        "ਤੁਸੀਂ ਔਫਲਾਈਨ ਹੋ। ਸਥਾਨਕ ਡੇਟਾ ਤੋਂ ਜਵਾਬ ਦੇ ਰਿਹਾ ਹਾਂ।",
+        serverError:    "ਸਰਵਰ ਨਾਲ ਸੰਪਰਕ ਨਹੀਂ ਹੋ ਸਕਿਆ।",
+        savedAnswer:    "ਸੰਭਾਲਿਆ ਹੋਇਆ ਜਵਾਬ",
+        onlinePill:     "ਔਨਲਾਈਨ",
+        offlinePill:    "ਔਫਲਾਈਨ",
+        micUnsupported: "ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਅਵਾਜ਼ ਇਨਪੁੱਟ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਟਾਈਪ ਕਰੋ।",
+        hearError:      "ਮਾਫ਼ ਕਰਨਾ, ਮੈਂ ਸੁਣ ਨਹੀਂ ਸਕਿਆ।",
+        schemesHeading: "ਸਿਫ਼ਾਰਸ਼ ਕੀਤੀਆਂ ਯੋਜਨਾਵਾਂ:",
+        stopSpeaking:   "ਬੋਲਣਾ ਬੰਦ ਕਰੋ",
+        offlineAnswer:  "ਔਫਲਾਈਨ ਜਵਾਬ",
+        usefulLinks:    "ਲਾਭਦਾਇਕ ਲਿੰਕ",
+        nearbyCenters:  "ਨੇੜਲੇ ਕੇਂਦਰ",
+        openMaps:       "ਨਕਸ਼ੇ ਵਿੱਚ ਦੇਖੋ",
+        officialLink:   "ਅਧਿਕਾਰਤ ਲਿੰਕ",
+        typeMessage:    "ਸੁਨੇਹਾ ਟਾਈਪ ਕਰੋ...",
+        allSchemes:     "ਸਾਰੀਆਂ ਯੋਜਨਾਵਾਂ",
+        central:        "ਕੇਂਦਰ",
+    },
+    or: {
+        thinking:       "ଚିନ୍ତା କରୁଛି...",
+        listening:      "ଶୁଣୁଛି...",
+        understood:     "ବୁଝିଗଲି!",
+        offline:        "ଆପଣ ଅଫଲାଇନ୍ ଅଛନ୍ତି। ସଞ୍ଚିତ ଉତ୍ତର ଦେଖାଉଛି।",
+        noCache:        "ଆପଣ ଅଫଲାଇନ୍ ଅଛନ୍ତି। ସ୍ଥାନୀୟ ତଥ୍ୟରୁ ଉତ୍ତର ଦେଉଛି।",
+        serverError:    "ସର୍ଭର ସହ ଯୋଗାଯୋଗ ହୋଇପାରିଲା ନାହିଁ।",
+        savedAnswer:    "ସଞ୍ଚିତ ଉତ୍ତର",
+        onlinePill:     "ଅନଲାଇନ୍",
+        offlinePill:    "ଅଫଲାଇନ୍",
+        micUnsupported: "ଏହି ବ୍ରାଉଜରରେ ଭଏସ୍ ଇନପୁଟ୍ ସମର୍ଥିତ ନୁହେଁ। ଦୟାକରି ଟାଇପ୍ କରନ୍ତୁ।",
+        hearError:      "କ୍ଷମା କରନ୍ତୁ, ମୁଁ ଶୁଣିପାରିଲି ନାହିଁ।",
+        schemesHeading: "ପରାମର୍ଶିତ ଯୋଜନାଗୁଡ଼ିକ:",
+        stopSpeaking:   "କଥା ବନ୍ଦ କରନ୍ତୁ",
+        offlineAnswer:  "ଅଫଲାଇନ୍ ଉତ୍ତର",
+        usefulLinks:    "ଉପଯୋଗୀ ଲିଙ୍କ",
+        nearbyCenters:  "ନିକଟସ୍ଥ କେନ୍ଦ୍ର",
+        openMaps:       "ମାନଚିତ୍ରରେ ଦେଖନ୍ତୁ",
+        officialLink:   "ଅଧିକୃତ ଲିଙ୍କ",
+        typeMessage:    "ଏକ ସନ୍ଦେଶ ଟାଇପ୍ କରନ୍ତୁ...",
+        allSchemes:     "ସମସ୍ତ ଯୋଜନା",
+        central:        "କେନ୍ଦ୍ର",
     },
 };
 
@@ -51,7 +274,7 @@ function getLang() {
 }
 
 function t(key) {
-    return (I18N[getLang()] || I18N.en)[key] || key;
+    return (I18N[getLang()] || I18N.en)[key] || I18N.en[key] || key;
 }
 
 window.t = t;
@@ -256,6 +479,175 @@ function findBestCachedAnswer(query, language) {
     return null;
 }
 
+const SCHEMES_CACHE_KEY = "saarthi_schemes_offline";
+const SCHEMES_CACHE_TTL = 24 * 60 * 60 * 1000;
+
+function loadOfflineSchemes() {
+    try {
+        const raw = localStorage.getItem(SCHEMES_CACHE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (Date.now() - parsed.timestamp > SCHEMES_CACHE_TTL) {
+            localStorage.removeItem(SCHEMES_CACHE_KEY);
+            return null;
+        }
+        return parsed.schemes;
+    } catch (e) {
+        return null;
+    }
+}
+
+function saveOfflineSchemes(schemes) {
+    try {
+        localStorage.setItem(SCHEMES_CACHE_KEY, JSON.stringify({
+            schemes: schemes,
+            timestamp: Date.now()
+        }));
+    } catch (e) {}
+}
+
+function fetchAndCacheSchemes() {
+    if (!isOnline()) return;
+    const existing = loadOfflineSchemes();
+    if (existing && existing.length > 0) return;
+
+    fetch(`${API_URL}/schemes`)
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+            if (data && data.schemes) {
+                saveOfflineSchemes(data.schemes);
+            }
+        })
+        .catch(() => {});
+}
+
+function searchOfflineSchemes(query) {
+    const schemes = loadOfflineSchemes();
+    if (!schemes || schemes.length === 0) return [];
+
+    const queryLower = query.toLowerCase();
+    const words = queryLower.split(/\s+/).filter(w => w.length >= 3);
+    const profile = loadFarmerProfile();
+
+    const scored = [];
+    for (const s of schemes) {
+        const name = (s.name || "").toLowerCase();
+        const desc = (s.description || "").toLowerCase();
+        const target = (s.target_group || "").toLowerCase();
+        const elig = (s.eligibility || "").toLowerCase();
+        const benefits = (s.benefits || "").toLowerCase();
+        const stateName = (s.state || (s.states && s.states[0]) || "").toLowerCase();
+
+        let score = 0;
+        for (const w of words) {
+            if (name.includes(w)) score += 3;
+            else if (target.includes(w)) score += 2;
+            else if (desc.includes(w) || elig.includes(w) || benefits.includes(w)) score += 1;
+        }
+
+        if (profile.state && stateName && profile.state.toLowerCase() === stateName) {
+            score += 2;
+        }
+
+        const schemeType = s.type || s.scope || "";
+        if (schemeType === "central") score += 0.5;
+
+        if (score > 0) scored.push({ score, scheme: s });
+    }
+
+    scored.sort((a, b) => b.score - a.score);
+    return scored.slice(0, 5).map(s => s.scheme);
+}
+
+const OFFLINE_LABELS = {
+    hi: { noMatch: "मुझे आपके सवाल से संबंधित कोई विशेष योजना नहीं मिली। कृपया अधिक विवरण दें या नजदीकी CSC केंद्र से संपर्क करें।", intro: "आपके सवाल के आधार पर यहाँ कुछ सरकारी योजनाओं की जानकारी है:", benefits: "लाभ", eligibility: "पात्रता", helpline: "हेल्पलाइन", apply: "आवेदन", footer: "अधिक जानकारी के लिए नजदीकी CSC केंद्र से संपर्क करें।", commonSchemes: "कुछ सामान्य योजनाएं:" },
+    bn: { noMatch: "আপনার প্রশ্নের সাথে কোনো নির্দিষ্ট প্রকল্প পাওয়া যায়নি। অনুগ্রহ করে আরও বিশদ দিন বা নিকটতম CSC কেন্দ্রে যোগাযোগ করুন।", intro: "আপনার প্রশ্নের ভিত্তিতে এখানে কিছু সরকারি প্রকল্পের তথ্য:", benefits: "সুবিধা", eligibility: "যোগ্যতা", helpline: "হেল্পলাইন", apply: "আবেদন", footer: "আরও তথ্যের জন্য নিকটতম CSC কেন্দ্রে যোগাযোগ করুন।", commonSchemes: "কিছু সাধারণ প্রকল্প:" },
+    te: { noMatch: "మీ ప్రశ్నకు సంబంధించిన నిర్దిష్ట పథకం కనుగొనబడలేదు. దయచేసి మరిన్ని వివరాలు ఇవ్వండి లేదా సమీపంలోని CSC కేంద్రాన్ని సంప్రదించండి.", intro: "మీ ప్రశ్న ఆధారంగా ఇక్కడ కొన్ని ప్రభుత్వ పథకాల సమాచారం:", benefits: "ప్రయోజనాలు", eligibility: "అర్హత", helpline: "హెల్ప్‌లైన్", apply: "దరఖాస్తు", footer: "మరిన్ని వివరాల కోసం సమీపంలోని CSC కేంద్రాన్ని సంప్రదించండి.", commonSchemes: "కొన్ని సాధారణ పథకాలు:" },
+    mr: { noMatch: "तुमच्या प्रश्नाशी संबंधित विशिष्ट योजना सापडली नाही. कृपया अधिक तपशील द्या किंवा जवळच्या CSC केंद्राशी संपर्क साधा.", intro: "तुमच्या प्रश्नावर आधारित काही सरकारी योजनांची माहिती:", benefits: "फायदे", eligibility: "पात्रता", helpline: "हेल्पलाइन", apply: "अर्ज", footer: "अधिक माहितीसाठी जवळच्या CSC केंद्राशी संपर्क साधा.", commonSchemes: "काही सामान्य योजना:" },
+    ta: { noMatch: "உங்கள் கேள்விக்கு பொருத்தமான திட்டம் கிடைக்கவில்லை. மேலும் விவரங்கள் தரவும் அல்லது அருகிலுள்ள CSC மையத்தை தொடர்பு கொள்ளவும்.", intro: "உங்கள் கேள்வியின் அடிப்படையில் சில அரசு திட்டங்களின் தகவல்:", benefits: "நன்மைகள்", eligibility: "தகுதி", helpline: "ஹெல்ப்லைன்", apply: "விண்ணப்பம்", footer: "மேலும் விவரங்களுக்கு அருகிலுள்ள CSC மையத்தை தொடர்பு கொள்ளவும்.", commonSchemes: "சில பொதுவான திட்டங்கள்:" },
+    gu: { noMatch: "તમારા પ્રશ્ન સાથે સંબંધિત ચોક્કસ યોજના મળી નથી. કૃપા કરીને વધુ વિગતો આપો અથવા નજીકના CSC કેન્દ્રનો સંપર્ક કરો.", intro: "તમારા પ્રશ્નના આધારે અહીં કેટલીક સરકારી યોજનાઓની માહિતી:", benefits: "ફાયદા", eligibility: "પાત્રતા", helpline: "હેલ્પલાઇન", apply: "અરજી", footer: "વધુ માહિતી માટે નજીકના CSC કેન્દ્રનો સંપર્ક કરો.", commonSchemes: "કેટલીક સામાન્ય યોજનાઓ:" },
+    kn: { noMatch: "ನಿಮ್ಮ ಪ್ರಶ್ನೆಗೆ ಸಂಬಂಧಿಸಿದ ನಿರ್ದಿಷ್ಟ ಯೋಜನೆ ಕಂಡುಬಂದಿಲ್ಲ. ಹೆಚ್ಚಿನ ವಿವರಗಳನ್ನು ನೀಡಿ ಅಥವಾ ಹತ್ತಿರದ CSC ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ.", intro: "ನಿಮ್ಮ ಪ್ರಶ್ನೆಯ ಆಧಾರದ ಮೇಲೆ ಕೆಲವು ಸರ್ಕಾರಿ ಯೋಜನೆಗಳ ಮಾಹಿತಿ:", benefits: "ಪ್ರಯೋಜನಗಳು", eligibility: "ಅರ್ಹತೆ", helpline: "ಹೆಲ್ಪ್‌ಲೈನ್", apply: "ಅರ್ಜಿ", footer: "ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ ಹತ್ತಿರದ CSC ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ.", commonSchemes: "ಕೆಲವು ಸಾಮಾನ್ಯ ಯೋಜನೆಗಳು:" },
+    ml: { noMatch: "നിങ്ങളുടെ ചോദ്യവുമായി ബന്ധപ്പെട്ട നിർദ്ദിഷ്ട പദ്ധതി കണ്ടെത്താനായില്ല. കൂടുതൽ വിവരങ്ങൾ നൽകുക അല്ലെങ്കിൽ അടുത്തുള്ള CSC കേന്ദ്രം സന്ദർശിക്കുക.", intro: "നിങ്ങളുടെ ചോദ്യത്തിന്റെ അടിസ്ഥാനത്തിൽ ചില സർക്കാർ പദ്ധതികളുടെ വിവരങ്ങൾ:", benefits: "ആനുകൂല്യങ്ങൾ", eligibility: "യോഗ്യത", helpline: "ഹെൽപ്‌ലൈൻ", apply: "അപേക്ഷ", footer: "കൂടുതൽ വിവരങ്ങൾക്ക് അടുത്തുള്ള CSC കേന്ദ്രം സന്ദർശിക്കുക.", commonSchemes: "ചില സാധാരണ പദ്ധതികൾ:" },
+    pa: { noMatch: "ਤੁਹਾਡੇ ਸਵਾਲ ਨਾਲ ਸੰਬੰਧਿਤ ਕੋਈ ਵਿਸ਼ੇਸ਼ ਯੋਜਨਾ ਨਹੀਂ ਮਿਲੀ। ਕਿਰਪਾ ਕਰਕੇ ਹੋਰ ਵੇਰਵੇ ਦਿਓ ਜਾਂ ਨੇੜਲੇ CSC ਕੇਂਦਰ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।", intro: "ਤੁਹਾਡੇ ਸਵਾਲ ਦੇ ਆਧਾਰ 'ਤੇ ਕੁਝ ਸਰਕਾਰੀ ਯੋਜਨਾਵਾਂ ਦੀ ਜਾਣਕਾਰੀ:", benefits: "ਲਾਭ", eligibility: "ਯੋਗਤਾ", helpline: "ਹੈਲਪਲਾਈਨ", apply: "ਅਰਜ਼ੀ", footer: "ਹੋਰ ਜਾਣਕਾਰੀ ਲਈ ਨੇੜਲੇ CSC ਕੇਂਦਰ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।", commonSchemes: "ਕੁਝ ਆਮ ਯੋਜਨਾਵਾਂ:" },
+    or: { noMatch: "ଆପଣଙ୍କ ପ୍ରଶ୍ନ ସହ ସମ୍ପର୍କିତ କୌଣସି ନିର୍ଦ୍ଦିଷ୍ଟ ଯୋଜନା ମିଳିଲା ନାହିଁ। ଦୟାକରି ଅଧିକ ବିବରଣୀ ଦିଅନ୍ତୁ ବା ନିକଟସ୍ଥ CSC କେନ୍ଦ୍ରକୁ ଯୋଗାଯୋଗ କରନ୍ତୁ।", intro: "ଆପଣଙ୍କ ପ୍ରଶ୍ନ ଆଧାରରେ ଏଠାରେ କିଛି ସରକାରୀ ଯୋଜନାର ତଥ୍ୟ:", benefits: "ଲାଭ", eligibility: "ଯୋଗ୍ୟତା", helpline: "ହେଲ୍ପଲାଇନ୍", apply: "ଆବେଦନ", footer: "ଅଧିକ ତଥ୍ୟ ପାଇଁ ନିକଟସ୍ଥ CSC କେନ୍ଦ୍ରକୁ ଯୋଗାଯୋଗ କରନ୍ତୁ।", commonSchemes: "କିଛି ସାଧାରଣ ଯୋଜନା:" },
+    en: { noMatch: "I couldn't find a specific scheme matching your question. Please try asking in more detail or visit your nearest CSC center.", intro: "Based on your question, here are some relevant government schemes:", benefits: "Benefits", eligibility: "Eligibility", helpline: "Helpline", apply: "Apply", footer: "For more details, visit your nearest CSC center or Gram Panchayat office.", commonSchemes: "Some common schemes:" },
+};
+
+function getOfflineLabels() {
+    const lang = getLang();
+    return OFFLINE_LABELS[lang] || OFFLINE_LABELS.en;
+}
+
+function generateOfflineResponse(query, matchedSchemes) {
+    const lang = getLang();
+    const labels = getOfflineLabels();
+
+    if (!matchedSchemes || matchedSchemes.length === 0) {
+        const fallbackAnswer = `${labels.noMatch}\n\n${labels.commonSchemes}\n• PM-KISAN (₹6,000) - pmkisan.gov.in\n• Ayushman Bharat (₹5 lakh) - pmjay.gov.in\n• PM Awas Yojana - pmayg.nic.in`;
+
+        return {
+            intent: "scheme_query",
+            answer: fallbackAnswer,
+            recommended_schemes: [],
+            response_language: lang,
+            doc_links: [],
+            nearest_centers: [],
+        };
+    }
+
+    const top = matchedSchemes.slice(0, 3);
+    let answerParts = [];
+    answerParts.push(`${labels.intro}\n`);
+
+    for (let i = 0; i < top.length; i++) {
+        const s = top[i];
+        const name = s.name || "Unknown";
+        const schemeType = s.type || s.scope || "";
+        const state = s.state || (s.states && s.states[0]) || "";
+        let badge = "";
+        if (schemeType === "central") badge = ` [${t("central")}]`;
+        else if (schemeType === "state" && state) badge = ` [${state}]`;
+
+        answerParts.push(`\n${i + 1}. ${name}${badge}`);
+        if (s.description) {
+            const desc = s.description.length > 200 ? s.description.substring(0, 197) + "..." : s.description;
+            answerParts.push(`   ${desc}`);
+        }
+        if (s.benefits) {
+            answerParts.push(`   💰 ${labels.benefits}: ${s.benefits}`);
+        }
+        if (s.eligibility) {
+            answerParts.push(`   ✅ ${labels.eligibility}: ${s.eligibility}`);
+        }
+        if (s.helpline) {
+            answerParts.push(`   📞 ${labels.helpline}: ${s.helpline}`);
+        }
+        const appUrl = s.application_url || "";
+        if (appUrl.startsWith("http")) {
+            answerParts.push(`   🔗 ${labels.apply}: ${appUrl}`);
+        }
+    }
+
+    answerParts.push(`\n${labels.footer}`);
+
+    const recommendations = matchedSchemes.slice(0, 5).map(s => ({
+        name: s.name,
+        description: s.description || "",
+        type: s.type || s.scope || null,
+        state: s.state || (s.states && s.states[0]) || null,
+        documents_links: s.documents_links || (s.application_url ? [s.application_url] : []),
+    }));
+
+    return {
+        intent: "scheme_query",
+        answer: answerParts.join("\n"),
+        recommended_schemes: recommendations,
+        response_language: lang,
+        doc_links: [],
+        nearest_centers: [],
+    };
+}
+
 let currentSchemeFilter = 'all';
 
 function setSchemeFilter(filter) {
@@ -371,7 +763,6 @@ async function sendTextMessage() {
 }
 
 async function processQuery(query) {
-    const language = document.getElementById("language-select").value;
     const resolvedLang = getLang();
     const profileSnapshot = getFarmerProfileSnapshot();
     const cacheKey = buildCacheKey(query, resolvedLang, profileSnapshot);
@@ -385,7 +776,10 @@ async function processQuery(query) {
             displayResponse(best, true);
             addOfflineBanner(t("offline"));
         } else {
-            addMessageToChat(t("noCache"), "bot");
+            const matched = searchOfflineSchemes(query);
+            const offlineData = generateOfflineResponse(query, matched);
+            displayResponse(offlineData, true, true);
+            addOfflineBanner(t("noCache"));
         }
         showStatus("");
         return;
@@ -421,7 +815,14 @@ async function processQuery(query) {
             displayResponse(fallback, true);
             addOfflineBanner(isNetworkErr ? t("offline") : t("serverError"));
         } else {
-            addMessageToChat(isNetworkErr ? t("noCache") : t("serverError"), "bot");
+            const matched = searchOfflineSchemes(query);
+            if (matched.length > 0) {
+                const offlineData = generateOfflineResponse(query, matched);
+                displayResponse(offlineData, true, true);
+                addOfflineBanner(isNetworkErr ? t("noCache") : t("serverError"));
+            } else {
+                addMessageToChat(isNetworkErr ? t("noCache") : t("serverError"), "bot");
+            }
         }
     } finally {
         showStatus("");
@@ -433,10 +834,16 @@ function escapeHtml(str) {
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
 
-function displayResponse(data, isCached) {
-    const savedBadge = isCached
+function displayResponse(data, isCached, isOfflineGenerated) {
+    let badgeText = "";
+    if (isOfflineGenerated) {
+        badgeText = t("offlineAnswer");
+    } else if (isCached) {
+        badgeText = t("savedAnswer");
+    }
+    const savedBadge = badgeText
         ? `<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5 mt-2">
-               <span class="material-symbols-outlined text-[13px]">bookmark</span>${t("savedAnswer")}
+               <span class="material-symbols-outlined text-[13px]">${isOfflineGenerated ? 'wifi_off' : 'bookmark'}</span>${badgeText}
            </span>`
         : "";
 
@@ -455,18 +862,18 @@ function displayResponse(data, isCached) {
         </div>
     `;
 
-    if (window.speakText) {
-        window.speakText(data.answer, data.response_language);
+    if (window.speakText && data.answer) {
+        window.speakText(data.answer, data.response_language || getLang());
     }
 
     if (data.recommended_schemes && data.recommended_schemes.length > 0) {
         htmlContent += `<div class="flex flex-col gap-2 mb-3 ml-9"><span class="text-[12px] font-semibold text-slate-500 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">auto_awesome</span>${t("schemesHeading")}</span>`;
         data.recommended_schemes.forEach(scheme => {
             const typeBadge = scheme.type
-                ? `<span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${scheme.type === 'central' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}">${scheme.type === 'central' ? 'Central' : scheme.state || 'State'}</span>`
+                ? `<span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${scheme.type === 'central' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}">${scheme.type === 'central' ? t("central") : scheme.state || 'State'}</span>`
                 : '';
             const docLinks = (scheme.documents_links && scheme.documents_links.length > 0)
-                ? `<div class="flex flex-wrap gap-1 mt-1.5">${scheme.documents_links.map(url => `<a href="${url}" target="_blank" rel="noopener" class="inline-flex items-center gap-0.5 text-[10px] text-primary hover:underline font-medium"><span class="material-symbols-outlined text-[11px]">open_in_new</span>Official Link</a>`).join('')}</div>`
+                ? `<div class="flex flex-wrap gap-1 mt-1.5">${scheme.documents_links.map(url => `<a href="${url}" target="_blank" rel="noopener" class="inline-flex items-center gap-0.5 text-[10px] text-primary hover:underline font-medium"><span class="material-symbols-outlined text-[11px]">open_in_new</span>${t("officialLink")}</a>`).join('')}</div>`
                 : '';
             htmlContent += `
                 <div class="scheme-card bg-white border border-slate-200 rounded-xl p-3 transition-all">
@@ -483,7 +890,7 @@ function displayResponse(data, isCached) {
     }
 
     if (data.doc_links && data.doc_links.length > 0) {
-        htmlContent += `<div class="flex flex-col gap-1.5 mb-3 ml-9"><span class="text-[12px] font-semibold text-slate-500 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">link</span>Useful Links</span>`;
+        htmlContent += `<div class="flex flex-col gap-1.5 mb-3 ml-9"><span class="text-[12px] font-semibold text-slate-500 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">link</span>${t("usefulLinks")}</span>`;
         data.doc_links.forEach(link => {
             htmlContent += `
                 <a href="${link.url}" target="_blank" rel="noopener" class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-2.5 hover:border-primary/40 transition-colors no-underline">
@@ -496,10 +903,10 @@ function displayResponse(data, isCached) {
     }
 
     if (data.nearest_centers && data.nearest_centers.length > 0) {
-        htmlContent += `<div class="flex flex-col gap-1.5 mb-3 ml-9"><span class="text-[12px] font-semibold text-slate-500 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span>Nearby Centers</span>`;
+        htmlContent += `<div class="flex flex-col gap-1.5 mb-3 ml-9"><span class="text-[12px] font-semibold text-slate-500 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span>${t("nearbyCenters")}</span>`;
         data.nearest_centers.forEach(center => {
             const phone = center.phone ? `<a href="tel:${center.phone}" class="inline-flex items-center gap-0.5 text-primary text-[11px] font-medium"><span class="material-symbols-outlined text-[13px]">call</span>${escapeHtml(center.phone)}</a>` : '';
-            const mapsLink = center.maps_url ? `<a href="${center.maps_url}" target="_blank" rel="noopener" class="inline-flex items-center gap-0.5 text-primary text-[11px] font-medium hover:underline"><span class="material-symbols-outlined text-[13px]">map</span>Open in Maps</a>` : '';
+            const mapsLink = center.maps_url ? `<a href="${center.maps_url}" target="_blank" rel="noopener" class="inline-flex items-center gap-0.5 text-primary text-[11px] font-medium hover:underline"><span class="material-symbols-outlined text-[13px]">map</span>${t("openMaps")}</a>` : '';
             htmlContent += `
                 <div class="bg-white border border-slate-200 rounded-xl p-2.5 transition-all hover:border-slate-300">
                     <div class="flex items-start justify-between gap-2">
@@ -577,6 +984,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateConnectivityPill();
     updateStateFilterButton();
     renderSuggestionChips();
+    fetchAndCacheSchemes();
 
     document.getElementById("avatar-btn").addEventListener("click", openProfileDrawer);
     document.getElementById("profile-save-btn").addEventListener("click", () => {
@@ -590,12 +998,22 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("language-select").addEventListener("change", () => {
         updateConnectivityPill();
         updateMicHint();
+        updatePlaceholder();
     });
+
+    updatePlaceholder();
 
     if (isOnline()) {
         preCachePopularQueries();
     }
 });
+
+function updatePlaceholder() {
+    const input = document.getElementById("text-input");
+    if (input) {
+        input.placeholder = t("typeMessage");
+    }
+}
 
 function preCachePopularQueries() {
     const PRECACHE_KEY = 'saarthi_precached';
