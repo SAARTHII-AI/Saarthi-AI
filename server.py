@@ -29,7 +29,13 @@ class ProxyHandler(SimpleHTTPRequestHandler):
             self.send_error(405, "Method Not Allowed")
 
     def _proxy_request(self, method):
-        target_url = BACKEND_URL + self.path
+        path = self.path
+        # Ensure API paths have trailing slash so FastAPI doesn't 307-redirect
+        for prefix in ("/query", "/health", "/schemes"):
+            if path == prefix or path.startswith(prefix + "?"):
+                path = prefix + "/" + path[len(prefix):]
+                break
+        target_url = BACKEND_URL + path
         content_length = int(self.headers.get("Content-Length", 0))
         body = self.rfile.read(content_length) if content_length > 0 else None
 
