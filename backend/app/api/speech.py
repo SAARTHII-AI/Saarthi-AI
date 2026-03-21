@@ -87,8 +87,9 @@ async def text_to_speech(request: TTSRequest):
     """
     Convert text to speech audio using Azure TTS.
 
-    Returns base64-encoded audio by default, or raw audio stream if return_base64=False.
+    Returns base64-encoded audio in JSON format.
     Falls back to browser API indication when Azure is not configured.
+    For raw audio, use /speech/tts/stream.
     """
     try:
         audio_bytes = await speech_service.text_to_speech(
@@ -98,23 +99,13 @@ async def text_to_speech(request: TTSRequest):
             output_format=request.output_format,
         )
 
-        if request.return_base64:
-            audio_base64 = base64.b64encode(audio_bytes).decode("utf-8")
-            return TTSResponse(
-                success=True,
-                audio_base64=audio_base64,
-                content_type="audio/mpeg",
-                language=request.language,
-            )
-        else:
-            # Return raw audio stream
-            return Response(
-                content=audio_bytes,
-                media_type="audio/mpeg",
-                headers={
-                    "Content-Disposition": "attachment; filename=speech.mp3"
-                }
-            )
+        audio_base64 = base64.b64encode(audio_bytes).decode("utf-8")
+        return TTSResponse(
+            success=True,
+            audio_base64=audio_base64,
+            content_type="audio/mpeg",
+            language=request.language,
+        )
 
     except SpeechServiceError as e:
         error_msg = str(e)

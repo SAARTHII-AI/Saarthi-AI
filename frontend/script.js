@@ -2,6 +2,27 @@ const API_URL = (location.hostname === "localhost" || location.hostname === "127
     ? "http://localhost:8000"
     : "https://backend-saarthi.vercel.app";
 
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+function sanitizeExternalUrl(url) {
+    try {
+        const parsed = new URL(String(url || ""), window.location.origin);
+        if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+            return parsed.href;
+        }
+    } catch (error) {
+        console.warn("Invalid external URL blocked:", url);
+    }
+    return null;
+}
+
 // Handle Enter key for text input
 function handleEnterKeyPress(event) {
     if (event.key === "Enter") {
@@ -73,6 +94,7 @@ async function processQuery(query) {
 
 // Format and display response from backend
 function displayResponse(data) {
+    const safeAnswer = escapeHtml(data.answer);
     let htmlContent = `
         <div class="flex items-end gap-3 max-w-[90%] bot-message mb-4">
             <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-sm shrink-0">
@@ -81,7 +103,7 @@ function displayResponse(data) {
             <div class="flex flex-col gap-1">
                 <span class="text-xs font-medium text-slate-500 dark:text-slate-400 ml-1">SaarthiAI</span>
                 <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-bl-sm p-4 shadow-sm">
-                    <p class="text-[15px] leading-relaxed text-slate-800 dark:text-slate-200 message-content">${data.answer}</p>
+                    <p class="text-[15px] leading-relaxed text-slate-800 dark:text-slate-200 message-content">${safeAnswer}</p>
                 </div>
             </div>
         </div>
@@ -95,10 +117,12 @@ function displayResponse(data) {
     if (data.recommended_schemes && data.recommended_schemes.length > 0) {
         htmlContent += '<div class="flex flex-col gap-2 mb-4 ml-11"><strong class="text-sm text-slate-600 dark:text-slate-300">अनुशंसित योजनाएं (Recommended Schemes):</strong>';
         data.recommended_schemes.forEach(scheme => {
+            const safeSchemeName = escapeHtml(scheme.name);
+            const safeSchemeDescription = escapeHtml(scheme.description);
             htmlContent += `
                 <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-sm">
-                    <h4 class="font-semibold text-primary text-[15px] mb-1">${scheme.name}</h4>
-                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-snug">${scheme.description}</p>
+                    <h4 class="font-semibold text-primary text-[15px] mb-1">${safeSchemeName}</h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-snug">${safeSchemeDescription}</p>
                 </div>
             `;
         });
@@ -108,13 +132,28 @@ function displayResponse(data) {
     if (data.document_links && data.document_links.length > 0) {
         htmlContent += '<div class="flex flex-col gap-2 mb-4 ml-11"><strong class="text-sm text-slate-600 dark:text-slate-300">ज़रूरी दस्तावेज़/ऑफिशियल लिंक (Document Links):</strong>';
         data.document_links.forEach(link => {
-            htmlContent += `
-                <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-sm hover:border-primary/40 transition-colors">
-                    <h4 class="font-semibold text-primary text-[15px] mb-1">${link.title}</h4>
-                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-snug">${link.description || ""}</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Source: ${link.source || "official"}</p>
-                </a>
-            `;
+            const safeTitle = escapeHtml(link.title);
+            const safeDescription = escapeHtml(link.description || "");
+            const safeSource = escapeHtml(link.source || "official");
+            const safeUrl = sanitizeExternalUrl(link.url);
+
+            if (safeUrl) {
+                htmlContent += `
+                    <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-sm hover:border-primary/40 transition-colors">
+                        <h4 class="font-semibold text-primary text-[15px] mb-1">${safeTitle}</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-snug">${safeDescription}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Source: ${safeSource}</p>
+                    </a>
+                `;
+            } else {
+                htmlContent += `
+                    <div class="block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-sm">
+                        <h4 class="font-semibold text-primary text-[15px] mb-1">${safeTitle}</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-snug">${safeDescription}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Source: ${safeSource}</p>
+                    </div>
+                `;
+            }
         });
         htmlContent += '</div>';
     }
@@ -124,6 +163,7 @@ function displayResponse(data) {
 
 // Add simple text message to chat
 function addMessageToChat(text, sender) {
+    const safeText = escapeHtml(text);
     let htmlContent = "";
     if (sender === "user") {
         htmlContent = `
@@ -131,7 +171,7 @@ function addMessageToChat(text, sender) {
             <div class="flex flex-col gap-1 items-end max-w-[85%]">
                 <span class="text-xs font-medium text-slate-500 dark:text-slate-400 mr-1">You</span>
                 <div class="bg-primary text-white rounded-2xl rounded-br-sm p-3 shadow-sm">
-                    <p class="text-[15px] leading-relaxed">${text}</p>
+                    <p class="text-[15px] leading-relaxed">${safeText}</p>
                 </div>
             </div>
         </div>`;
@@ -144,7 +184,7 @@ function addMessageToChat(text, sender) {
             <div class="flex flex-col gap-1">
                 <span class="text-xs font-medium text-slate-500 dark:text-slate-400 ml-1">SaarthiAI</span>
                 <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-bl-sm p-4 shadow-sm">
-                    <p class="text-[15px] leading-relaxed text-slate-800 dark:text-slate-200">${text}</p>
+                    <p class="text-[15px] leading-relaxed text-slate-800 dark:text-slate-200">${safeText}</p>
                 </div>
             </div>
         </div>`;
