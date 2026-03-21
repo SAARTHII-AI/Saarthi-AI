@@ -10,3 +10,12 @@ langdetect
 pypdf
 python-dotenv
 beautifulsoup4
+beautifulsoup4
+deep-translator
+fastapi
+langdetect
+mangum
+pydantic-settings
+pypdf
+python-dotenv
+uvicorn
