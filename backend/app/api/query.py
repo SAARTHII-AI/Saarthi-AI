@@ -42,8 +42,8 @@ async def handle_query(request: QueryRequest):
     if web_snippets:
         logger.info(f"Bright Data returned {len(web_snippets)} snippet(s)")
 
-    # Build combined context: local schemes first, then live web snippets
-    context_parts = local_context_parts + web_snippets
+    # Build combined context: live web snippets first (broader), then local schemes (authoritative)
+    context_parts = web_snippets + local_context_parts
     context = "\n".join(context_parts)
 
     # Generate an answer in English (Azure OpenAI or template fallback)
