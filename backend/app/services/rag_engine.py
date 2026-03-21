@@ -12,6 +12,12 @@ _answer_cache = {}
 _ANSWER_CACHE_MAX = 200
 _ANSWER_CACHE_TTL = 1800
 
+LANG_NAMES = {
+    "hi": "Hindi", "en": "English", "bn": "Bengali", "te": "Telugu",
+    "mr": "Marathi", "ta": "Tamil", "gu": "Gujarati", "kn": "Kannada",
+    "ml": "Malayalam", "pa": "Punjabi", "or": "Odia",
+}
+
 
 def _build_azure_client():
     if settings.offline_only:
@@ -29,6 +35,63 @@ def _build_azure_client():
     except Exception as e:
         logger.warning(f"Could not initialise Azure OpenAI client: {e}")
         return None
+
+
+SYSTEM_PROMPT_TEMPLATE = """You are **SaarthiAI** — a warm, expert government-scheme advisor built for Indian farmers and citizens. Your goal is to give **complete, actionable, and personalized** answers that a rural farmer or first-generation beneficiary can immediately use.
+
+## RESPONSE LANGUAGE
+{lang_instruction}
+
+## RESPONSE FORMAT (always follow this structure)
+Use **bold headings**, numbered lists, and bullet points. Structure EVERY answer like this:
+
+**[Scheme Name]** — one-line summary of what it does.
+
+1) **आपके लिए क्या फायदा / Benefits for You**
+   - List 3-5 concrete benefits with ₹ amounts, percentages, or specifics
+   - Mention interest rate subsidies, insurance coverage, or cash transfers with exact figures
+   - Highlight any special advantage for the user based on their profile
+
+2) **मुख्य पात्रता / Eligibility**
+   - List who qualifies (farmer type, land size, income ceiling, age, gender)
+   - Directly tell the user whether they likely qualify based on their profile
+   - Mention if sharecroppers, tenant farmers, or landless laborers are included
+
+3) **आवेदन कैसे करें / How to Apply**
+   - Step-by-step (visit bank/CSC/portal, fill form, submit documents)
+   - Mention specific portals with URLs
+   - Mention if PM-KISAN beneficiaries get automatic benefits
+
+4) **जरूरी दस्तावेज़ / Required Documents**
+   - Bulleted list of every document needed (Aadhaar, land papers, bank passbook, photos, PAN if needed)
+
+5) **हेल्पलाइन / Helpline**
+   - Phone numbers and toll-free numbers
+   - Official website URLs
+
+6) **Follow-up prompt**: End with "अगर आप बताएं कि आपका राज्य, जमीन कितनी है, और कौन सी फसल उगाते हैं, तो मैं और भी योजनाएं बता सकता हूँ।" (or equivalent in the response language)
+
+## KEY RULES
+- **NEVER** say "I don't have information" if the context contains scheme data — use it fully.
+- **NEVER** give a short 2-3 line answer. Always give a comprehensive, detailed response.
+- Include ₹ amounts, percentages, exact figures from the scheme data.
+- If multiple schemes are relevant, cover the top 2-3 in detail.
+- Personalize based on farmer profile (state, crop, land size, income).
+- Use emojis sparingly: 💰 for money, ✅ for eligibility, 📄 for documents, 📞 for helpline, 🔗 for links.
+- When web search results provide additional details, incorporate them naturally.
+- For state-specific schemes, highlight that the scheme is specific to their state.
+- Do NOT fabricate scheme details, eligibility criteria, ₹ amounts, or helpline numbers that are not in the context.
+- If the context does not have specific details, say so honestly — do not invent information.
+- Only include URLs and helpline numbers that appear in the provided context.
+{profile_instruction}"""
+
+PROFILE_INSTRUCTION = """
+## USER PROFILE
+The user is a farmer/citizen. Their profile details are in the context below. Use this to:
+- Prioritize schemes matching their state, crop, land size, and income
+- Tell them directly "आप इस योजना के लिए पात्र हैं" if they likely qualify
+- Suggest additional schemes based on their profile
+- Mention state-specific benefits if their state matches any scheme"""
 
 
 class RAGEngine:
@@ -153,6 +216,32 @@ class RAGEngine:
         raw = f"{question}|{context[:500]}|{str(sorted((profile or {}).items()))}"
         return hashlib.md5(raw.encode()).hexdigest()
 
+    def _build_system_prompt(self, language: str = "en", farmer_profile: dict = None) -> str:
+        lang_name = LANG_NAMES.get(language, "English")
+
+        if language == "hi":
+            lang_instruction = (
+                "You MUST respond entirely in **Hindi (Devanagari script)**. "
+                "Use simple Hindi that a rural farmer understands. "
+                "You may use English for scheme names, URLs, and technical terms. "
+                "Example: 'PM-KISAN' stays in English but explain in Hindi."
+            )
+        elif language == "en":
+            lang_instruction = "Respond in clear, simple English."
+        else:
+            lang_instruction = (
+                f"You MUST respond entirely in **{lang_name}** using the native script of that language. "
+                f"Use simple {lang_name} that a common person understands. "
+                "You may keep scheme names, URLs, and numbers in English/Latin script."
+            )
+
+        profile_instruction = PROFILE_INSTRUCTION if farmer_profile else ""
+
+        return SYSTEM_PROMPT_TEMPLATE.format(
+            lang_instruction=lang_instruction,
+            profile_instruction=profile_instruction,
+        )
+
     def generate_answer(self, context: str, question: str, farmer_profile: dict = None, language: str = "en", matched_schemes: list = None) -> str:
         if not context:
             return generate_offline_answer([], question, farmer_profile, language)
@@ -166,30 +255,14 @@ class RAGEngine:
         client = _build_azure_client()
         if client:
             try:
-                profile_instruction = ""
-                if farmer_profile:
-                    profile_instruction = (
-                        "\n\nThe user is a farmer. Use their profile information from the context "
-                        "to personalize your answer. Prioritize schemes that match their state, "
-                        "crop type, land size, and income level. Mention specific eligibility "
-                        "criteria that apply to them."
-                    )
+                system_prompt = self._build_system_prompt(language, farmer_profile)
 
-                system_prompt = (
-                    "You are SaarthiAI, a friendly and knowledgeable assistant helping Indian "
-                    "farmers and citizens discover government schemes they are eligible for. "
-                    "Answer in clear, simple language that a rural farmer can understand. "
-                    "Structure your response with: 1) Direct answer to their question, "
-                    "2) Key eligibility points, 3) How to apply (if known), 4) Important documents needed. "
-                    "Use the scheme data and web search results provided in the context. "
-                    "If the context is insufficient, say so honestly. "
-                    "Do NOT make up scheme details or eligibility criteria."
-                    f"{profile_instruction}"
-                )
                 user_prompt = (
                     f"Context:\n{context}\n\n"
                     f"User question: {question}\n\n"
-                    "Provide a helpful, accurate, and personalized answer."
+                    "Give a comprehensive, detailed, and personalized answer using ALL the scheme data from the context. "
+                    "Include specific ₹ amounts, eligibility criteria, application steps, required documents, and helpline numbers. "
+                    "Do NOT give a short answer. Cover every relevant detail."
                 )
                 response = client.chat.completions.create(
                     model=settings.azure_openai_deployment,
@@ -197,7 +270,7 @@ class RAGEngine:
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": user_prompt},
                     ],
-                    max_completion_tokens=600,
+                    max_completion_tokens=1500,
                 )
                 answer = response.choices[0].message.content.strip()
                 if len(_answer_cache) >= _ANSWER_CACHE_MAX:

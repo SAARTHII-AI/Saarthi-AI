@@ -25,9 +25,9 @@ const INDIAN_LANG_MAP = {
 
 function getRecognitionLang() {
     const langCode = languageSelect.value;
-    if (langCode === "hi") return "hi-IN";
-    if (langCode === "en") return "en-IN";
-
+    if (langCode && INDIAN_LANG_MAP[langCode]) {
+        return INDIAN_LANG_MAP[langCode];
+    }
     const nav = (navigator.language || "").toLowerCase();
     for (const [code, bcp] of Object.entries(INDIAN_LANG_MAP)) {
         if (nav.startsWith(code)) return bcp;

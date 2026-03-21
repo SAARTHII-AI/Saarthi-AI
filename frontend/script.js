@@ -834,6 +834,29 @@ function escapeHtml(str) {
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
 
+function renderMarkdown(str) {
+    if (!str) return '';
+    let html = escapeHtml(str);
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    html = html.replace(/(https?:\/\/[^\s<]+)/g, function(url) {
+        try {
+            const parsed = new URL(url);
+            if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+                return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline break-all">' + url + '</a>';
+            }
+        } catch(e) {}
+        return url;
+    });
+    html = html.replace(/^(#{1,3})\s+(.+)$/gm, (match, hashes, text) => {
+        const level = hashes.length;
+        const sizes = { 1: 'text-[16px] font-bold', 2: 'text-[15px] font-semibold', 3: 'text-[14px] font-semibold' };
+        return `<div class="${sizes[level] || sizes[3]} text-slate-800 mt-2 mb-1">${text}</div>`;
+    });
+    html = html.replace(/^─+$/gm, '<hr class="border-slate-200 my-2">');
+    return html;
+}
+
 function displayResponse(data, isCached, isOfflineGenerated) {
     let badgeText = "";
     if (isOfflineGenerated) {
@@ -855,7 +878,7 @@ function displayResponse(data, isCached, isOfflineGenerated) {
             <div class="flex flex-col gap-1">
                 <span class="text-[11px] font-medium text-slate-400 ml-0.5">SaarthiAI</span>
                 <div class="bg-slate-50 rounded-2xl rounded-tl-md px-4 py-3">
-                    <p class="text-[14px] leading-relaxed text-slate-700 message-content whitespace-pre-line">${escapeHtml(data.answer)}</p>
+                    <div class="text-[14px] leading-relaxed text-slate-700 message-content whitespace-pre-line">${renderMarkdown(data.answer)}</div>
                     ${savedBadge}
                 </div>
             </div>
