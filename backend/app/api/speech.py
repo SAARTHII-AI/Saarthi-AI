@@ -40,12 +40,12 @@ class TTSRequest(BaseModel):
 class TTSResponse(BaseModel):
     """Response model for text-to-speech conversion."""
     success: bool
-    audio_base64: Optional[str] = Field(None, description="Base64-encoded audio data")
+    audio_base64: Optional[str] = Field(default=None, description="Base64-encoded audio data")
     content_type: str = Field(default="audio/mpeg", description="MIME type of the audio")
     use_browser_api: bool = Field(default=False, description="Fallback to browser TTS")
-    text: Optional[str] = Field(None, description="Original text (for browser fallback)")
+    text: Optional[str] = Field(default=None, description="Original text (for browser fallback)")
     language: str = Field(default="hi-IN", description="Language used")
-    error: Optional[str] = Field(None, description="Error message if failed")
+    error: Optional[str] = Field(default=None, description="Error message if failed")
 
 
 class STTRequest(BaseModel):
@@ -61,10 +61,10 @@ class STTRequest(BaseModel):
 class STTResponse(BaseModel):
     """Response model for speech-to-text conversion."""
     success: bool
-    text: Optional[str] = Field(None, description="Transcribed text")
+    text: Optional[str] = Field(default=None, description="Transcribed text")
     use_browser_api: bool = Field(default=False, description="Fallback to browser STT")
     language: str = Field(default="hi-IN", description="Language used")
-    error: Optional[str] = Field(None, description="Error message if failed")
+    error: Optional[str] = Field(default=None, description="Error message if failed")
 
 
 class SpeechStatusResponse(BaseModel):
