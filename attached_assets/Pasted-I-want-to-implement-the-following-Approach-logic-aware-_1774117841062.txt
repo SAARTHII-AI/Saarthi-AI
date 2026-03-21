@@ -1,0 +1,33 @@
+I want to implement the following. Approach logic aware and strategicly.
+
+-Test the current Implementation of the offline layer.
+-Improve the data quantity in schemes.
+-In online layer, add azure blob, wisper, translation and speech, openAI model - as per required for best quality.
+-Ensure auto switch in offline and online.
+-State wise and Central schemes : the schemes that are there for the state as well as for the central and that are specifically there for state only and Central only they will be displayed in the saarthi AI
+-it should also display the the documents link that would be needed for the particular scheme that we are or a person  is eligible for or was asking about in online layer. Using brightdata search.
+-it should also tell the nearest help centre of the government or maybe than any help centre nearby so Google API I guess will be used here (validate if required - and best way to implement)
+-Mobile app based / focused.  (https://median.co/share/nmdyayx#apk)
+-https://www.data.gov.in/  reliable Data
+-Remove unnecesary files / texts / redundency.
+-Make robust test cases - with many edge cases eval
+
+Use subagents.
+
+I want to implement the following. Approach logic aware and strategicly.
+
+-Test the current Implementation of the offline layer.
+-Improve the data quantity in schemes.
+-In online layer, add azure blob, wisper, translation and speech, openAI model - as per required for best quality.
+-Ensure auto switch in offline and online.
+-State wise and Central schemes : the schemes that are there for the state as well as for the central and that are specifically there for state only and Central only they will be displayed in the saarthi AI
+-it should also display the the documents link that would be needed for the particular scheme that we are or a person is eligible for or was asking about in online layer. Using brightdata search.
+-it should also tell the nearest help centre of the government or maybe than any help centre nearby so Google API I guess will be used here (validate if required - and best way to implement)
+-Mobile app based / focused. (https://median.co/share/nmdyayx#apk)
+-https://www.data.gov.in/ reliable Data
+-Remove unnecesary files / texts / redundency.
+-Make robust test cases - with many edge cases eval
+-Update all documentations
+
+Use subagents.
+
