@@ -1,4 +1,6 @@
-const API_URL = "https://backend-saarthi.vercel.app";
+const API_URL = (location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.protocol === "file:")
+    ? "http://localhost:8000"
+    : "https://backend-saarthi.vercel.app";
 
 // Handle Enter key for text input
 function handleEnterKeyPress(event) {
@@ -98,6 +100,20 @@ function displayResponse(data) {
                     <h4 class="font-semibold text-primary text-[15px] mb-1">${scheme.name}</h4>
                     <p class="text-sm text-slate-600 dark:text-slate-300 leading-snug">${scheme.description}</p>
                 </div>
+            `;
+        });
+        htmlContent += '</div>';
+    }
+
+    if (data.document_links && data.document_links.length > 0) {
+        htmlContent += '<div class="flex flex-col gap-2 mb-4 ml-11"><strong class="text-sm text-slate-600 dark:text-slate-300">ज़रूरी दस्तावेज़/ऑफिशियल लिंक (Document Links):</strong>';
+        data.document_links.forEach(link => {
+            htmlContent += `
+                <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-sm hover:border-primary/40 transition-colors">
+                    <h4 class="font-semibold text-primary text-[15px] mb-1">${link.title}</h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-snug">${link.description || ""}</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Source: ${link.source || "official"}</p>
+                </a>
             `;
         });
         htmlContent += '</div>';

@@ -1,5 +1,3 @@
-import re
-
 def detect_intent(query: str) -> str:
     query = query.lower()
     

@@ -4,6 +4,7 @@ build:
   commands:
     build:
       - pip install --upgrade pip
+      # Repo root `requirements.txt` is canonical (same graph as `pip install -r backend/requirements.txt`).
       - pip install -r requirements.txt
 run:
   runtime-version: "3.11"
