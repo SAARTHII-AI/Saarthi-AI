@@ -124,8 +124,7 @@ class SpeechService:
         """
         if not self.is_configured:
             raise SpeechServiceError(
-                "Azure Speech not configured. Use browser TTS as fallback.",
-                {"use_browser_api": True, "text": text, "language": language}
+                "Azure Speech not configured. Use browser TTS as fallback."
             )
 
         normalized_lang = self._normalize_language(language)

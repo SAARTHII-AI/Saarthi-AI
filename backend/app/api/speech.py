@@ -31,10 +31,6 @@ class TTSRequest(BaseModel):
         default="audio-16khz-128kbitrate-mono-mp3",
         description="Audio output format"
     )
-    return_base64: bool = Field(
-        default=True,
-        description="Return audio as base64 string (True) or raw audio stream (False)"
-    )
 
 
 class TTSResponse(BaseModel):
