@@ -166,12 +166,22 @@
 
             <div class="flex items-center gap-2">
                 <div class="relative">
-                    <select id="language-select" class="font-sans pl-3 pr-7 py-1.5 text-xs font-semibold rounded-full bg-slate-100 text-slate-600 border-none outline-none cursor-pointer text-center min-w-[90px] appearance-none">
-                        <option value="auto">Auto Detect</option>
+                    <select id="language-select" class="font-sans pl-3 pr-6 py-1.5 text-xs font-semibold rounded-full bg-slate-100 text-slate-600 border-none outline-none cursor-pointer text-center min-w-[90px]" style="appearance:none;-webkit-appearance:none;-moz-appearance:none;background-image:none;">
+                        <option value="auto">🌐 Auto Detect</option>
                         <option value="hi">हिंदी</option>
                         <option value="en">English</option>
+                        <option disabled>── More ──</option>
+                        <option value="bn">বাংলা</option>
+                        <option value="te">తెలుగు</option>
+                        <option value="mr">मराठी</option>
+                        <option value="ta">தமிழ்</option>
+                        <option value="gu">ગુજરાતી</option>
+                        <option value="kn">ಕನ್ನಡ</option>
+                        <option value="ml">മലയാളം</option>
+                        <option value="pa">ਪੰਜਾਬੀ</option>
+                        <option value="or">ଓଡ଼ିଆ</option>
                     </select>
-                    <span class="material-symbols-outlined absolute right-1.5 top-1/2 -translate-y-1/2 text-[14px] text-slate-400 pointer-events-none">expand_more</span>
+                    <span class="material-symbols-outlined absolute right-1 top-1/2 -translate-y-1/2 text-[13px] text-slate-400 pointer-events-none">expand_more</span>
                 </div>
                 <button id="avatar-btn" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 overflow-hidden active:scale-95 transition-transform" title="Farmer Profile">
                     <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1">person</span>

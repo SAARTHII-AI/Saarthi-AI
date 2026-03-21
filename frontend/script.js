@@ -35,10 +35,18 @@ const I18N = {
 
 function getLang() {
     const v = document.getElementById("language-select").value;
-    if (v === "hi") return "hi";
-    if (v === "en") return "en";
+    if (v && v !== "auto") return v;
     const nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
     if (nav.startsWith("hi")) return "hi";
+    if (nav.startsWith("bn")) return "bn";
+    if (nav.startsWith("te")) return "te";
+    if (nav.startsWith("mr")) return "mr";
+    if (nav.startsWith("ta")) return "ta";
+    if (nav.startsWith("gu")) return "gu";
+    if (nav.startsWith("kn")) return "kn";
+    if (nav.startsWith("ml")) return "ml";
+    if (nav.startsWith("pa")) return "pa";
+    if (nav.startsWith("or")) return "or";
     return "en";
 }
 
