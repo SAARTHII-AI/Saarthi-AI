@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
+
 class QueryRequest(BaseModel):
     query: str
     language: Optional[str] = "auto"
@@ -10,12 +11,23 @@ class QueryRequest(BaseModel):
     occupation: Optional[str] = None
     category: Optional[str] = None
 
+
 class SchemeRecommedation(BaseModel):
     name: str
     description: str
+
+
+class DocumentLink(BaseModel):
+    """Represents an official document link for a government scheme."""
+    title: str
+    url: str
+    description: str
+    source: str
+
 
 class QueryResponse(BaseModel):
     intent: str
     answer: str
     recommended_schemes: List[SchemeRecommedation] = []
+    document_links: List[DocumentLink] = []
     response_language: str = "en"
