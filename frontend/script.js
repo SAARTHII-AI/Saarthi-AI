@@ -350,13 +350,7 @@ async function processQuery(query) {
         return;
     }
 
-    const exactCached = getCachedResponse(cacheKey);
-    if (exactCached) {
-        displayResponse(exactCached, false);
-        showStatus("");
-        return;
-    }
-
+    // Online: always fetch from backend for fresh/personalised results
     const profile = loadFarmerProfile();
     try {
         const response = await fetch(`${API_URL}/query`, {
@@ -381,7 +375,9 @@ async function processQuery(query) {
     } catch (error) {
         const isNetworkErr = !navigator.onLine || error.message === "Failed to fetch";
 
-        const fallback = findBestCachedAnswer(query, language);
+        // Fetch failed — fall back to cache and always mark as cached
+        const exact   = getCachedResponse(cacheKey);
+        const fallback = exact || findBestCachedAnswer(query, language);
         if (fallback) {
             displayResponse(fallback, true);
             addOfflineBanner(isNetworkErr ? t("offline") : t("serverError"));
