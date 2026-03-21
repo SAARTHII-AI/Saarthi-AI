@@ -11,7 +11,6 @@ Supported languages:
 - Telugu (te-IN)
 """
 
-import base64
 import logging
 from typing import Optional, Dict, Any
 

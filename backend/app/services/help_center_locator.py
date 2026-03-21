@@ -300,6 +300,14 @@ class HelpCenterLocator:
         """
         if settings.offline_only or not settings.brightdata_serp_configured():
             return None
+        brightdata_status = get_service_status("brightdata_serp")
+        service_blocked = (
+            brightdata_status != ServiceStatus.UNCONFIGURED
+            and not connection_manager.service_available("brightdata_serp")
+        )
+        if not should_use_online_services() or service_blocked:
+            logger.info("BrightData service unavailable, skipping help center details lookup")
+            return None
         if place_id in self._details_cache:
             return self._details_cache[place_id]
         return await self._get_brightdata_center_details(place_id)
@@ -322,6 +330,7 @@ class HelpCenterLocator:
         }
 
         try:
+            start = time.time()
             response = await client.post(
                 settings.brightdata_request_url,
                 headers=headers,
@@ -329,6 +338,8 @@ class HelpCenterLocator:
                 timeout=httpx.Timeout(settings.brightdata_serp_timeout_seconds),
             )
             response.raise_for_status()
+            response_time_ms = (time.time() - start) * 1000
+            await connection_manager.record_success("brightdata_serp", response_time_ms)
             data = response.json()
             for candidate in self._iter_brightdata_candidates(data):
                 parsed = self._parse_brightdata_place(candidate, None, None)
@@ -338,6 +349,7 @@ class HelpCenterLocator:
                 self._details_cache[place_id] = parsed
                 return parsed
         except Exception as exc:
+            await connection_manager.record_failure("brightdata_serp", str(exc))
             logger.warning("Failed to get BrightData center details: %s", exc)
             return None
         return None
