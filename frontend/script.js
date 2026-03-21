@@ -270,37 +270,82 @@ function findBestCachedAnswer(query, language) {
     return null;
 }
 
+let currentSchemeFilter = 'all';
+
+function setSchemeFilter(filter) {
+    currentSchemeFilter = filter;
+    document.querySelectorAll('.scheme-filter-btn').forEach(btn => {
+        btn.classList.remove('bg-primary', 'text-white', 'shadow-sm', 'active');
+        btn.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300', 'border', 'border-slate-200', 'dark:border-slate-700');
+    });
+    const activeBtn = document.getElementById('filter-' + filter);
+    if (activeBtn) {
+        activeBtn.classList.add('bg-primary', 'text-white', 'shadow-sm', 'active');
+        activeBtn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300', 'border', 'border-slate-200', 'dark:border-slate-700');
+    }
+    renderSuggestionChips();
+}
+
+function updateStateFilterButton() {
+    const profile = loadFarmerProfile();
+    const stateBtn = document.getElementById('filter-state');
+    if (stateBtn) {
+        if (profile.state) {
+            stateBtn.textContent = profile.state;
+            stateBtn.classList.remove('hidden');
+        } else {
+            stateBtn.classList.add('hidden');
+            if (currentSchemeFilter === 'state') {
+                setSchemeFilter('all');
+            }
+        }
+    }
+}
+
 // ─── Seasonal Suggestion Chips ───────────────────────────────────────────────
 function getSeasonalChips() {
     const month = new Date().getMonth() + 1;
-    // Kharif: June–October; Rabi: November–March; neutral: April–May
     const isKharif = month >= 6 && month <= 10;
     const isRabi   = month >= 11 || month <= 3;
 
-    const baseChips = [
-        { icon: "payments",          color: "text-green-600",  label: "PM-KISAN",              query: "PM-KISAN scheme eligibility and benefits" },
-        { icon: "credit_card",       color: "text-blue-500",   label: "Kisan Credit Card",      query: "Kisan Credit Card scheme details" },
-        { icon: "shield",            color: "text-yellow-600", label: "Crop Insurance (PMFBY)", query: "PMFBY crop insurance scheme benefits" },
-        { icon: "storefront",        color: "text-orange-500", label: "Mandi Prices",           query: "Mandi prices today for my crop" },
-        { icon: "eco",               color: "text-teal-500",   label: "Soil Health Card",       query: "Soil Health Card scheme how to get" },
-        { icon: "grass",             color: "text-lime-600",   label: "Free Seed Scheme",       query: "Free seed distribution scheme for farmers" },
+    const centralChips = [
+        { icon: "payments",          color: "text-green-600",  label: "PM-KISAN",              query: "PM-KISAN scheme eligibility and benefits", type: "central" },
+        { icon: "credit_card",       color: "text-blue-500",   label: "Kisan Credit Card",      query: "Kisan Credit Card scheme details", type: "central" },
+        { icon: "shield",            color: "text-yellow-600", label: "Crop Insurance (PMFBY)", query: "PMFBY crop insurance scheme benefits", type: "central" },
+        { icon: "storefront",        color: "text-orange-500", label: "Mandi Prices",           query: "Mandi prices today for my crop", type: "central" },
+        { icon: "eco",               color: "text-teal-500",   label: "Soil Health Card",       query: "Soil Health Card scheme how to get", type: "central" },
+        { icon: "grass",             color: "text-lime-600",   label: "Free Seed Scheme",       query: "Free seed distribution scheme for farmers", type: "central" },
     ];
 
     const kharifChips = [
-        { icon: "water_drop",         color: "text-blue-600",   label: "Paddy Farming Tips",  query: "Paddy cultivation tips for Kharif season" },
-        { icon: "energy_savings_leaf", color: "text-green-500", label: "Soybean Schemes",     query: "Government schemes for soybean farmers" },
+        { icon: "water_drop",         color: "text-blue-600",   label: "Paddy Farming Tips",  query: "Paddy cultivation tips for Kharif season", type: "central" },
+        { icon: "energy_savings_leaf", color: "text-green-500", label: "Soybean Schemes",     query: "Government schemes for soybean farmers", type: "central" },
     ];
 
     const rabiChips = [
-        { icon: "grain",             color: "text-amber-600",  label: "Wheat MSP",            query: "Wheat minimum support price MSP details" },
-        { icon: "spa",               color: "text-yellow-500", label: "Mustard Schemes",      query: "Government schemes for mustard farmers" },
+        { icon: "grain",             color: "text-amber-600",  label: "Wheat MSP",            query: "Wheat minimum support price MSP details", type: "central" },
+        { icon: "spa",               color: "text-yellow-500", label: "Mustard Schemes",      query: "Government schemes for mustard farmers", type: "central" },
     ];
 
     const seasonal = isKharif ? kharifChips : isRabi ? rabiChips : [];
-    const combined = [...baseChips];
+    const combined = [...centralChips];
     seasonal.forEach(chip => {
         combined.splice(Math.floor(Math.random() * (combined.length + 1)), 0, chip);
     });
+
+    const profile = loadFarmerProfile();
+    if (profile.state) {
+        combined.push(
+            { icon: "location_on", color: "text-purple-500", label: profile.state + " Schemes", query: "Government schemes for farmers in " + profile.state, type: "state" },
+            { icon: "agriculture", color: "text-emerald-500", label: profile.state + " Agriculture", query: "Agriculture schemes in " + profile.state, type: "state" }
+        );
+    }
+
+    if (currentSchemeFilter === 'central') {
+        return combined.filter(c => c.type === 'central').slice(0, 8);
+    } else if (currentSchemeFilter === 'state') {
+        return combined.filter(c => c.type === 'state').slice(0, 8);
+    }
     return combined.slice(0, 8);
 }
 
@@ -310,8 +355,8 @@ function renderSuggestionChips() {
     const chips = getSeasonalChips();
     container.innerHTML = chips.map(chip => `
         <button onclick="useChip(${JSON.stringify(chip.query).replace(/"/g, '&quot;')})"
-            class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 shadow-sm active:bg-slate-50 dark:active:bg-slate-700 transition-colors flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[16px] ${chip.color}">${chip.icon}</span>
+            class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-[13px] font-medium text-slate-700 dark:text-slate-300 shadow-sm active:bg-slate-50 dark:active:bg-slate-700 transition-colors flex items-center gap-1">
+            <span class="material-symbols-outlined text-[14px] ${chip.color}">${chip.icon}</span>
             ${chip.label}
         </button>
     `).join("");
@@ -371,10 +416,8 @@ async function processQuery(query) {
                 query,
                 language: resolvedLang,
                 occupation: "farmer",
-                state:      profile.state    || "",
-                crop:       profile.crop     || "",
-                land_size:  profile.landSize || "",
-                income:     profile.income   || "",
+                state: profile.state || undefined,
+                income: profile.income ? parseInt(profile.income) || undefined : undefined,
             })
         });
 
@@ -400,7 +443,11 @@ async function processQuery(query) {
     }
 }
 
-// ─── Display response ────────────────────────────────────────────────────────
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
 function displayResponse(data, isCached) {
     const savedBadge = isCached
         ? `<span class="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5 mt-2">
@@ -416,7 +463,7 @@ function displayResponse(data, isCached) {
             <div class="flex flex-col gap-1">
                 <span class="text-xs font-medium text-slate-500 dark:text-slate-400 ml-1">SaarthiAI</span>
                 <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-bl-sm p-4 shadow-sm">
-                    <p class="text-[15px] leading-relaxed text-slate-800 dark:text-slate-200 message-content">${data.answer}</p>
+                    <p class="text-[15px] leading-relaxed text-slate-800 dark:text-slate-200 message-content">${escapeHtml(data.answer)}</p>
                     ${savedBadge}
                 </div>
             </div>
@@ -430,10 +477,53 @@ function displayResponse(data, isCached) {
     if (data.recommended_schemes && data.recommended_schemes.length > 0) {
         htmlContent += `<div class="flex flex-col gap-2 mb-4 ml-11"><strong class="text-sm text-slate-600 dark:text-slate-300">${t("schemesHeading")}</strong>`;
         data.recommended_schemes.forEach(scheme => {
+            const typeBadge = scheme.type
+                ? `<span class="inline-flex items-center gap-0.5 text-[11px] font-semibold px-2 py-0.5 rounded-full ${scheme.type === 'central' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-purple-50 text-purple-700 border border-purple-200'}">${scheme.type === 'central' ? 'Central' : scheme.state || 'State'}</span>`
+                : '';
+            const docLinks = (scheme.documents_links && scheme.documents_links.length > 0)
+                ? `<div class="flex flex-wrap gap-1 mt-2">${scheme.documents_links.map(url => `<a href="${url}" target="_blank" rel="noopener" class="inline-flex items-center gap-0.5 text-[11px] text-primary hover:underline"><span class="material-symbols-outlined text-[12px]">open_in_new</span>Doc</a>`).join('')}</div>`
+                : '';
             htmlContent += `
                 <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-sm">
-                    <h4 class="font-semibold text-primary text-[15px] mb-1">${scheme.name}</h4>
-                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-snug">${scheme.description}</p>
+                    <div class="flex items-center gap-2 mb-1">
+                        <h4 class="font-semibold text-primary text-[15px] flex-1">${escapeHtml(scheme.name)}</h4>
+                        ${typeBadge}
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-snug">${escapeHtml(scheme.description)}</p>
+                    ${docLinks}
+                </div>
+            `;
+        });
+        htmlContent += '</div>';
+    }
+
+    if (data.doc_links && data.doc_links.length > 0) {
+        htmlContent += `<div class="flex flex-col gap-2 mb-4 ml-11"><strong class="text-sm text-slate-600 dark:text-slate-300 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">link</span>Useful Links</strong>`;
+        data.doc_links.forEach(link => {
+            htmlContent += `
+                <a href="${link.url}" target="_blank" rel="noopener" class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-sm hover:border-primary/40 transition-colors no-underline">
+                    <span class="material-symbols-outlined text-primary text-[18px] shrink-0">open_in_new</span>
+                    <span class="text-sm text-slate-700 dark:text-slate-200 font-medium leading-snug">${escapeHtml(link.title)}</span>
+                </a>
+            `;
+        });
+        htmlContent += '</div>';
+    }
+
+    if (data.nearest_centers && data.nearest_centers.length > 0) {
+        htmlContent += `<div class="flex flex-col gap-2 mb-4 ml-11"><strong class="text-sm text-slate-600 dark:text-slate-300 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span>Nearby Centers</strong>`;
+        data.nearest_centers.forEach(center => {
+            const phone = center.phone ? `<a href="tel:${center.phone}" class="inline-flex items-center gap-0.5 text-primary text-[13px] font-medium"><span class="material-symbols-outlined text-[14px]">call</span>${center.phone}</a>` : '';
+            htmlContent += `
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-sm">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-semibold text-[14px] text-slate-800 dark:text-slate-100 leading-tight">${escapeHtml(center.name)}</h4>
+                            ${center.type ? `<span class="text-[11px] text-slate-500">${center.type}</span>` : ''}
+                        </div>
+                        ${phone}
+                    </div>
+                    ${center.address ? `<p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">${center.address}${center.district ? ', ' + center.district : ''}${center.state ? ', ' + center.state : ''}</p>` : ''}
                 </div>
             `;
         });
@@ -501,10 +591,15 @@ function showStatus(text) {
 document.addEventListener("DOMContentLoaded", () => {
     pruneOldCacheEntries();
     updateConnectivityPill();
+    updateStateFilterButton();
     renderSuggestionChips();
 
     document.getElementById("avatar-btn").addEventListener("click", openProfileDrawer);
-    document.getElementById("profile-save-btn").addEventListener("click", saveProfileFromDrawer);
+    document.getElementById("profile-save-btn").addEventListener("click", () => {
+        saveProfileFromDrawer();
+        updateStateFilterButton();
+        renderSuggestionChips();
+    });
     document.getElementById("profile-cancel-btn").addEventListener("click", closeProfileDrawer);
     document.getElementById("profile-overlay").addEventListener("click", closeProfileDrawer);
 
@@ -512,7 +607,50 @@ document.addEventListener("DOMContentLoaded", () => {
         updateConnectivityPill();
         updateMicHint();
     });
+
+    if (isOnline()) {
+        preCachePopularQueries();
+    }
 });
+
+function preCachePopularQueries() {
+    const PRECACHE_KEY = 'saarthi_precached';
+    if (localStorage.getItem(PRECACHE_KEY)) return;
+
+    const popularQueries = [
+        "PM-KISAN scheme eligibility and benefits",
+        "Kisan Credit Card scheme details",
+        "PMFBY crop insurance scheme benefits",
+    ];
+
+    const profile = loadFarmerProfile();
+    const resolvedLang = getLang();
+    const profileSnapshot = getFarmerProfileSnapshot();
+
+    popularQueries.forEach(query => {
+        const cacheKey = buildCacheKey(query, resolvedLang, profileSnapshot);
+        if (getCachedResponse(cacheKey)) return;
+
+        fetch(`${API_URL}/query`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                query,
+                language: resolvedLang,
+                occupation: "farmer",
+                state: profile.state || undefined,
+                income: profile.income ? parseInt(profile.income) || undefined : undefined,
+            })
+        }).then(res => {
+            if (res.ok) return res.json();
+            throw new Error('precache_fail');
+        }).then(data => {
+            cacheResponse(cacheKey, data, query, resolvedLang);
+        }).catch(() => {});
+    });
+
+    localStorage.setItem(PRECACHE_KEY, Date.now().toString());
+}
 
 function updateMicHint() {
     const hint   = document.getElementById("mic-unsupported-hint");

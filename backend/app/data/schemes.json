@@ -6,7 +6,10 @@
       "eligibility": "Small and marginal farmers holding cultivable land.",
       "benefits": "₹6,000 per year in three equal installments of ₹2,000 each.",
       "documents": ["Aadhaar Card", "Bank Account Details", "Land Holding Papers"],
-      "target_group": "Farmers"
+      "target_group": "Farmers",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://pmkisan.gov.in/"]
     },
     {
       "name": "Ayushman Bharat",
@@ -14,7 +17,10 @@
       "eligibility": "Economically weaker sections of society, identified through Socio-Economic Caste Census.",
       "benefits": "Health insurance cover of up to ₹5 lakhs per family per year.",
       "documents": ["Aadhaar Card", "Ration Card", "Income Certificate"],
-      "target_group": "Low-income families"
+      "target_group": "Low-income families",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://pmjay.gov.in/"]
     },
     {
       "name": "PM Awas Yojana",
@@ -22,7 +28,10 @@
       "eligibility": "Economically Weaker Section (EWS), Low Income Group (LIG), and Middle Income Group (MIG).",
       "benefits": "Interest subsidy on home loans varying from 3% to 6.5%.",
       "documents": ["Aadhaar Card", "Income Proof", "Bank Statement"],
-      "target_group": "Urban Poor, EWS, LIG"
+      "target_group": "Urban Poor, EWS, LIG",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://pmaymis.gov.in/"]
     },
     {
       "name": "Startup India",
@@ -30,7 +39,10 @@
       "eligibility": "Entity incorporated as a Private Limited Company or a Registered Partnership Firm.",
       "benefits": "Tax exemptions, easy compliance, and IPR support.",
       "documents": ["Certificate of Incorporation", "Partnership Deed"],
-      "target_group": "Entrepreneurs"
+      "target_group": "Entrepreneurs",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://www.startupindia.gov.in/"]
     },
     {
       "name": "Mudra Loan",
@@ -38,7 +50,10 @@
       "eligibility": "Any Indian citizen with a business plan for non-farm sector income generating activity.",
       "benefits": "Loans from ₹50,000 to ₹10 Lakhs.",
       "documents": ["Identity Proof", "Address Proof", "Business Plan"],
-      "target_group": "Small Business Owners"
+      "target_group": "Small Business Owners",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://www.mudra.org.in/"]
     },
     {
       "name": "PM Kaushal Vikas Yojana",
@@ -46,7 +61,10 @@
       "eligibility": "Any Indian national, especially unemployed youth or school/college dropouts.",
       "benefits": "Free skill training, certification, and placement assistance.",
       "documents": ["Aadhaar Card", "Educational Certificates"],
-      "target_group": "Unemployed Youth"
+      "target_group": "Unemployed Youth",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://www.pmkvyofficial.org/"]
     },
     {
       "name": "Ujjwala Yojana",
@@ -54,7 +72,10 @@
       "eligibility": "Women belonging to BPL families.",
       "benefits": "Free LPG connection with financial support of ₹1,600 per connection.",
       "documents": ["BPL Ration Card", "Aadhaar Card", "Bank Account Details"],
-      "target_group": "BPL Women"
+      "target_group": "BPL Women",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://www.pmuy.gov.in/"]
     },
     {
       "name": "Digital India",
@@ -62,7 +83,10 @@
       "eligibility": "All Indian citizens.",
       "benefits": "Digital access to various government services, broadband access.",
       "documents": ["Varies largely per specific service"],
-      "target_group": "All Citizens"
+      "target_group": "All Citizens",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://digitalindia.gov.in/"]
     },
     {
       "name": "Stand-Up India",
@@ -70,7 +94,10 @@
       "eligibility": "SC/ST and/or women entrepreneurs, above 18 years of age.",
       "benefits": "Bank loans between ₹10 lakh and ₹1 crore.",
       "documents": ["Aadhaar Card", "Caste Certificate", "Project Report"],
-      "target_group": "SC/ST and Women Entrepreneurs"
+      "target_group": "SC/ST and Women Entrepreneurs",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://www.standupmitra.in/"]
     },
     {
       "name": "Beti Bachao Beti Padhao",
@@ -78,7 +105,10 @@
       "eligibility": "Families with a girl child.",
       "benefits": "Financial incentives for education and health of the girl child.",
       "documents": ["Birth Certificate of Girl Child", "Aadhaar Card of Parents", "Bank Account Details"],
-      "target_group": "Girl Children and their Families"
+      "target_group": "Girl Children and their Families",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://wcd.nic.in/bbbp-schemes"]
     },
     {
       "name": "PM Jeevan Jyoti Bima Yojana",
@@ -86,7 +116,10 @@
       "eligibility": "People in the age group of 18 to 50 years having a bank account.",
       "benefits": "Life cover of ₹2 lakhs at a premium of ₹436 per annum.",
       "documents": ["Aadhaar Card", "Linked Bank Account"],
-      "target_group": "All Citizens (18-50 years)"
+      "target_group": "All Citizens (18-50 years)",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://jansuraksha.gov.in/"]
     },
     {
       "name": "PM Suraksha Bima Yojana",
@@ -94,7 +127,10 @@
       "eligibility": "People in the age group 18 to 70 years with a bank account.",
       "benefits": "Risk coverage of ₹2 lakh for accidental death and full disability and ₹1 lakh for partial disability, premium is ₹20 per annum.",
       "documents": ["Aadhaar Card", "Linked Bank Account"],
-      "target_group": "All Citizens (18-70 years)"
+      "target_group": "All Citizens (18-70 years)",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://jansuraksha.gov.in/"]
     },
     {
       "name": "Atal Pension Yojana",
@@ -102,7 +138,10 @@
       "eligibility": "All citizens between 18-40 years.",
       "benefits": "Guaranteed minimum monthly pension of ₹1,000 to ₹5,000 after 60 years of age.",
       "documents": ["Aadhaar Card", "Savings Bank Account"],
-      "target_group": "Unorganized Sector Workers"
+      "target_group": "Unorganized Sector Workers",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://jansuraksha.gov.in/"]
     },
     {
       "name": "Sukanya Samriddhi Yojana",
@@ -110,7 +149,10 @@
       "eligibility": "Parents or legal guardians of a girl child up to 10 years of age.",
       "benefits": "High interest rate and tax benefits under Section 80C. Maturity on girl reaching 21 years of age.",
       "documents": ["Birth Certificate of Girl Child", "Identity and Address proof of Depositor"],
-      "target_group": "Parents of Girl Children"
+      "target_group": "Parents of Girl Children",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://www.india.gov.in/sukanya-samriddhi-yojna"]
     },
     {
       "name": "Make in India",
@@ -118,7 +160,10 @@
       "eligibility": "Domestic and foreign companies looking to invest/manufacture in India.",
       "benefits": "Tax benefits, easier compliance, infrastructure support.",
       "documents": ["Company Registration", "Investment Proposal"],
-      "target_group": "Businesses and Manufacturers"
+      "target_group": "Businesses and Manufacturers",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://www.makeinindia.com/"]
     },
     {
       "name": "Jal Jeevan Mission",
@@ -126,7 +171,10 @@
       "eligibility": "Rural households without a functional tap connection.",
       "benefits": "Functional Household Tap Connection (FHTC) providing clean drinking water.",
       "documents": ["Aadhaar Card", "Address Proof", "Ration Card"],
-      "target_group": "Rural Households"
+      "target_group": "Rural Households",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://jaljeevanmission.gov.in/"]
     },
     {
       "name": "PM Svanidhi",
@@ -134,7 +182,428 @@
       "eligibility": "Street vendors engaged in vending in urban areas as on or before March 24, 2020.",
       "benefits": "Working capital loan up to ₹10,000, subsidized interest rate.",
       "documents": ["Aadhaar Card", "Vending Certificate/ID Card issued by Urban Local Body"],
-      "target_group": "Street Vendors"
+      "target_group": "Street Vendors",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://pmsvanidhi.mohua.gov.in/"]
+    },
+    {
+      "name": "PM Vishwakarma Yojana",
+      "description": "A scheme to support traditional artisans and craftspeople working with their hands and tools, covering 18 trades including carpenters, blacksmiths, potters, tailors, and more.",
+      "eligibility": "Traditional artisans and craftspeople engaged in specified trades, working with hands and tools.",
+      "benefits": "Skill training, toolkit incentive of ₹15,000, collateral-free loans up to ₹3 lakhs, digital transaction incentive.",
+      "documents": ["Aadhaar Card", "Bank Account Details", "Trade-related documents"],
+      "target_group": "Traditional Artisans and Craftspeople",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://pmvishwakarma.gov.in/"]
+    },
+    {
+      "name": "Agniveers - Agnipath Scheme",
+      "description": "A recruitment scheme for Indian youth to serve in the Armed Forces for a period of four years.",
+      "eligibility": "Indian citizens aged 17.5 to 23 years who have passed Class 10/12.",
+      "benefits": "Monthly salary, Seva Nidhi package of ₹11.71 lakhs on completion, skill certification.",
+      "documents": ["Aadhaar Card", "Educational Certificates", "Domicile Certificate"],
+      "target_group": "Youth (17.5-23 years)",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://agnipathvayu.cdac.in/"]
+    },
+    {
+      "name": "PM Garib Kalyan Anna Yojana",
+      "description": "Free food grain scheme providing 5 kg of rice or wheat per person per month to poor families.",
+      "eligibility": "Families covered under the National Food Security Act (NFSA) with Antyodaya or Priority Household cards.",
+      "benefits": "5 kg of free food grains per person per month.",
+      "documents": ["Ration Card", "Aadhaar Card"],
+      "target_group": "BPL Families",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://nfsa.gov.in/"]
+    },
+    {
+      "name": "National Education Policy Scholarships",
+      "description": "Various scholarship programs under the National Education Policy 2020 for meritorious and economically disadvantaged students.",
+      "eligibility": "Students from economically weaker sections pursuing higher education.",
+      "benefits": "Tuition fee waiver, monthly stipend, book grants.",
+      "documents": ["Aadhaar Card", "Income Certificate", "Marksheets", "College Admission Letter"],
+      "target_group": "Students",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://scholarships.gov.in/"]
+    },
+    {
+      "name": "PM Matsya Sampada Yojana",
+      "description": "A scheme to bring about Blue Revolution through sustainable and responsible development of the fisheries sector.",
+      "eligibility": "Fishers, fish farmers, fish workers, and fish vendors.",
+      "benefits": "Financial assistance for fishing infrastructure, insurance coverage, skill training.",
+      "documents": ["Aadhaar Card", "Fisher ID Card", "Bank Account Details"],
+      "target_group": "Fishers and Fish Farmers",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://pmmsy.dof.gov.in/"]
+    },
+    {
+      "name": "Swachh Bharat Mission",
+      "description": "A campaign to clean up the streets, roads and infrastructure of India's cities, towns, and rural areas, including elimination of open defecation.",
+      "eligibility": "Households without a toilet, rural and urban areas.",
+      "benefits": "₹12,000 incentive for toilet construction, community toilet blocks.",
+      "documents": ["Aadhaar Card", "BPL Certificate", "Bank Account Details"],
+      "target_group": "All Citizens",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://swachhbharatmission.gov.in/"]
+    },
+    {
+      "name": "National Rural Livelihood Mission (NRLM)",
+      "description": "Aajeevika - aims to reduce poverty by enabling poor households to access gainful self-employment and skilled wage employment.",
+      "eligibility": "Rural poor households, especially women.",
+      "benefits": "Self-Help Group formation support, revolving fund of ₹10,000-₹15,000, community investment fund.",
+      "documents": ["Aadhaar Card", "BPL Certificate", "Bank Account Details"],
+      "target_group": "Rural Poor Women",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://aajeevika.gov.in/"]
+    },
+    {
+      "name": "PM Fasal Bima Yojana",
+      "description": "Crop insurance scheme providing financial support to farmers suffering crop loss/damage due to natural calamities, pests, and diseases.",
+      "eligibility": "All farmers growing notified crops in notified areas.",
+      "benefits": "Insurance coverage for crop loss due to natural calamities at low premium rates (2% for Kharif, 1.5% for Rabi).",
+      "documents": ["Aadhaar Card", "Land Records", "Bank Account Details", "Sowing Certificate"],
+      "target_group": "Farmers",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://pmfby.gov.in/"]
+    },
+    {
+      "name": "Samagra Shiksha Abhiyan",
+      "description": "An integrated scheme for school education extending from pre-school to class XII to ensure inclusive and equitable quality education.",
+      "eligibility": "All school-going children from pre-school to class XII.",
+      "benefits": "Free uniforms, textbooks, mid-day meals, digital education infrastructure.",
+      "documents": ["School Enrollment Certificate", "Aadhaar Card"],
+      "target_group": "School Children",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://samagra.education.gov.in/"]
+    },
+    {
+      "name": "PM Gram Sadak Yojana",
+      "description": "A nationwide plan to provide good all-weather road connectivity to unconnected villages.",
+      "eligibility": "Unconnected rural habitations with population of 500+ (250+ in hilly/tribal areas).",
+      "benefits": "All-weather road connectivity to eligible rural habitations.",
+      "documents": ["Village-level application through Gram Panchayat"],
+      "target_group": "Rural Communities",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://pmgsy.nic.in/"]
+    },
+    {
+      "name": "Kisan Credit Card",
+      "description": "Provides farmers with timely access to credit for their agricultural and allied activities.",
+      "eligibility": "Farmers, fishers, and animal husbandry practitioners.",
+      "benefits": "Credit limit based on land holding, crop pattern; interest subvention of 2% on timely repayment.",
+      "documents": ["Aadhaar Card", "Land Records", "Passport Size Photo", "Bank Account"],
+      "target_group": "Farmers",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://pmkisan.gov.in/"]
+    },
+    {
+      "name": "National Pension System (NPS)",
+      "description": "A voluntary, defined contribution retirement savings scheme to enable systematic savings during working life.",
+      "eligibility": "Any Indian citizen aged 18-70 years.",
+      "benefits": "Tax benefits under Section 80CCD, market-linked pension accumulation, annuity at retirement.",
+      "documents": ["Aadhaar Card", "PAN Card", "Bank Account Details", "Photograph"],
+      "target_group": "All Citizens (18-70 years)",
+      "type": "central",
+      "state": null,
+      "documents_links": ["https://www.npscra.nsdl.co.in/"]
+    },
+    {
+      "name": "Kisan Samman Nidhi - UP Top-Up",
+      "description": "Uttar Pradesh state government provides additional financial assistance to farmers on top of PM-KISAN benefits.",
+      "eligibility": "Small and marginal farmers in Uttar Pradesh with valid PM-KISAN registration.",
+      "benefits": "Additional ₹6,000 per year on top of PM-KISAN, total ₹12,000 per year.",
+      "documents": ["Aadhaar Card", "Land Records", "PM-KISAN Registration", "UP Domicile"],
+      "target_group": "Farmers",
+      "type": "state",
+      "state": "Uttar Pradesh",
+      "documents_links": ["https://upagripardarshi.gov.in/"]
+    },
+    {
+      "name": "UP Kanya Sumangala Yojana",
+      "description": "Financial assistance scheme for girls in Uttar Pradesh providing support from birth to graduation.",
+      "eligibility": "Girl children born in UP families with annual income less than ₹3 lakhs.",
+      "benefits": "Total ₹15,000 in six installments from birth to graduation.",
+      "documents": ["Birth Certificate", "Aadhaar Card", "Income Certificate", "Bank Account", "UP Domicile"],
+      "target_group": "Girl Children",
+      "type": "state",
+      "state": "Uttar Pradesh",
+      "documents_links": ["https://mksy.up.gov.in/"]
+    },
+    {
+      "name": "UP Pension Yojana (Vridha/Vidhwa/Divyang)",
+      "description": "Social security pension scheme by UP government for elderly, widows, and disabled persons.",
+      "eligibility": "Elderly (60+), widows, or disabled persons living in UP with BPL status.",
+      "benefits": "Monthly pension of ₹500-₹1,000 depending on category.",
+      "documents": ["Aadhaar Card", "Age Proof", "BPL Certificate", "Bank Account", "Disability Certificate (if applicable)"],
+      "target_group": "Elderly, Widows, Disabled",
+      "type": "state",
+      "state": "Uttar Pradesh",
+      "documents_links": ["https://sspy-up.gov.in/"]
+    },
+    {
+      "name": "Maharashtra Majhi Ladki Bahin Yojana",
+      "description": "Financial assistance scheme for women in Maharashtra to promote women empowerment and self-reliance.",
+      "eligibility": "Women aged 21-65 years from Maharashtra with family income below ₹2.5 lakhs.",
+      "benefits": "₹1,500 per month direct benefit transfer.",
+      "documents": ["Aadhaar Card", "Domicile Certificate", "Income Certificate", "Bank Account"],
+      "target_group": "Women",
+      "type": "state",
+      "state": "Maharashtra",
+      "documents_links": ["https://womenchild.maharashtra.gov.in/"]
+    },
+    {
+      "name": "Maharashtra Shetkari Sanman Yojana",
+      "description": "Loan waiver and financial assistance scheme for farmers in Maharashtra.",
+      "eligibility": "Farmers in Maharashtra with crop loans up to ₹2 lakhs.",
+      "benefits": "Crop loan waiver up to ₹2 lakhs, incentive for regular repayers.",
+      "documents": ["Aadhaar Card", "7/12 Extract", "Bank Loan Details", "Maharashtra Domicile"],
+      "target_group": "Farmers",
+      "type": "state",
+      "state": "Maharashtra",
+      "documents_links": ["https://aaplesarkar.mahaonline.gov.in/"]
+    },
+    {
+      "name": "Maharashtra Gharkul Yojana",
+      "description": "Housing scheme by Maharashtra government to provide pucca houses to homeless families in rural areas.",
+      "eligibility": "Homeless families in rural Maharashtra, priority to SC/ST/OBC.",
+      "benefits": "Financial assistance of ₹1.20-₹1.30 lakhs for house construction.",
+      "documents": ["Aadhaar Card", "Income Certificate", "Caste Certificate", "Land Document"],
+      "target_group": "Rural Homeless Families",
+      "type": "state",
+      "state": "Maharashtra",
+      "documents_links": ["https://rural.maharashtra.gov.in/"]
+    },
+    {
+      "name": "Tamil Nadu Kalaignar Magalir Urimai Thittam",
+      "description": "Women's rights scheme by Tamil Nadu government providing monthly financial assistance to women heads of families.",
+      "eligibility": "Women aged 21+ who are heads of families in Tamil Nadu with annual income below ₹2.5 lakhs.",
+      "benefits": "₹1,000 per month direct cash transfer.",
+      "documents": ["Aadhaar Card", "Ration Card", "Income Certificate", "Bank Account"],
+      "target_group": "Women",
+      "type": "state",
+      "state": "Tamil Nadu",
+      "documents_links": ["https://www.tn.gov.in/"]
+    },
+    {
+      "name": "Tamil Nadu Free Laptop Scheme",
+      "description": "Free laptop distribution to students who have passed Class 11 and 12 in Tamil Nadu government schools.",
+      "eligibility": "Students who pass Class 11/12 in Tamil Nadu government and government-aided schools.",
+      "benefits": "Free laptop with pre-loaded educational content.",
+      "documents": ["School ID Card", "Marksheet", "Aadhaar Card"],
+      "target_group": "Students",
+      "type": "state",
+      "state": "Tamil Nadu",
+      "documents_links": ["https://www.tn.gov.in/scheme/data_view/7051"]
+    },
+    {
+      "name": "Tamil Nadu Uzhavar Pathukappu Thittam",
+      "description": "Farmers' protection scheme providing crop insurance and financial support to farmers in Tamil Nadu.",
+      "eligibility": "All farmers in Tamil Nadu cultivating notified crops.",
+      "benefits": "Crop insurance coverage, input subsidy for crop loss.",
+      "documents": ["Aadhaar Card", "Land Records (Patta/Chitta)", "Bank Account"],
+      "target_group": "Farmers",
+      "type": "state",
+      "state": "Tamil Nadu",
+      "documents_links": ["https://www.tn.gov.in/"]
+    },
+    {
+      "name": "Bihar Mukhyamantri Kanya Utthan Yojana",
+      "description": "Financial support for girl children from birth to graduation in Bihar to promote girl education.",
+      "eligibility": "Girl children born in Bihar families. Only two daughters per family.",
+      "benefits": "Total ₹54,100 from birth to graduation in installments.",
+      "documents": ["Birth Certificate", "Aadhaar Card", "Bank Account", "Marksheets", "Bihar Domicile"],
+      "target_group": "Girl Children",
+      "type": "state",
+      "state": "Bihar",
+      "documents_links": ["https://ekalyan.bih.nic.in/"]
+    },
+    {
+      "name": "Bihar Student Credit Card Yojana",
+      "description": "Provides education loans to students for higher education in Bihar at zero interest rate.",
+      "eligibility": "Bihar residents who have passed Class 12 and secured admission in a recognized institution.",
+      "benefits": "Education loan up to ₹4 lakhs at 0% interest rate.",
+      "documents": ["Aadhaar Card", "Class 12 Marksheet", "Admission Letter", "Income Certificate", "Bihar Domicile"],
+      "target_group": "Students",
+      "type": "state",
+      "state": "Bihar",
+      "documents_links": ["https://www.7nishchay-yuvaupmission.bihar.gov.in/"]
+    },
+    {
+      "name": "Bihar Diesel Anudan Yojana",
+      "description": "Diesel subsidy scheme for farmers in Bihar to support irrigation costs.",
+      "eligibility": "Farmers in Bihar who use diesel pumps for irrigation.",
+      "benefits": "Subsidy of ₹75 per litre for diesel used for agricultural irrigation.",
+      "documents": ["Aadhaar Card", "Land Records", "Bank Account Details"],
+      "target_group": "Farmers",
+      "type": "state",
+      "state": "Bihar",
+      "documents_links": ["https://dbtagriculture.bihar.gov.in/"]
+    },
+    {
+      "name": "Rajasthan Chiranjeevi Swasthya Bima Yojana",
+      "description": "Universal health insurance scheme by Rajasthan government providing cashless treatment at empaneled hospitals.",
+      "eligibility": "All families in Rajasthan. Free for NFSA, SECC, small/marginal farmers; others pay ₹850/year.",
+      "benefits": "Cashless treatment up to ₹25 lakhs per family per year.",
+      "documents": ["Jan Aadhaar Card", "Aadhaar Card", "Ration Card"],
+      "target_group": "All Families",
+      "type": "state",
+      "state": "Rajasthan",
+      "documents_links": ["https://chiranjeevi.rajasthan.gov.in/"]
+    },
+    {
+      "name": "Rajasthan Palanhar Yojana",
+      "description": "Financial assistance to orphan children and children of specific vulnerable categories in Rajasthan.",
+      "eligibility": "Orphan children, children of widows, disabled parents, or parents serving life sentences in Rajasthan.",
+      "benefits": "₹500/month (0-5 years), ₹1,000/month (6-18 years), plus clothing and shoes allowance.",
+      "documents": ["Aadhaar Card", "Death Certificate of Parents", "School Enrollment Certificate", "Jan Aadhaar"],
+      "target_group": "Orphan Children",
+      "type": "state",
+      "state": "Rajasthan",
+      "documents_links": ["https://sje.rajasthan.gov.in/"]
+    },
+    {
+      "name": "Rajasthan Indira Gandhi Shahri Credit Card Yojana",
+      "description": "Interest-free loans to urban street vendors and small traders in Rajasthan.",
+      "eligibility": "Street vendors and small traders in urban Rajasthan aged 18-40.",
+      "benefits": "Interest-free loan up to ₹50,000.",
+      "documents": ["Aadhaar Card", "Jan Aadhaar Card", "Bank Account", "Business Proof"],
+      "target_group": "Street Vendors and Small Traders",
+      "type": "state",
+      "state": "Rajasthan",
+      "documents_links": ["https://dipr.rajasthan.gov.in/"]
+    },
+    {
+      "name": "MP Ladli Laxmi Yojana",
+      "description": "Financial assistance scheme for girls in Madhya Pradesh to strengthen the economic foundation of girl children.",
+      "eligibility": "Girl children born after 1 January 2006 in MP families registered under the scheme within one year of birth.",
+      "benefits": "Total ₹1,43,000 in installments from birth to age 21; ₹1 lakh on marriage after 21.",
+      "documents": ["Birth Certificate", "Aadhaar Card", "Domicile Certificate", "Bank Account"],
+      "target_group": "Girl Children",
+      "type": "state",
+      "state": "Madhya Pradesh",
+      "documents_links": ["https://ladlilaxmi.mp.gov.in/"]
+    },
+    {
+      "name": "MP Mukhyamantri Yuva Internship Yojana",
+      "description": "Internship scheme for unemployed youth in Madhya Pradesh to gain work experience.",
+      "eligibility": "Unemployed youth aged 21-30 in Madhya Pradesh with graduation degree.",
+      "benefits": "Stipend of ₹8,000 per month during one-year internship.",
+      "documents": ["Aadhaar Card", "Graduation Certificate", "MP Domicile", "Bank Account"],
+      "target_group": "Unemployed Youth",
+      "type": "state",
+      "state": "Madhya Pradesh",
+      "documents_links": ["https://mp.gov.in/"]
+    },
+    {
+      "name": "MP Sambal Yojana",
+      "description": "Welfare scheme for unorganized workers in Madhya Pradesh providing social security benefits.",
+      "eligibility": "Unorganized sector workers in Madhya Pradesh with Sambal card.",
+      "benefits": "Accidental insurance of ₹4 lakhs, funeral assistance of ₹5,000, education support for children.",
+      "documents": ["Aadhaar Card", "Sambal Card", "Bank Account Details"],
+      "target_group": "Unorganized Workers",
+      "type": "state",
+      "state": "Madhya Pradesh",
+      "documents_links": ["https://sambal.mp.gov.in/"]
+    },
+    {
+      "name": "Karnataka Gruha Lakshmi Yojana",
+      "description": "Financial assistance to women heads of households in Karnataka.",
+      "eligibility": "Women who are heads of BPL/APL families in Karnataka. One woman per household.",
+      "benefits": "₹2,000 per month direct transfer to woman head of household.",
+      "documents": ["Aadhaar Card", "Ration Card", "Bank Account", "Karnataka Domicile"],
+      "target_group": "Women",
+      "type": "state",
+      "state": "Karnataka",
+      "documents_links": ["https://sevasindhuservices.karnataka.gov.in/"]
+    },
+    {
+      "name": "Karnataka Anna Bhagya Yojana",
+      "description": "Free rice scheme for BPL families in Karnataka providing additional food security.",
+      "eligibility": "BPL families in Karnataka with valid ration cards.",
+      "benefits": "10 kg of free rice per person per month (up to 5 members per family).",
+      "documents": ["BPL Ration Card", "Aadhaar Card"],
+      "target_group": "BPL Families",
+      "type": "state",
+      "state": "Karnataka",
+      "documents_links": ["https://ahara.kar.nic.in/"]
+    },
+    {
+      "name": "Karnataka Raitha Siri Yojana",
+      "description": "Agricultural support scheme for farmers in Karnataka providing subsidized seeds and equipment.",
+      "eligibility": "Small and marginal farmers in Karnataka.",
+      "benefits": "Subsidized seeds, farm equipment, and crop insurance premium support.",
+      "documents": ["Aadhaar Card", "RTC (Land Record)", "Bank Account Details"],
+      "target_group": "Farmers",
+      "type": "state",
+      "state": "Karnataka",
+      "documents_links": ["https://raitamitra.karnataka.gov.in/"]
+    },
+    {
+      "name": "West Bengal Lakshmir Bhandar",
+      "description": "Monthly income support to women heads of households in West Bengal.",
+      "eligibility": "Women aged 25-60 in West Bengal. General category: family income below ₹2.5 lakhs; SC/ST: no income limit.",
+      "benefits": "₹500/month (General), ₹1,000/month (SC/ST) direct bank transfer.",
+      "documents": ["Aadhaar Card", "Swasthya Sathi Card", "Bank Account"],
+      "target_group": "Women",
+      "type": "state",
+      "state": "West Bengal",
+      "documents_links": ["https://socialsecurity.wb.gov.in/"]
+    },
+    {
+      "name": "West Bengal Kanyashree Prakalpa",
+      "description": "Conditional cash transfer scheme to incentivize education of girls and prevent child marriage in West Bengal.",
+      "eligibility": "Girls aged 13-18 enrolled in educational institution in West Bengal from families with income below ₹1.2 lakhs.",
+      "benefits": "Annual scholarship of ₹750 and one-time grant of ₹25,000 on turning 18.",
+      "documents": ["Aadhaar Card", "School ID", "Income Certificate", "Age Proof"],
+      "target_group": "Girl Students",
+      "type": "state",
+      "state": "West Bengal",
+      "documents_links": ["https://wbkanyashree.gov.in/"]
+    },
+    {
+      "name": "Telangana Rythu Bandhu",
+      "description": "Investment support scheme for farmers in Telangana providing financial assistance for crop investment.",
+      "eligibility": "All farmers in Telangana who own agricultural land.",
+      "benefits": "₹10,000 per acre per year in two installments (Kharif and Rabi seasons).",
+      "documents": ["Aadhaar Card", "Land Records (Pahani/Pattadar Passbook)", "Bank Account"],
+      "target_group": "Farmers",
+      "type": "state",
+      "state": "Telangana",
+      "documents_links": ["https://rythubandhu.telangana.gov.in/"]
+    },
+    {
+      "name": "Telangana Kalyana Lakshmi / Shaadi Mubarak",
+      "description": "Marriage assistance scheme for girls from economically weaker families in Telangana.",
+      "eligibility": "Bride aged 18+ from Telangana with family income below ₹2 lakhs.",
+      "benefits": "₹1,00,116 for marriage assistance.",
+      "documents": ["Aadhaar Card", "Income Certificate", "Caste Certificate", "Age Proof", "Bank Account"],
+      "target_group": "Women",
+      "type": "state",
+      "state": "Telangana",
+      "documents_links": ["https://telanganaepass.cgg.gov.in/"]
+    },
+    {
+      "name": "Odisha KALIA Yojana",
+      "description": "Krushak Assistance for Livelihood and Income Augmentation - financial assistance to farmers and landless agricultural households in Odisha.",
+      "eligibility": "Small and marginal farmers and landless agricultural labourers in Odisha.",
+      "benefits": "₹10,000 per family per year for small farmers; ₹12,500 per year for landless labourers.",
+      "documents": ["Aadhaar Card", "Land Records", "Bank Account"],
+      "target_group": "Farmers and Agricultural Labourers",
+      "type": "state",
+      "state": "Odisha",
+      "documents_links": ["https://kfrms.odisha.gov.in/"]
     }
   ]
 }

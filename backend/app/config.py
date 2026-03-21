@@ -15,6 +15,13 @@ class Settings(BaseSettings):
     azure_openai_deployment: Optional[str] = None
     azure_openai_api_version: str = "2025-01-01-preview"
 
+    azure_translator_key: Optional[str] = None
+    azure_translator_endpoint: str = "https://api.cognitive.microsofttranslator.com"
+    azure_translator_region: str = "eastus"
+
+    azure_speech_key: Optional[str] = None
+    azure_speech_region: str = "eastus"
+
     brightdata_api_token: Optional[str] = None
     brightdata_serp_zone: Optional[str] = None
     brightdata_dc_host: Optional[str] = None

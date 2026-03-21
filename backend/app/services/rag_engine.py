@@ -54,7 +54,7 @@ class RAGEngine:
         scored_schemes = []
 
         for scheme in self.schemes:
-            text = (scheme['name'] + " " + scheme['description']).lower()
+            text = (scheme['name'] + " " + scheme.get('description', '') + " " + scheme.get('target_group', '') + " " + (scheme.get('state') or '')).lower()
             score = sum(1 for word in query_words if word in text)
             if score > 0:
                 scored_schemes.append((score, scheme))

@@ -2,8 +2,14 @@
 <html class="light" lang="hi">
 <head>
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
     <title>SaarthiAI - Home Voice Interface</title>
+
+    <meta name="theme-color" content="#135bec"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <link rel="manifest" href="manifest.json"/>
 
     <!-- Tailwind Configuration from Stitch -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -172,8 +178,13 @@
 
             </div>
 
-            <!-- Suggestion Chips (farmer-focused, seasonal) -->
-            <div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800" id="suggestion-chips">
+            <div id="scheme-filter" class="flex gap-2 mt-auto pt-3 px-1">
+                <button id="filter-all" onclick="setSchemeFilter('all')" class="scheme-filter-btn active px-3 py-1 rounded-full text-xs font-semibold bg-primary text-white shadow-sm transition-colors">All Schemes</button>
+                <button id="filter-central" onclick="setSchemeFilter('central')" class="scheme-filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-colors">Central</button>
+                <button id="filter-state" onclick="setSchemeFilter('state')" class="scheme-filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-colors hidden">State</button>
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-2 pb-1 border-t border-slate-100 dark:border-slate-800" id="suggestion-chips">
             </div>
         </div>
 
@@ -278,8 +289,14 @@
 
     </div>
 
-    <!-- Integrate logic files -->
     <script src="voice.js"></script>
     <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(function(err) {
+                console.warn('SW registration failed:', err);
+            });
+        }
+    </script>
 </body>
 </html>

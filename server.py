@@ -17,13 +17,13 @@ class ProxyHandler(SimpleHTTPRequestHandler):
         super().__init__(*args, directory=FRONTEND_DIR, **kwargs)
 
     def do_GET(self):
-        if self.path.startswith("/query") or self.path.startswith("/health") or self.path.startswith("/schemes") or self.path.startswith("/api/"):
+        if self.path.startswith("/query") or self.path.startswith("/health") or self.path.startswith("/schemes") or self.path.startswith("/help-centers") or self.path.startswith("/api/"):
             self._proxy_request("GET")
         else:
             super().do_GET()
 
     def do_POST(self):
-        if self.path.startswith("/query") or self.path.startswith("/health") or self.path.startswith("/schemes") or self.path.startswith("/api/"):
+        if self.path.startswith("/query") or self.path.startswith("/health") or self.path.startswith("/schemes") or self.path.startswith("/help-centers") or self.path.startswith("/api/"):
             self._proxy_request("POST")
         else:
             self.send_error(405, "Method Not Allowed")
@@ -31,7 +31,7 @@ class ProxyHandler(SimpleHTTPRequestHandler):
     def _proxy_request(self, method):
         path = self.path
         # Ensure API paths have trailing slash so FastAPI doesn't 307-redirect
-        for prefix in ("/query", "/health", "/schemes"):
+        for prefix in ("/query", "/health", "/schemes", "/help-centers"):
             if path == prefix or path.startswith(prefix + "?"):
                 path = prefix + "/" + path[len(prefix):]
                 break
