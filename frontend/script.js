@@ -384,7 +384,7 @@ async function processQuery(query) {
         cacheResponse(cacheKey, data, query, resolvedLang);
         displayResponse(data, false);
     } catch (error) {
-        const isNetworkErr = !navigator.onLine || error.message === "Failed to fetch";
+        const isNetworkErr = !navigator.onLine || error instanceof TypeError || error.message === "Failed to fetch" || error.name === "AbortError";
 
         // Fetch failed — fall back to cache and always mark as cached
         const exact   = getCachedResponse(cacheKey);
@@ -515,9 +515,15 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function updateMicHint() {
-    const hint = document.getElementById("mic-unsupported-hint");
+    const hint   = document.getElementById("mic-unsupported-hint");
+    const micBtn = document.getElementById("mic-btn");
+    const msg    = t("micUnsupported");
     if (hint && !hint.classList.contains("hidden")) {
-        hint.textContent = t("micUnsupported");
+        hint.textContent = msg;
+    }
+    if (micBtn && micBtn.disabled) {
+        micBtn.title = msg;
+        micBtn.setAttribute("aria-label", msg);
     }
 }
 
