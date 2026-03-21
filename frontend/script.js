@@ -1,6 +1,5 @@
 const API_URL = "";
 
-// ─── i18n Strings ──────────────────────────────────────────────────────────
 const I18N = {
     hi: {
         thinking:       "सोच रहा है...",
@@ -15,20 +14,7 @@ const I18N = {
         micUnsupported: "इस ब्राउज़र में वॉइस इनपुट समर्थित नहीं है। कृपया टाइप करें।",
         hearError:      "माफ़ करें, मैं सुन नहीं पाया।",
         schemesHeading: "अनुशंसित योजनाएं:",
-    },
-    ta: {
-        thinking:       "யோசிக்கிறேன்...",
-        listening:      "கேட்கிறேன்...",
-        understood:     "புரிந்தது!",
-        offline:        "நீங்கள் ஆஃப்லைனில் உள்ளீர்கள். சேமித்த பதில் காட்டுகிறது.",
-        noCache:        "நீங்கள் ஆஃப்லைனில் உள்ளீர்கள், சேமித்த பதில் இல்லை.",
-        serverError:    "சேவையகத்தை தொடர்பு கொள்ள முடியவில்லை.",
-        savedAnswer:    "சேமித்த பதில்",
-        onlinePill:     "ஆன்லைன்",
-        offlinePill:    "ஆஃப்லைன்",
-        micUnsupported: "இந்த உலாவியில் குரல் உள்ளீடு ஆதரிக்கப்படவில்லை. தயவுசெய்து தட்டச்சு செய்யுங்கள்.",
-        hearError:      "மன்னிக்கவும், என்னால் கேட்க முடியவில்லை.",
-        schemesHeading: "பரிந்துரைக்கப்பட்ட திட்டங்கள்:",
+        stopSpeaking:   "बोलना बंद करें",
     },
     en: {
         thinking:       "Thinking...",
@@ -43,18 +29,16 @@ const I18N = {
         micUnsupported: "Voice input not supported on this browser. Please type.",
         hearError:      "Sorry, I couldn't hear you.",
         schemesHeading: "Recommended Schemes:",
+        stopSpeaking:   "Stop Speaking",
     },
 };
 
 function getLang() {
     const v = document.getElementById("language-select").value;
     if (v === "hi") return "hi";
-    if (v === "ta") return "ta";
     if (v === "en") return "en";
-    // "auto" — detect from browser navigator
     const nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
     if (nav.startsWith("hi")) return "hi";
-    if (nav.startsWith("ta")) return "ta";
     return "en";
 }
 
@@ -62,11 +46,9 @@ function t(key) {
     return (I18N[getLang()] || I18N.en)[key] || key;
 }
 
-// Make t() and getLang() accessible to voice.js
 window.t = t;
 window.getLang = getLang;
 
-// ─── Online/Offline indicator ───────────────────────────────────────────────
 function isOnline() {
     return navigator.onLine;
 }
@@ -86,7 +68,6 @@ function updateConnectivityPill() {
 window.addEventListener("online",  updateConnectivityPill);
 window.addEventListener("offline", updateConnectivityPill);
 
-// ─── Farmer Profile ─────────────────────────────────────────────────────────
 const PROFILE_KEY = "saarthi_farmer_profile";
 
 function loadFarmerProfile() {
@@ -149,7 +130,6 @@ function saveProfileFromDrawer() {
     closeProfileDrawer();
 }
 
-// ─── Smart Cache (LRU, 50 entries, 7-day TTL) ────────────────────────────────
 const CACHE_META_KEY  = "saarthi_cache_meta";
 const CACHE_MAX       = 50;
 const CACHE_TTL_MS    = 7 * 24 * 60 * 60 * 1000;
@@ -241,7 +221,6 @@ function querySimilar(lq, eq) {
 function findBestCachedAnswer(query, language) {
     const meta = loadCacheMeta();
     const lq = query.toLowerCase().trim();
-    // Pass 1: same-language match (both inclusion directions)
     for (let i = meta.length - 1; i >= 0; i--) {
         const raw = localStorage.getItem(meta[i].key);
         if (!raw) continue;
@@ -254,7 +233,6 @@ function findBestCachedAnswer(query, language) {
             }
         } catch (e) {}
     }
-    // Pass 2: any-language match (both inclusion directions)
     for (let i = meta.length - 1; i >= 0; i--) {
         const raw = localStorage.getItem(meta[i].key);
         if (!raw) continue;
@@ -276,12 +254,12 @@ function setSchemeFilter(filter) {
     currentSchemeFilter = filter;
     document.querySelectorAll('.scheme-filter-btn').forEach(btn => {
         btn.classList.remove('bg-primary', 'text-white', 'shadow-sm', 'active');
-        btn.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300', 'border', 'border-slate-200', 'dark:border-slate-700');
+        btn.classList.add('bg-slate-100', 'text-slate-500');
     });
     const activeBtn = document.getElementById('filter-' + filter);
     if (activeBtn) {
         activeBtn.classList.add('bg-primary', 'text-white', 'shadow-sm', 'active');
-        activeBtn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300', 'border', 'border-slate-200', 'dark:border-slate-700');
+        activeBtn.classList.remove('bg-slate-100', 'text-slate-500');
     }
     renderSuggestionChips();
 }
@@ -302,7 +280,6 @@ function updateStateFilterButton() {
     }
 }
 
-// ─── Seasonal Suggestion Chips ───────────────────────────────────────────────
 function getSeasonalChips() {
     const month = new Date().getMonth() + 1;
     const isKharif = month >= 6 && month <= 10;
@@ -355,8 +332,8 @@ function renderSuggestionChips() {
     const chips = getSeasonalChips();
     container.innerHTML = chips.map(chip => `
         <button onclick="useChip(${JSON.stringify(chip.query).replace(/"/g, '&quot;')})"
-            class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-[13px] font-medium text-slate-700 dark:text-slate-300 shadow-sm active:bg-slate-50 dark:active:bg-slate-700 transition-colors flex items-center gap-1">
-            <span class="material-symbols-outlined text-[14px] ${chip.color}">${chip.icon}</span>
+            class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-full text-[12px] font-medium text-slate-600 shadow-sm active:bg-slate-50 transition-colors flex items-center gap-1">
+            <span class="material-symbols-outlined text-[13px] ${chip.color}">${chip.icon}</span>
             ${chip.label}
         </button>
     `).join("");
@@ -367,24 +344,24 @@ function useChip(query) {
     sendTextMessage();
 }
 
-// ─── Handle Enter key ────────────────────────────────────────────────────────
 function handleEnterKeyPress(event) {
     if (event.key === "Enter") {
         sendTextMessage();
     }
 }
 
-// ─── Send text message ───────────────────────────────────────────────────────
 async function sendTextMessage() {
     const inputField = document.getElementById("text-input");
     const query = inputField.value.trim();
     if (!query) return;
     inputField.value = "";
+
+    if (window.stopSpeaking) window.stopSpeaking();
+
     addMessageToChat(query, "user");
     await processQuery(query);
 }
 
-// ─── Offline-first processQuery ──────────────────────────────────────────────
 async function processQuery(query) {
     const language = document.getElementById("language-select").value;
     const resolvedLang = getLang();
@@ -406,7 +383,6 @@ async function processQuery(query) {
         return;
     }
 
-    // Online: always fetch from backend for fresh/personalised results
     const profile = loadFarmerProfile();
     try {
         const response = await fetch(`${API_URL}/query`, {
@@ -418,6 +394,8 @@ async function processQuery(query) {
                 occupation: "farmer",
                 state: profile.state || undefined,
                 income: profile.income ? parseInt(profile.income) || undefined : undefined,
+                crop: profile.crop || undefined,
+                land_size: profile.landSize || undefined,
             })
         });
 
@@ -429,7 +407,6 @@ async function processQuery(query) {
     } catch (error) {
         const isNetworkErr = !navigator.onLine || error instanceof TypeError || error.message === "Failed to fetch" || error.name === "AbortError";
 
-        // Fetch failed — fall back to cache and always mark as cached
         const exact   = getCachedResponse(cacheKey);
         const fallback = exact || findBestCachedAnswer(query, resolvedLang);
         if (fallback) {
@@ -450,20 +427,20 @@ function escapeHtml(str) {
 
 function displayResponse(data, isCached) {
     const savedBadge = isCached
-        ? `<span class="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5 mt-2">
-               <span class="material-symbols-outlined text-[14px]">bookmark</span>${t("savedAnswer")}
+        ? `<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5 mt-2">
+               <span class="material-symbols-outlined text-[13px]">bookmark</span>${t("savedAnswer")}
            </span>`
         : "";
 
     let htmlContent = `
-        <div class="flex items-end gap-3 max-w-[90%] bot-message mb-4">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-sm shrink-0">
-                <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+        <div class="flex items-start gap-2.5 max-w-[90%] message-fade-in mb-3">
+            <div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white shrink-0 mt-1">
+                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1">agriculture</span>
             </div>
             <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-slate-500 dark:text-slate-400 ml-1">SaarthiAI</span>
-                <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-bl-sm p-4 shadow-sm">
-                    <p class="text-[15px] leading-relaxed text-slate-800 dark:text-slate-200 message-content">${escapeHtml(data.answer)}</p>
+                <span class="text-[11px] font-medium text-slate-400 ml-0.5">SaarthiAI</span>
+                <div class="bg-slate-50 rounded-2xl rounded-tl-md px-4 py-3">
+                    <p class="text-[14px] leading-relaxed text-slate-700 message-content whitespace-pre-line">${escapeHtml(data.answer)}</p>
                     ${savedBadge}
                 </div>
             </div>
@@ -475,21 +452,21 @@ function displayResponse(data, isCached) {
     }
 
     if (data.recommended_schemes && data.recommended_schemes.length > 0) {
-        htmlContent += `<div class="flex flex-col gap-2 mb-4 ml-11"><strong class="text-sm text-slate-600 dark:text-slate-300">${t("schemesHeading")}</strong>`;
+        htmlContent += `<div class="flex flex-col gap-2 mb-3 ml-9"><span class="text-[12px] font-semibold text-slate-500 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">auto_awesome</span>${t("schemesHeading")}</span>`;
         data.recommended_schemes.forEach(scheme => {
             const typeBadge = scheme.type
-                ? `<span class="inline-flex items-center gap-0.5 text-[11px] font-semibold px-2 py-0.5 rounded-full ${scheme.type === 'central' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-purple-50 text-purple-700 border border-purple-200'}">${scheme.type === 'central' ? 'Central' : scheme.state || 'State'}</span>`
+                ? `<span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${scheme.type === 'central' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}">${scheme.type === 'central' ? 'Central' : scheme.state || 'State'}</span>`
                 : '';
             const docLinks = (scheme.documents_links && scheme.documents_links.length > 0)
-                ? `<div class="flex flex-wrap gap-1 mt-2">${scheme.documents_links.map(url => `<a href="${url}" target="_blank" rel="noopener" class="inline-flex items-center gap-0.5 text-[11px] text-primary hover:underline"><span class="material-symbols-outlined text-[12px]">open_in_new</span>Doc</a>`).join('')}</div>`
+                ? `<div class="flex flex-wrap gap-1 mt-1.5">${scheme.documents_links.map(url => `<a href="${url}" target="_blank" rel="noopener" class="inline-flex items-center gap-0.5 text-[10px] text-primary hover:underline font-medium"><span class="material-symbols-outlined text-[11px]">open_in_new</span>Official Link</a>`).join('')}</div>`
                 : '';
             htmlContent += `
-                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-sm">
+                <div class="scheme-card bg-white border border-slate-200 rounded-xl p-3 transition-all">
                     <div class="flex items-center gap-2 mb-1">
-                        <h4 class="font-semibold text-primary text-[15px] flex-1">${escapeHtml(scheme.name)}</h4>
+                        <h4 class="font-semibold text-primary text-[13px] flex-1 leading-tight">${escapeHtml(scheme.name)}</h4>
                         ${typeBadge}
                     </div>
-                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-snug">${escapeHtml(scheme.description)}</p>
+                    <p class="text-[12px] text-slate-500 leading-snug">${escapeHtml(scheme.description)}</p>
                     ${docLinks}
                 </div>
             `;
@@ -498,12 +475,12 @@ function displayResponse(data, isCached) {
     }
 
     if (data.doc_links && data.doc_links.length > 0) {
-        htmlContent += `<div class="flex flex-col gap-2 mb-4 ml-11"><strong class="text-sm text-slate-600 dark:text-slate-300 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">link</span>Useful Links</strong>`;
+        htmlContent += `<div class="flex flex-col gap-1.5 mb-3 ml-9"><span class="text-[12px] font-semibold text-slate-500 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">link</span>Useful Links</span>`;
         data.doc_links.forEach(link => {
             htmlContent += `
-                <a href="${link.url}" target="_blank" rel="noopener" class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-sm hover:border-primary/40 transition-colors no-underline">
-                    <span class="material-symbols-outlined text-primary text-[18px] shrink-0">open_in_new</span>
-                    <span class="text-sm text-slate-700 dark:text-slate-200 font-medium leading-snug">${escapeHtml(link.title)}</span>
+                <a href="${link.url}" target="_blank" rel="noopener" class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-2.5 hover:border-primary/40 transition-colors no-underline">
+                    <span class="material-symbols-outlined text-primary text-[16px] shrink-0">open_in_new</span>
+                    <span class="text-[12px] text-slate-600 font-medium leading-snug">${escapeHtml(link.title)}</span>
                 </a>
             `;
         });
@@ -511,19 +488,23 @@ function displayResponse(data, isCached) {
     }
 
     if (data.nearest_centers && data.nearest_centers.length > 0) {
-        htmlContent += `<div class="flex flex-col gap-2 mb-4 ml-11"><strong class="text-sm text-slate-600 dark:text-slate-300 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span>Nearby Centers</strong>`;
+        htmlContent += `<div class="flex flex-col gap-1.5 mb-3 ml-9"><span class="text-[12px] font-semibold text-slate-500 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span>Nearby Centers</span>`;
         data.nearest_centers.forEach(center => {
-            const phone = center.phone ? `<a href="tel:${center.phone}" class="inline-flex items-center gap-0.5 text-primary text-[13px] font-medium"><span class="material-symbols-outlined text-[14px]">call</span>${center.phone}</a>` : '';
+            const phone = center.phone ? `<a href="tel:${center.phone}" class="inline-flex items-center gap-0.5 text-primary text-[11px] font-medium"><span class="material-symbols-outlined text-[13px]">call</span>${escapeHtml(center.phone)}</a>` : '';
+            const mapsLink = center.maps_url ? `<a href="${center.maps_url}" target="_blank" rel="noopener" class="inline-flex items-center gap-0.5 text-primary text-[11px] font-medium hover:underline"><span class="material-symbols-outlined text-[13px]">map</span>Open in Maps</a>` : '';
             htmlContent += `
-                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-sm">
+                <div class="bg-white border border-slate-200 rounded-xl p-2.5 transition-all hover:border-slate-300">
                     <div class="flex items-start justify-between gap-2">
                         <div class="flex-1 min-w-0">
-                            <h4 class="font-semibold text-[14px] text-slate-800 dark:text-slate-100 leading-tight">${escapeHtml(center.name)}</h4>
-                            ${center.type ? `<span class="text-[11px] text-slate-500">${center.type}</span>` : ''}
+                            <h4 class="font-semibold text-[13px] text-slate-700 leading-tight">${escapeHtml(center.name)}</h4>
+                            ${center.type ? `<span class="text-[10px] text-slate-400 font-medium">${escapeHtml(center.type)}</span>` : ''}
                         </div>
-                        ${phone}
+                        <div class="flex flex-col items-end gap-1 shrink-0">
+                            ${phone}
+                            ${mapsLink}
+                        </div>
                     </div>
-                    ${center.address ? `<p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">${center.address}${center.district ? ', ' + center.district : ''}${center.state ? ', ' + center.state : ''}</p>` : ''}
+                    ${center.address ? `<p class="text-[11px] text-slate-400 mt-1 leading-snug">${escapeHtml(center.address)}${center.district ? ', ' + escapeHtml(center.district) : ''}</p>` : ''}
                 </div>
             `;
         });
@@ -533,40 +514,38 @@ function displayResponse(data, isCached) {
     addRawHtmlToChat(htmlContent, "bot");
 }
 
-// ─── Add offline banner ───────────────────────────────────────────────────────
 function addOfflineBanner(msg) {
     const html = `
-        <div class="mx-auto mb-3 px-4 py-2 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800 flex items-center gap-2">
-            <span class="material-symbols-outlined text-[16px]">wifi_off</span>
+        <div class="mx-auto mb-3 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl text-[12px] text-amber-700 flex items-center gap-2 message-fade-in">
+            <span class="material-symbols-outlined text-[14px]">wifi_off</span>
             ${msg}
         </div>
     `;
     addRawHtmlToChat(html, "bot");
 }
 
-// ─── Add message to chat ─────────────────────────────────────────────────────
 function addMessageToChat(text, sender) {
     let htmlContent = "";
     if (sender === "user") {
         htmlContent = `
-        <div class="flex items-end justify-end gap-3 w-full mb-4">
+        <div class="flex items-end justify-end gap-2.5 w-full mb-3 message-fade-in">
             <div class="flex flex-col gap-1 items-end max-w-[85%]">
-                <span class="text-xs font-medium text-slate-500 dark:text-slate-400 mr-1">You</span>
-                <div class="bg-primary text-white rounded-2xl rounded-br-sm p-3 shadow-sm">
-                    <p class="text-[15px] leading-relaxed">${text}</p>
+                <span class="text-[11px] font-medium text-slate-400 mr-0.5">You</span>
+                <div class="bg-primary text-white rounded-2xl rounded-br-md px-4 py-2.5">
+                    <p class="text-[14px] leading-relaxed">${escapeHtml(text)}</p>
                 </div>
             </div>
         </div>`;
     } else {
         htmlContent = `
-        <div class="flex items-end gap-3 max-w-[90%] bot-message mb-4">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white shadow-sm shrink-0">
-                <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+        <div class="flex items-start gap-2.5 max-w-[90%] message-fade-in mb-3">
+            <div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white shrink-0 mt-1">
+                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1">agriculture</span>
             </div>
             <div class="flex flex-col gap-1">
-                <span class="text-xs font-medium text-slate-500 dark:text-slate-400 ml-1">SaarthiAI</span>
-                <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-bl-sm p-4 shadow-sm">
-                    <p class="text-[15px] leading-relaxed text-slate-800 dark:text-slate-200">${text}</p>
+                <span class="text-[11px] font-medium text-slate-400 ml-0.5">SaarthiAI</span>
+                <div class="bg-slate-50 rounded-2xl rounded-tl-md px-4 py-3">
+                    <p class="text-[14px] leading-relaxed text-slate-700">${escapeHtml(text)}</p>
                 </div>
             </div>
         </div>`;
@@ -574,7 +553,6 @@ function addMessageToChat(text, sender) {
     addRawHtmlToChat(htmlContent, sender);
 }
 
-// ─── Add raw HTML to chat ────────────────────────────────────────────────────
 function addRawHtmlToChat(htmlContent, sender) {
     const chatBox = document.getElementById("chat-box");
     chatBox.insertAdjacentHTML("beforeend", htmlContent);
@@ -582,12 +560,10 @@ function addRawHtmlToChat(htmlContent, sender) {
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-// ─── Show status ─────────────────────────────────────────────────────────────
 function showStatus(text) {
     document.getElementById("status-indicator").innerText = text;
 }
 
-// ─── Init ────────────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
     pruneOldCacheEntries();
     updateConnectivityPill();
@@ -640,6 +616,8 @@ function preCachePopularQueries() {
                 occupation: "farmer",
                 state: profile.state || undefined,
                 income: profile.income ? parseInt(profile.income) || undefined : undefined,
+                crop: profile.crop || undefined,
+                land_size: profile.landSize || undefined,
             })
         }).then(res => {
             if (res.ok) return res.json();
@@ -666,3 +644,4 @@ function updateMicHint() {
 }
 
 window.updateMicHint = updateMicHint;
+window.showStatus = showStatus;

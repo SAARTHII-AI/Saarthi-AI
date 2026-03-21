@@ -1,4 +1,5 @@
 from typing import List, Dict, Any, Optional
+from urllib.parse import quote_plus
 
 HELP_CENTERS: List[Dict[str, Any]] = [
     {"name": "PM-KISAN Helpline", "state": "All India", "district": "National", "type": "national_helpline", "phone": "155261 / 011-24300606", "address": "Ministry of Agriculture, Krishi Bhawan, New Delhi"},
@@ -59,16 +60,25 @@ HELP_CENTERS: List[Dict[str, Any]] = [
 ]
 
 
+def _build_maps_url(name: str, address: str) -> str:
+    query_str = f"{name}, {address}"
+    return f"https://www.google.com/maps/search/?api=1&query={quote_plus(query_str)}"
+
+
 def get_help_centers(state: Optional[str] = None) -> List[Dict[str, Any]]:
     national = [c for c in HELP_CENTERS if c["type"] == "national_helpline"]
 
     if not state:
-        return national
+        results = national
+    else:
+        state_lower = state.strip().lower()
+        state_centers = [
+            c for c in HELP_CENTERS
+            if c["state"].lower() == state_lower and c["type"] != "national_helpline"
+        ]
+        results = national + state_centers
 
-    state_lower = state.strip().lower()
-    state_centers = [
-        c for c in HELP_CENTERS
-        if c["state"].lower() == state_lower and c["type"] != "national_helpline"
-    ]
+    for center in results:
+        center["maps_url"] = _build_maps_url(center["name"], center["address"])
 
-    return national + state_centers
+    return results

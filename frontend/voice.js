@@ -1,11 +1,84 @@
-// Voice recognition and synthesis using Web Speech API
-
 const micBtn = document.getElementById("mic-btn");
 const languageSelect = document.getElementById("language-select");
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition = null;
 let isListening = false;
+let isSpeaking = false;
+let currentUtterance = null;
+
+function selectBestVoice(langCode) {
+    const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+    if (!voices.length) return null;
+
+    const langMap = {
+        "hi": "hi-IN",
+        "en": "en-IN",
+    };
+    const targetLang = langMap[langCode] || "hi-IN";
+
+    const preferredKeywords = ["google", "microsoft", "neural", "natural", "premium"];
+    const fallbackKeywords = ["female", "zira", "heera"];
+
+    let bestVoice = null;
+    let bestScore = -1;
+
+    for (const voice of voices) {
+        if (!voice.lang.startsWith(targetLang.split("-")[0])) continue;
+        let score = 0;
+        const nameLower = voice.name.toLowerCase();
+
+        if (voice.lang === targetLang) score += 2;
+
+        for (const kw of preferredKeywords) {
+            if (nameLower.includes(kw)) { score += 3; break; }
+        }
+        for (const kw of fallbackKeywords) {
+            if (nameLower.includes(kw)) { score += 1; break; }
+        }
+
+        if (!voice.localService) score += 1;
+
+        if (score > bestScore) {
+            bestScore = score;
+            bestVoice = voice;
+        }
+    }
+
+    return bestVoice;
+}
+
+function stopSpeaking() {
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
+    isSpeaking = false;
+    currentUtterance = null;
+    updateVoiceOrb();
+    hideStopButton();
+}
+
+function showStopButton() {
+    const btn = document.getElementById("stop-speech-btn");
+    if (btn) btn.classList.remove("hidden");
+}
+
+function hideStopButton() {
+    const btn = document.getElementById("stop-speech-btn");
+    if (btn) btn.classList.add("hidden");
+}
+
+function updateVoiceOrb() {
+    const orb = document.getElementById("mic-btn");
+    if (!orb) return;
+
+    orb.classList.remove("listening", "speaking");
+    if (isListening) {
+        orb.classList.add("listening");
+    } else if (isSpeaking) {
+        orb.classList.add("speaking");
+    }
+}
 
 if (SpeechRecognition) {
     recognition = new SpeechRecognition();
@@ -14,7 +87,7 @@ if (SpeechRecognition) {
 
     recognition.onstart = function () {
         isListening = true;
-        micBtn.classList.add("listening");
+        updateVoiceOrb();
         if (window.showStatus) showStatus(window.t ? window.t("listening") : "Listening...");
     };
 
@@ -22,7 +95,7 @@ if (SpeechRecognition) {
         const transcript = event.results[0][0].transcript;
         document.getElementById("text-input").value = transcript;
         if (window.showStatus) showStatus(window.t ? window.t("understood") : "Understood!");
-        setTimeout(sendTextMessage, 500);
+        setTimeout(sendTextMessage, 400);
     };
 
     recognition.onerror = function (event) {
@@ -37,14 +110,17 @@ if (SpeechRecognition) {
     };
 
     micBtn.addEventListener("click", () => {
+        if (isSpeaking) {
+            stopSpeaking();
+            return;
+        }
+
         if (isListening) {
             recognition.stop();
         } else {
             const langCode = languageSelect.value;
             if (langCode === "hi") {
                 recognition.lang = "hi-IN";
-            } else if (langCode === "ta") {
-                recognition.lang = "ta-IN";
             } else if (langCode === "en") {
                 recognition.lang = "en-IN";
             } else {
@@ -58,55 +134,98 @@ if (SpeechRecognition) {
         }
     });
 } else {
-    // Mic not supported — show disabled state instead of hiding
     micBtn.disabled = true;
     micBtn.classList.add("mic-disabled");
-
-    // Replace inner icon with mic_off
     micBtn.innerHTML = '<span class="material-symbols-outlined text-3xl">mic_off</span>';
 
-    // Show a localised text hint (text set after script.js loads via updateMicHint)
     const hint = document.getElementById("mic-unsupported-hint");
     if (hint) {
         hint.classList.remove("hidden");
-        // Initial English text; script.js will update via updateMicHint() once i18n is ready
         hint.textContent = "Voice not supported on this browser — please type your message.";
     }
 
-    // Tooltip/aria-label: also localised once script.js t() is ready
     const setMicLabel = () => {
         const msg = window.t ? window.t("micUnsupported") : "Voice not supported on this browser";
         micBtn.title = msg;
         micBtn.setAttribute("aria-label", msg);
         if (hint) hint.textContent = msg;
     };
-    // Attempt immediately (script.js loads after voice.js) and on DOMContentLoaded
     document.addEventListener("DOMContentLoaded", setMicLabel);
 }
 
 function stopListening() {
     isListening = false;
-    micBtn.classList.remove("listening");
+    updateVoiceOrb();
 }
 
-// Text to Speech
+if (window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = function () {};
+}
+
 window.speakText = function (text, responseLang = null) {
     if (!window.speechSynthesis) {
         console.warn("Speech Synthesis API not supported.");
         return;
     }
 
-    const cleanText = text.replace(/[*_~`]/g, "");
+    stopSpeaking();
+
+    const cleanText = text
+        .replace(/[*_~`#]/g, "")
+        .replace(/\n{2,}/g, ". ")
+        .replace(/\n/g, ". ")
+        .replace(/\s{2,}/g, " ")
+        .trim();
+
+    if (!cleanText) return;
+
     const utterance = new SpeechSynthesisUtterance(cleanText);
 
     const langCode = responseLang || languageSelect.value;
     if (langCode === "hi") {
         utterance.lang = "hi-IN";
-    } else if (langCode === "ta") {
-        utterance.lang = "ta-IN";
     } else {
         utterance.lang = "en-IN";
     }
 
+    const voice = selectBestVoice(langCode === "hi" ? "hi" : "en");
+    if (voice) {
+        utterance.voice = voice;
+    }
+
+    utterance.rate = 0.9;
+    utterance.pitch = 1.05;
+    utterance.volume = 1.0;
+
+    utterance.onstart = function () {
+        isSpeaking = true;
+        updateVoiceOrb();
+        showStopButton();
+    };
+
+    utterance.onend = function () {
+        isSpeaking = false;
+        currentUtterance = null;
+        updateVoiceOrb();
+        hideStopButton();
+    };
+
+    utterance.onerror = function () {
+        isSpeaking = false;
+        currentUtterance = null;
+        updateVoiceOrb();
+        hideStopButton();
+    };
+
+    currentUtterance = utterance;
     window.speechSynthesis.speak(utterance);
 };
+
+window.stopSpeaking = stopSpeaking;
+
+const textInput = document.getElementById("text-input");
+if (textInput) {
+    textInput.addEventListener("focus", () => {
+        if (isSpeaking) stopSpeaking();
+    });
+}

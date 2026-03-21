@@ -11,6 +11,8 @@ class QueryRequest(BaseModel):
     category: Optional[str] = None
     state: Optional[str] = None
     scheme_type: Optional[str] = None
+    crop: Optional[str] = None
+    land_size: Optional[str] = None
 
 class SchemeRecommedation(BaseModel):
     name: str
@@ -29,6 +31,7 @@ class HelpCenter(BaseModel):
     phone: str
     address: str
     district: str
+    maps_url: Optional[str] = None
 
 class QueryResponse(BaseModel):
     intent: str

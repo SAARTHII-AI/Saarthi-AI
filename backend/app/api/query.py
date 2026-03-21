@@ -44,20 +44,36 @@ async def handle_query(request: QueryRequest, raw_request: Request):
 
     intent = detect_intent(english_query)
 
-    top_schemes = rag_engine.search_similar(english_query)
-    local_context_parts = [
-        f"{s['name']}: {s['description']} (Eligibility: {s['eligibility']})"
-        for s in top_schemes
-    ]
+    farmer_profile = {
+        "state": request.state or request.location,
+        "occupation": request.occupation,
+        "income": request.income,
+        "crop": request.crop,
+        "land_size": request.land_size,
+    }
+    farmer_profile = {k: v for k, v in farmer_profile.items() if v}
+
+    top_schemes = rag_engine.search_similar(
+        english_query,
+        user_state=request.state or request.location,
+        occupation=request.occupation
+    )
 
     web_snippets = brightdata_search(english_query)
     if web_snippets:
         logger.info(f"Bright Data returned {len(web_snippets)} snippet(s)")
 
-    context_parts = web_snippets + local_context_parts
-    context = "\n".join(context_parts)
+    context = rag_engine._build_rich_context(
+        schemes=top_schemes,
+        web_snippets=web_snippets,
+        farmer_profile=farmer_profile if farmer_profile else None
+    )
 
-    english_answer = rag_engine.generate_answer(context, english_query)
+    english_answer = rag_engine.generate_answer(
+        context,
+        english_query,
+        farmer_profile=farmer_profile if farmer_profile else None
+    )
 
     final_answer = english_answer
     if detected_lang != "en":
@@ -80,11 +96,14 @@ async def handle_query(request: QueryRequest, raw_request: Request):
             "documents_links": rec.get("documents_links")
         })
 
+    def _is_safe_url(url):
+        return url and (url.lower().startswith("http://") or url.lower().startswith("https://"))
+
     doc_links = []
     seen_urls = set()
     for scheme in top_schemes:
         for link in scheme.get("documents_links", []) or []:
-            if link not in seen_urls:
+            if link not in seen_urls and _is_safe_url(link):
                 seen_urls.add(link)
                 doc_links.append({"title": scheme["name"], "url": link})
 
@@ -98,26 +117,16 @@ async def handle_query(request: QueryRequest, raw_request: Request):
 
     nearest_centers = []
     user_state = request.state or request.location
-    if user_state:
-        centers = get_help_centers(state=user_state)
-        for c in centers:
-            nearest_centers.append({
-                "name": c["name"],
-                "type": c["type"],
-                "phone": c["phone"],
-                "address": c["address"],
-                "district": c["district"],
-            })
-    else:
-        centers = get_help_centers()
-        for c in centers:
-            nearest_centers.append({
-                "name": c["name"],
-                "type": c["type"],
-                "phone": c["phone"],
-                "address": c["address"],
-                "district": c["district"],
-            })
+    centers = get_help_centers(state=user_state)
+    for c in centers:
+        nearest_centers.append({
+            "name": c["name"],
+            "type": c["type"],
+            "phone": c["phone"],
+            "address": c["address"],
+            "district": c["district"],
+            "maps_url": c.get("maps_url"),
+        })
 
     return QueryResponse(
         intent=intent,
