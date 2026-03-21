@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
 
 
@@ -28,6 +28,6 @@ class DocumentLink(BaseModel):
 class QueryResponse(BaseModel):
     intent: str
     answer: str
-    recommended_schemes: List[SchemeRecommedation] = []
-    document_links: List[DocumentLink] = []
+    recommended_schemes: List[SchemeRecommedation] = Field(default_factory=list)
+    document_links: List[DocumentLink] = Field(default_factory=list)
     response_language: str = "en"
