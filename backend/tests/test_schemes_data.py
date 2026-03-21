@@ -166,8 +166,10 @@ class TestURLValidation:
 
         # Warn if any schemes use HTTP (government sites should use HTTPS)
         if http_schemes:
-            pytest.warn(
-                UserWarning(f"The following schemes use HTTP instead of HTTPS: {http_schemes}")
+            import warnings
+            warnings.warn(
+                f"The following schemes use HTTP instead of HTTPS: {http_schemes}",
+                UserWarning
             )
 
     def test_application_url_is_government_domain(self, schemes_data):
@@ -416,8 +418,10 @@ class TestSchemaConsistency:
         for scheme in schemes_data:
             unknown = set(scheme.keys()) - known_fields
             if unknown:
-                pytest.warn(
-                    UserWarning(f"Scheme '{scheme.get('name')}' has unknown fields: {unknown}")
+                import warnings
+                warnings.warn(
+                    f"Scheme '{scheme.get('name')}' has unknown fields: {unknown}",
+                    UserWarning
                 )
 
 

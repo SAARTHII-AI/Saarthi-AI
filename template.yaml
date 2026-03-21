@@ -18,7 +18,7 @@ Parameters:
     Description: Azure OpenAI deployment name
   AzureOpenAiApiVersion:
     Type: String
-    Default: "2024-02-15-preview"
+    Default: "2025-01-01-preview"
     Description: Azure OpenAI API version
   BrightDataApiToken:
     Type: String
@@ -52,13 +52,20 @@ Resources:
       Environment:
         Variables:
           ENV: production
-          OFFLINE_ONLY: !Ref OfflineOnly
-          AZURE_OPENAI_ENDPOINT: !Ref AzureOpenAiEndpoint
-          AZURE_OPENAI_API_KEY: !Ref AzureOpenAiApiKey
-          AZURE_OPENAI_DEPLOYMENT: !Ref AzureOpenAiDeployment
-          AZURE_OPENAI_API_VERSION: !Ref AzureOpenAiApiVersion
-          BRIGHTDATA_API_TOKEN: !Ref BrightDataApiToken
-          BRIGHTDATA_SERP_ZONE: !Ref BrightDataSerpZone
+          OFFLINE_ONLY:
+            Ref: OfflineOnly
+          AZURE_OPENAI_ENDPOINT:
+            Ref: AzureOpenAiEndpoint
+          AZURE_OPENAI_API_KEY:
+            Ref: AzureOpenAiApiKey
+          AZURE_OPENAI_DEPLOYMENT:
+            Ref: AzureOpenAiDeployment
+          AZURE_OPENAI_API_VERSION:
+            Ref: AzureOpenAiApiVersion
+          BRIGHTDATA_API_TOKEN:
+            Ref: BrightDataApiToken
+          BRIGHTDATA_SERP_ZONE:
+            Ref: BrightDataSerpZone
       Events:
         SaarthiAiApi:
           Type: Api
@@ -73,4 +80,5 @@ Resources:
 Outputs:
   SaarthiAiApi:
     Description: API Gateway endpoint URL for Prod stage
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Value:
+      Fn::Sub: "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

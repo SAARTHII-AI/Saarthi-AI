@@ -12,9 +12,14 @@ class QueryRequest(BaseModel):
     category: Optional[str] = None
 
 
-class SchemeRecommedation(BaseModel):
+class SchemeRecommendation(BaseModel):
     name: str
     description: str
+
+
+class SchemeRecommedation(SchemeRecommendation):
+    """Deprecated: use SchemeRecommendation instead. Kept for backward compatibility."""
+    pass
 
 
 class DocumentLink(BaseModel):
@@ -28,6 +33,6 @@ class DocumentLink(BaseModel):
 class QueryResponse(BaseModel):
     intent: str
     answer: str
-    recommended_schemes: List[SchemeRecommedation] = Field(default_factory=list)
+    recommended_schemes: List[SchemeRecommendation] = Field(default_factory=list)
     document_links: List[DocumentLink] = Field(default_factory=list)
     response_language: str = "en"

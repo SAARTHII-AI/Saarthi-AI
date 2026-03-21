@@ -147,7 +147,7 @@ class ConnectionManager:
 
         return health.status in (ServiceStatus.HEALTHY, ServiceStatus.DEGRADED)
 
-    async def record_success(self, service_name: str, response_time_ms: float = None) -> None:
+    async def record_success(self, service_name: str, response_time_ms: Optional[float] = None) -> None:
         """Record a successful service call."""
         async with self._lock:
             health = self._state.services.get(service_name)
@@ -156,13 +156,13 @@ class ConnectionManager:
                 health.consecutive_failures = 0
                 health.last_error = None
                 health.last_check = time.time()
-                if response_time_ms:
+                if response_time_ms is not None:
                     health.response_time_ms = response_time_ms
 
                 # Check if we can switch back to online mode
                 await self._check_mode_recovery()
 
-    async def record_failure(self, service_name: str, error: str = None) -> None:
+    async def record_failure(self, service_name: str, error: Optional[str] = None) -> None:
         """Record a service call failure."""
         async with self._lock:
             health = self._state.services.get(service_name)
@@ -284,13 +284,19 @@ class ConnectionManager:
     async def _check_azure_openai(self) -> None:
         """Health check for Azure OpenAI."""
         try:
+            endpoint = settings.azure_openai_endpoint
+            api_key = settings.azure_openai_api_key
+            if not endpoint or not api_key:
+                await self.record_failure("azure_openai", "Azure OpenAI not configured")
+                return
+
             async with httpx.AsyncClient(timeout=self.TIMEOUT_SECONDS) as client:
                 start = time.time()
                 # Just check if the endpoint is reachable
-                url = f"{settings.azure_openai_endpoint}/openai/deployments?api-version={settings.azure_openai_api_version}"
+                url = f"{endpoint}/openai/deployments?api-version={settings.azure_openai_api_version}"
                 response = await client.get(
                     url,
-                    headers={"api-key": settings.azure_openai_api_key}
+                    headers={"api-key": api_key}
                 )
                 response_time_ms = (time.time() - start) * 1000
 
@@ -304,12 +310,17 @@ class ConnectionManager:
     async def _check_brightdata(self) -> None:
         """Health check for BrightData."""
         try:
+            token = settings.brightdata_api_token
+            if not token:
+                await self.record_failure("brightdata_serp", "BrightData not configured")
+                return
+
             async with httpx.AsyncClient(timeout=self.TIMEOUT_SECONDS) as client:
                 start = time.time()
                 # Check BrightData API endpoint
                 response = await client.get(
                     "https://api.brightdata.com/health",
-                    headers={"Authorization": f"Bearer {settings.brightdata_api_token}"}
+                    headers={"Authorization": f"Bearer {token}"}
                 )
                 response_time_ms = (time.time() - start) * 1000
 
