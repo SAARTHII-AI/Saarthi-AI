@@ -234,26 +234,34 @@ function cacheResponse(cacheKey, data, query, language) {
     saveCacheMeta(meta);
 }
 
+function querySimilar(lq, eq) {
+    return eq.includes(lq) || lq.includes(eq);
+}
+
 function findBestCachedAnswer(query, language) {
     const meta = loadCacheMeta();
-    const lq = query.toLowerCase();
+    const lq = query.toLowerCase().trim();
+    // Pass 1: same-language match (both inclusion directions)
     for (let i = meta.length - 1; i >= 0; i--) {
         const raw = localStorage.getItem(meta[i].key);
         if (!raw) continue;
         try {
             const entry = JSON.parse(raw);
-            if (entry.language === language && entry.query && entry.query.toLowerCase().includes(lq)) {
+            const eq = (entry.query || "").toLowerCase().trim();
+            if (entry.language === language && eq && querySimilar(lq, eq)) {
                 touchCacheMeta(meta[i].key);
                 return entry.data;
             }
         } catch (e) {}
     }
+    // Pass 2: any-language match (both inclusion directions)
     for (let i = meta.length - 1; i >= 0; i--) {
         const raw = localStorage.getItem(meta[i].key);
         if (!raw) continue;
         try {
             const entry = JSON.parse(raw);
-            if (entry.query && entry.query.toLowerCase().includes(lq)) {
+            const eq = (entry.query || "").toLowerCase().trim();
+            if (eq && querySimilar(lq, eq)) {
                 touchCacheMeta(meta[i].key);
                 return entry.data;
             }
@@ -265,7 +273,9 @@ function findBestCachedAnswer(query, language) {
 // ─── Seasonal Suggestion Chips ───────────────────────────────────────────────
 function getSeasonalChips() {
     const month = new Date().getMonth() + 1;
+    // Kharif: June–October; Rabi: November–March; neutral: April–May
     const isKharif = month >= 6 && month <= 10;
+    const isRabi   = month >= 11 || month <= 3;
 
     const baseChips = [
         { icon: "payments",          color: "text-green-600",  label: "PM-KISAN",              query: "PM-KISAN scheme eligibility and benefits" },
@@ -277,16 +287,16 @@ function getSeasonalChips() {
     ];
 
     const kharifChips = [
-        { icon: "water_drop",        color: "text-blue-600",   label: "Paddy Farming Tips",     query: "Paddy cultivation tips for Kharif season" },
-        { icon: "energy_savings_leaf",color:"text-green-500",  label: "Soybean Schemes",        query: "Government schemes for soybean farmers" },
+        { icon: "water_drop",         color: "text-blue-600",   label: "Paddy Farming Tips",  query: "Paddy cultivation tips for Kharif season" },
+        { icon: "energy_savings_leaf", color: "text-green-500", label: "Soybean Schemes",     query: "Government schemes for soybean farmers" },
     ];
 
     const rabiChips = [
-        { icon: "grain",             color: "text-amber-600",  label: "Wheat MSP",              query: "Wheat minimum support price MSP details" },
-        { icon: "spa",               color: "text-yellow-500", label: "Mustard Schemes",        query: "Government schemes for mustard farmers" },
+        { icon: "grain",             color: "text-amber-600",  label: "Wheat MSP",            query: "Wheat minimum support price MSP details" },
+        { icon: "spa",               color: "text-yellow-500", label: "Mustard Schemes",      query: "Government schemes for mustard farmers" },
     ];
 
-    const seasonal = isKharif ? kharifChips : rabiChips;
+    const seasonal = isKharif ? kharifChips : isRabi ? rabiChips : [];
     const combined = [...baseChips];
     seasonal.forEach(chip => {
         combined.splice(Math.floor(Math.random() * (combined.length + 1)), 0, chip);
@@ -332,14 +342,15 @@ async function sendTextMessage() {
 // ─── Offline-first processQuery ──────────────────────────────────────────────
 async function processQuery(query) {
     const language = document.getElementById("language-select").value;
+    const resolvedLang = getLang();
     const profileSnapshot = getFarmerProfileSnapshot();
-    const cacheKey = buildCacheKey(query, language, profileSnapshot);
+    const cacheKey = buildCacheKey(query, resolvedLang, profileSnapshot);
 
     showStatus(t("thinking"));
 
     if (!isOnline()) {
         const exact = getCachedResponse(cacheKey);
-        const best  = exact || findBestCachedAnswer(query, language);
+        const best  = exact || findBestCachedAnswer(query, resolvedLang);
         if (best) {
             displayResponse(best, true);
             addOfflineBanner(t("offline"));
@@ -358,7 +369,7 @@ async function processQuery(query) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 query,
-                language,
+                language: resolvedLang,
                 occupation: "farmer",
                 state:      profile.state    || "",
                 crop:       profile.crop     || "",
@@ -370,14 +381,14 @@ async function processQuery(query) {
         if (!response.ok) throw new Error("server_error");
 
         const data = await response.json();
-        cacheResponse(cacheKey, data, query, language);
+        cacheResponse(cacheKey, data, query, resolvedLang);
         displayResponse(data, false);
     } catch (error) {
         const isNetworkErr = !navigator.onLine || error.message === "Failed to fetch";
 
         // Fetch failed — fall back to cache and always mark as cached
         const exact   = getCachedResponse(cacheKey);
-        const fallback = exact || findBestCachedAnswer(query, language);
+        const fallback = exact || findBestCachedAnswer(query, resolvedLang);
         if (fallback) {
             displayResponse(fallback, true);
             addOfflineBanner(isNetworkErr ? t("offline") : t("serverError"));
