@@ -62,7 +62,7 @@ def mock_translator():
     """Mock translator service to avoid actual API calls."""
     with patch('app.services.translator.translator_service') as mock:
         mock.detect_language.return_value = "en"
-        mock.translate_text.side_effect = lambda text, source, target: text
+        mock.translate_text.side_effect = lambda text, *args, **kwargs: text
         yield mock
 
 
@@ -221,14 +221,14 @@ class TestQueryEndpointEdgeCases:
     """Test query endpoint with edge cases."""
 
     def test_query_empty_string(self):
-        """Test query with empty string - should fail validation."""
+        """Test query with empty string."""
         request_payload = {
             "query": "",
             "language": "en"
         }
         response = client.post("/query", json=request_payload)
-        # Empty query should still be processed (Pydantic doesn't enforce non-empty by default)
-        assert response.status_code in [200, 422]
+        # QueryRequest.query currently has no min_length constraint.
+        assert response.status_code == 200
 
     def test_query_whitespace_only(self, mock_web_search, mock_azure_llm):
         """Test query with only whitespace."""
@@ -297,8 +297,8 @@ class TestQueryEndpointEdgeCases:
             "language": "en"
         }
         response = client.post("/query", json=request_payload)
-        # Should handle long queries (may truncate or process)
-        assert response.status_code in [200, 422]
+        # QueryRequest.query currently has no max_length constraint.
+        assert response.status_code == 200
 
     def test_query_mixed_language(self, mock_web_search, mock_azure_llm):
         """Test query with mixed language (Hinglish)."""

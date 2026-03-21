@@ -199,10 +199,6 @@ class ConnectionManager:
             self._state.mode = ConnectionMode.OFFLINE
             return
 
-        healthy_count = sum(
-            1 for h in configured_services
-            if h.status == ServiceStatus.HEALTHY
-        )
         unhealthy_count = sum(
             1 for h in configured_services
             if h.status == ServiceStatus.UNHEALTHY
@@ -279,6 +275,10 @@ class ConnectionManager:
         if settings.brightdata_serp_configured():
             await self._check_brightdata()
 
+        # Check Azure Speech
+        if settings.azure_speech_configured():
+            await self._check_azure_speech()
+
         return self.get_state()
 
     async def _check_azure_openai(self) -> None:
@@ -330,6 +330,31 @@ class ConnectionManager:
                     await self.record_failure("brightdata_serp", f"Status: {response.status_code}")
         except Exception as e:
             await self.record_failure("brightdata_serp", str(e))
+
+    async def _check_azure_speech(self) -> None:
+        """Health check for Azure Speech."""
+        try:
+            key = settings.azure_speech_key
+            region = settings.azure_speech_region
+            if not key or not region:
+                await self.record_failure("azure_speech", "Azure Speech not configured")
+                return
+
+            health_url = f"https://{region}.tts.speech.microsoft.com/cognitiveservices/voices/list"
+            async with httpx.AsyncClient(timeout=self.TIMEOUT_SECONDS) as client:
+                start = time.time()
+                response = await client.get(
+                    health_url,
+                    headers={"Ocp-Apim-Subscription-Key": key},
+                )
+                response_time_ms = (time.time() - start) * 1000
+
+                if response.status_code in (200, 401, 403):
+                    await self.record_success("azure_speech", response_time_ms)
+                else:
+                    await self.record_failure("azure_speech", f"Status: {response.status_code}")
+        except Exception as e:
+            await self.record_failure("azure_speech", str(e))
 
 # Global singleton instance
 connection_manager = ConnectionManager()

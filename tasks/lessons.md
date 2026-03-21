@@ -16,3 +16,5 @@ Append a short bullet when a correction or incident reveals a durable rule for t
 - **Dependencies**: Pin and edit packages in **repo root `requirements.txt` only**; `backend/requirements.txt` must stay a **`-r ../requirements.txt`** mirror so Docker/SAM and local installs stay aligned.
 - **Subagent recovery**: If a prior run reports execution error, re-run via a focused subagent, then manually review and tighten relevance logic before final verification.
 - **Security in frontend rendering**: Never interpolate API strings directly into `insertAdjacentHTML`; always escape text and validate URLs (allow only `http/https`) before rendering links.
+- **Test doubles & kwargs**: When mocking translator/service functions used in production with keyword args, define side effects that accept `*args, **kwargs` to avoid brittle TypeErrors.
+- **Connection parity**: Any BrightData-backed feature path should use `ConnectionManager` health gating and record success/failure so `/connection/status` reflects real service behavior.

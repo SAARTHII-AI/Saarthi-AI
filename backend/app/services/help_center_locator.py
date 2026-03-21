@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import logging
 import math
+import time
 from dataclasses import dataclass, asdict
 from typing import List, Optional
 from urllib.parse import quote_plus
@@ -16,6 +17,12 @@ from urllib.parse import quote_plus
 import httpx
 
 from app.config import settings
+from app.services.connection_manager import (
+    ServiceStatus,
+    connection_manager,
+    get_service_status,
+    should_use_online_services,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -111,6 +118,15 @@ class HelpCenterLocator:
         """
         if settings.offline_only or not settings.brightdata_serp_configured():
             return []
+        brightdata_status = get_service_status("brightdata_serp")
+        service_blocked = (
+            brightdata_status != ServiceStatus.UNCONFIGURED
+            and not connection_manager.service_available("brightdata_serp")
+        )
+        if not should_use_online_services() or service_blocked:
+            logger.info("BrightData service unavailable, skipping help center lookup")
+            return []
+
         try:
             centers = await self._search_brightdata_places(lat, lng, radius_meters, limit)
             logger.info("Found %d centers via BrightData", len(centers))
@@ -148,6 +164,7 @@ class HelpCenterLocator:
                 "data_format": "parsed_light",
             }
             try:
+                start = time.time()
                 response = await client.post(
                     settings.brightdata_request_url,
                     headers=headers,
@@ -155,6 +172,8 @@ class HelpCenterLocator:
                     timeout=httpx.Timeout(settings.brightdata_serp_timeout_seconds),
                 )
                 response.raise_for_status()
+                response_time_ms = (time.time() - start) * 1000
+                await connection_manager.record_success("brightdata_serp", response_time_ms)
                 data = response.json()
                 for candidate in self._iter_brightdata_candidates(data):
                     center = self._parse_brightdata_place(candidate, lat, lng)
@@ -169,6 +188,7 @@ class HelpCenterLocator:
                         self._details_cache[center.place_id] = center
                     all_centers.append(center)
             except Exception as exc:
+                await connection_manager.record_failure("brightdata_serp", str(exc))
                 logger.warning("BrightData search failed for '%s': %s", query, exc)
 
         all_centers.sort(key=lambda c: c.distance_km)
