@@ -41,3 +41,18 @@ outputType = "webview"
 [deployment]
 deploymentTarget = "autoscale"
 run = ["python", "server.py"]
+
+[userenv]
+
+[userenv.shared]
+ENV = "development"
+API_HOST = "0.0.0.0"
+API_PORT = "8000"
+OFFLINE_ONLY = "false"
+AZURE_OPENAI_ENDPOINT = "https://aditjain2005-0132-resource.openai.azure.com"
+AZURE_OPENAI_DEPLOYMENT = "gpt-5.3-chat"
+AZURE_OPENAI_API_VERSION = "2025-01-01-preview"
+BRIGHTDATA_SERP_ZONE = "serp_api1"
+BRIGHTDATA_DC_HOST = "brd.superproxy.io"
+BRIGHTDATA_DC_PORT = "33335"
+BRIGHTDATA_DC_USER = "brd-customer-hl_68343586-zone-datacenter_proxy1"
