@@ -12,6 +12,7 @@ Tests cover:
 import pytest
 import json
 import re
+import warnings
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -247,11 +248,23 @@ class TestDocumentsValidation:
         }
 
         # This test ensures consistency but doesn't fail for variations
+        variations_found = {key: False for key in common_documents}
         for scheme in schemes_data:
             if "documents" in scheme and scheme["documents"]:
                 docs_lower = [d.lower() for d in scheme["documents"]]
                 # Just check that common documents are present in some form
                 # This is informational, not a strict requirement
+                for key, variants in common_documents.items():
+                    variant_lowers = [v.lower() for v in variants]
+                    if any(any(v in doc for v in variant_lowers) for doc in docs_lower):
+                        variations_found[key] = True
+
+        missing = [key for key, found in variations_found.items() if not found]
+        if missing:
+            warnings.warn(
+                f"No common document variants found for categories: {missing}",
+                UserWarning,
+            )
 
 
 # ============================================================================

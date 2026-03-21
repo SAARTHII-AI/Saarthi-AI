@@ -106,8 +106,12 @@ def _is_official_source(url: str) -> bool:
         "mygov.in", "meity.gov.in", "rural.nic.in",
         "nrega.nic.in", "nsap.nic.in", "uidai.gov.in",
     ]
-    url_lower = url.lower()
-    return any(domain in url_lower for domain in official_domains)
+    domain = _extract_source_domain(url)
+    if not domain or domain == "web":
+        return False
+
+    official_suffixes = [d.lstrip(".").lower() for d in official_domains]
+    return any(domain == suffix or domain.endswith(f".{suffix}") for suffix in official_suffixes)
 
 
 def _build_document_search_query(scheme_name: str, document_type: str) -> str:

@@ -110,7 +110,7 @@ def mock_translator():
     """Mock translator service to avoid actual API calls."""
     with patch('app.services.translator.translator_service') as mock:
         mock.detect_language.return_value = "en"
-        mock.translate_text.side_effect = lambda text, source, target: text
+        mock.translate_text.side_effect = lambda text, *args, **kwargs: text
         yield mock
 
 

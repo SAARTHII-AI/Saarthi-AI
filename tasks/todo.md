@@ -18,6 +18,8 @@ Use this file for multi-step work. Replace or clear sections when starting a new
 - [x] Add cached `fetch_document_links` in `backend/app/services/web_search.py`
 - [x] Update `backend/app/api/query.py` to include document links only for relevant document-intent queries with identified schemes
 - [x] Verify targeted document-link tests pass
+- [x] Validate and fix Copilot review issues (translator mock kwargs, deterministic API assertions, BrightData health gating, source-domain checks, STT exception payload, dead test logic)
+- [x] Address remaining known pre-existing failing test: `tests/test_api.py::TestIntentDetection::test_intent_with_tamil_keywords`
 - [ ] Resolve pre-existing unrelated backend test failures (intent i18n, schemes data validation, translator ambiguity, RAG empty-state behavior)
 
 ## Completed Features
