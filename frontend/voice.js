@@ -3,7 +3,6 @@
 const micBtn = document.getElementById("mic-btn");
 const languageSelect = document.getElementById("language-select");
 
-// Check browser support
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition = null;
 let isListening = false;
@@ -12,65 +11,78 @@ if (SpeechRecognition) {
     recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = false;
-    
-    recognition.onstart = function() {
+
+    recognition.onstart = function () {
         isListening = true;
         micBtn.classList.add("listening");
-        showStatus("सुन रहा हूँ... (Listening...)");
+        if (window.showStatus) showStatus(window.t ? window.t("listening") : "Listening...");
     };
-    
-    recognition.onresult = function(event) {
+
+    recognition.onresult = function (event) {
         const transcript = event.results[0][0].transcript;
         document.getElementById("text-input").value = transcript;
-        showStatus("समझ लिया! (Understood!)");
-        
-        // Auto-send query after voice recognition
+        if (window.showStatus) showStatus(window.t ? window.t("understood") : "Understood!");
         setTimeout(sendTextMessage, 500);
     };
-    
-    recognition.onerror = function(event) {
-        console.error("Speech recognition error", event.error);
-        showStatus("माफ़ करें, मैं सुन नहीं पाया। (Sorry, I couldn't hear.)");
-        stopListening();
-    };
-    
-    recognition.onend = function() {
-        stopListening();
-        showStatus("");
-    };
-} else {
-    console.warn("Speech Recognition API not supported in this browser.");
-    micBtn.style.display = 'none';
-    showStatus("आपका ब्राउज़र वॉइस इनपुट का समर्थन नहीं करता है। (Speech recognition not supported.)");
-}
 
-micBtn.addEventListener("click", () => {
-    if (!SpeechRecognition) return;
-    
-    if (isListening) {
-        recognition.stop();
-    } else {
-        // Set language based on selection. Web Speech API requires a specific lang
-        const langCode = languageSelect.value;
-        if (langCode === 'hi') {
-            recognition.lang = 'hi-IN';
-        } else if (langCode === 'ta') {
-            recognition.lang = 'ta-IN';
-        } else if (langCode === 'en') {
-            recognition.lang = 'en-IN';
+    recognition.onerror = function (event) {
+        console.error("Speech recognition error", event.error);
+        if (window.showStatus) showStatus(window.t ? window.t("hearError") : "Sorry, I couldn't hear you.");
+        stopListening();
+    };
+
+    recognition.onend = function () {
+        stopListening();
+        if (window.showStatus) showStatus("");
+    };
+
+    micBtn.addEventListener("click", () => {
+        if (isListening) {
+            recognition.stop();
         } else {
-            // For 'auto', we have to pick a default for the listener since it can't detect raw audio lang easily.
-            // Assuming Hindi as the default spoken interaction language for this demographic.
-            recognition.lang = 'hi-IN'; 
+            const langCode = languageSelect.value;
+            if (langCode === "hi") {
+                recognition.lang = "hi-IN";
+            } else if (langCode === "ta") {
+                recognition.lang = "ta-IN";
+            } else if (langCode === "en") {
+                recognition.lang = "en-IN";
+            } else {
+                recognition.lang = "hi-IN";
+            }
+            try {
+                recognition.start();
+            } catch (e) {
+                console.error("Could not start recognition", e);
+            }
         }
-        
-        try {
-            recognition.start();
-        } catch (e) {
-            console.error("Could not start recognition", e);
-        }
+    });
+} else {
+    // Mic not supported — show disabled state instead of hiding
+    micBtn.disabled = true;
+    micBtn.classList.add("mic-disabled");
+
+    // Replace inner icon with mic_off
+    micBtn.innerHTML = '<span class="material-symbols-outlined text-3xl">mic_off</span>';
+
+    // Show a localised text hint (text set after script.js loads via updateMicHint)
+    const hint = document.getElementById("mic-unsupported-hint");
+    if (hint) {
+        hint.classList.remove("hidden");
+        // Initial English text; script.js will update via updateMicHint() once i18n is ready
+        hint.textContent = "Voice not supported on this browser — please type your message.";
     }
-});
+
+    // Tooltip/aria-label: also localised once script.js t() is ready
+    const setMicLabel = () => {
+        const msg = window.t ? window.t("micUnsupported") : "Voice not supported on this browser";
+        micBtn.title = msg;
+        micBtn.setAttribute("aria-label", msg);
+        if (hint) hint.textContent = msg;
+    };
+    // Attempt immediately (script.js loads after voice.js) and on DOMContentLoaded
+    document.addEventListener("DOMContentLoaded", setMicLabel);
+}
 
 function stopListening() {
     isListening = false;
@@ -78,27 +90,23 @@ function stopListening() {
 }
 
 // Text to Speech
-window.speakText = function(text, responseLang = null) {
+window.speakText = function (text, responseLang = null) {
     if (!window.speechSynthesis) {
         console.warn("Speech Synthesis API not supported.");
         return;
     }
-    
-    // Process text to remove some markdown components if necessary for TTS
-    const cleanText = text.replace(/[*_~`]/g, '');
-    
+
+    const cleanText = text.replace(/[*_~`]/g, "");
     const utterance = new SpeechSynthesisUtterance(cleanText);
-    
-    // Determine language: use backend provided language if available, else fallback to dropdown
+
     const langCode = responseLang || languageSelect.value;
-    
-    if (langCode === 'hi') {
-        utterance.lang = 'hi-IN';
-    } else if (langCode === 'ta') {
-        utterance.lang = 'ta-IN';
+    if (langCode === "hi") {
+        utterance.lang = "hi-IN";
+    } else if (langCode === "ta") {
+        utterance.lang = "ta-IN";
     } else {
-        utterance.lang = 'en-IN';
+        utterance.lang = "en-IN";
     }
-    
+
     window.speechSynthesis.speak(utterance);
 };
