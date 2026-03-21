@@ -3,43 +3,46 @@ const API_URL = "";
 // ─── i18n Strings ──────────────────────────────────────────────────────────
 const I18N = {
     hi: {
-        thinking:     "सोच रहा है...",
-        listening:    "सुन रहा हूँ...",
-        understood:   "समझ लिया!",
-        offline:      "आप ऑफलाइन हैं। सहेजा गया उत्तर दिखा रहा है।",
-        noCache:      "आप ऑफलाइन हैं और कोई सहेजा गया उत्तर नहीं है।",
-        serverError:  "सर्वर से संपर्क नहीं हो पा रहा है।",
-        savedAnswer:  "सहेजा गया उत्तर",
-        onlinePill:   "ऑनलाइन",
-        offlinePill:  "ऑफलाइन",
+        thinking:       "सोच रहा है...",
+        listening:      "सुन रहा हूँ...",
+        understood:     "समझ लिया!",
+        offline:        "आप ऑफलाइन हैं। सहेजा गया उत्तर दिखा रहा है।",
+        noCache:        "आप ऑफलाइन हैं और कोई सहेजा गया उत्तर नहीं है।",
+        serverError:    "सर्वर से संपर्क नहीं हो पा रहा है।",
+        savedAnswer:    "सहेजा गया उत्तर",
+        onlinePill:     "ऑनलाइन",
+        offlinePill:    "ऑफलाइन",
         micUnsupported: "इस ब्राउज़र में वॉइस इनपुट समर्थित नहीं है। कृपया टाइप करें।",
-        hearError:    "माफ़ करें, मैं सुन नहीं पाया।",
+        hearError:      "माफ़ करें, मैं सुन नहीं पाया।",
+        schemesHeading: "अनुशंसित योजनाएं:",
     },
     ta: {
-        thinking:     "யோசிக்கிறேன்...",
-        listening:    "கேட்கிறேன்...",
-        understood:   "புரிந்தது!",
-        offline:      "நீங்கள் ஆஃப்லைனில் உள்ளீர்கள். சேமித்த பதில் காட்டுகிறது.",
-        noCache:      "நீங்கள் ஆஃப்லைனில் உள்ளீர்கள், சேமித்த பதில் இல்லை.",
-        serverError:  "சேவையகத்தை தொடர்பு கொள்ள முடியவில்லை.",
-        savedAnswer:  "சேமித்த பதில்",
-        onlinePill:   "ஆன்லைன்",
-        offlinePill:  "ஆஃப்லைன்",
+        thinking:       "யோசிக்கிறேன்...",
+        listening:      "கேட்கிறேன்...",
+        understood:     "புரிந்தது!",
+        offline:        "நீங்கள் ஆஃப்லைனில் உள்ளீர்கள். சேமித்த பதில் காட்டுகிறது.",
+        noCache:        "நீங்கள் ஆஃப்லைனில் உள்ளீர்கள், சேமித்த பதில் இல்லை.",
+        serverError:    "சேவையகத்தை தொடர்பு கொள்ள முடியவில்லை.",
+        savedAnswer:    "சேமித்த பதில்",
+        onlinePill:     "ஆன்லைன்",
+        offlinePill:    "ஆஃப்லைன்",
         micUnsupported: "இந்த உலாவியில் குரல் உள்ளீடு ஆதரிக்கப்படவில்லை. தயவுசெய்து தட்டச்சு செய்யுங்கள்.",
-        hearError:    "மன்னிக்கவும், என்னால் கேட்க முடியவில்லை.",
+        hearError:      "மன்னிக்கவும், என்னால் கேட்க முடியவில்லை.",
+        schemesHeading: "பரிந்துரைக்கப்பட்ட திட்டங்கள்:",
     },
     en: {
-        thinking:     "Thinking...",
-        listening:    "Listening...",
-        understood:   "Understood!",
-        offline:      "You are offline. Showing saved answer.",
-        noCache:      "You are offline and no saved answer found.",
-        serverError:  "Unable to contact the server.",
-        savedAnswer:  "Saved answer",
-        onlinePill:   "Online",
-        offlinePill:  "Offline",
+        thinking:       "Thinking...",
+        listening:      "Listening...",
+        understood:     "Understood!",
+        offline:        "You are offline. Showing saved answer.",
+        noCache:        "You are offline and no saved answer found.",
+        serverError:    "Unable to contact the server.",
+        savedAnswer:    "Saved answer",
+        onlinePill:     "Online",
+        offlinePill:    "Offline",
         micUnsupported: "Voice input not supported on this browser. Please type.",
-        hearError:    "Sorry, I couldn't hear you.",
+        hearError:      "Sorry, I couldn't hear you.",
+        schemesHeading: "Recommended Schemes:",
     },
 };
 
@@ -47,6 +50,11 @@ function getLang() {
     const v = document.getElementById("language-select").value;
     if (v === "hi") return "hi";
     if (v === "ta") return "ta";
+    if (v === "en") return "en";
+    // "auto" — detect from browser navigator
+    const nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
+    if (nav.startsWith("hi")) return "hi";
+    if (nav.startsWith("ta")) return "ta";
     return "en";
 }
 
@@ -413,7 +421,7 @@ function displayResponse(data, isCached) {
     }
 
     if (data.recommended_schemes && data.recommended_schemes.length > 0) {
-        htmlContent += '<div class="flex flex-col gap-2 mb-4 ml-11"><strong class="text-sm text-slate-600 dark:text-slate-300">अनुशंसित योजनाएं (Recommended Schemes):</strong>';
+        htmlContent += `<div class="flex flex-col gap-2 mb-4 ml-11"><strong class="text-sm text-slate-600 dark:text-slate-300">${t("schemesHeading")}</strong>`;
         data.recommended_schemes.forEach(scheme => {
             htmlContent += `
                 <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-sm">
