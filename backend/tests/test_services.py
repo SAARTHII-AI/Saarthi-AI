@@ -280,3 +280,167 @@ class TestTranslatorService:
         service = TranslatorService()
         result = service.translate_text(None, source="en", target="hi")
         assert result is None
+
+
+class TestGovDataService:
+    def test_get_relevant_gov_links_pm_kisan(self):
+        from app.services.gov_data_service import get_relevant_gov_links
+        links = get_relevant_gov_links("pm-kisan scheme eligibility")
+        assert isinstance(links, list)
+        assert len(links) > 0
+        assert any("PM-KISAN" in l["title"] for l in links)
+
+    def test_get_relevant_gov_links_crop_insurance(self):
+        from app.services.gov_data_service import get_relevant_gov_links
+        links = get_relevant_gov_links("crop insurance pmfby")
+        assert isinstance(links, list)
+        assert len(links) > 0
+
+    def test_get_relevant_gov_links_mandi_prices(self):
+        from app.services.gov_data_service import get_relevant_gov_links
+        links = get_relevant_gov_links("mandi market price wheat")
+        assert isinstance(links, list)
+        assert len(links) > 0
+
+    def test_get_relevant_gov_links_soil_health(self):
+        from app.services.gov_data_service import get_relevant_gov_links
+        links = get_relevant_gov_links("soil health card")
+        assert isinstance(links, list)
+        assert len(links) > 0
+
+    def test_get_relevant_gov_links_no_match(self):
+        from app.services.gov_data_service import get_relevant_gov_links
+        links = get_relevant_gov_links("random unrelated query xyz")
+        assert isinstance(links, list)
+
+    def test_enrich_query_context_returns_string(self):
+        from app.services.gov_data_service import enrich_query_context
+        result = enrich_query_context("farming scheme")
+        assert isinstance(result, str)
+
+    def test_enrich_query_context_with_crop(self):
+        from app.services.gov_data_service import enrich_query_context
+        result = enrich_query_context("msp price", crop="wheat")
+        assert isinstance(result, str)
+
+
+class TestRAGEngineCache:
+    def test_cache_key_generation(self):
+        from app.services.rag_engine import rag_engine
+        key1 = rag_engine._cache_key("context1", "question1", {"state": "Bihar"})
+        key2 = rag_engine._cache_key("context1", "question1", {"state": "Bihar"})
+        key3 = rag_engine._cache_key("context2", "question1", {"state": "Bihar"})
+        assert key1 == key2
+        assert key1 != key3
+
+    def test_cache_key_different_profiles(self):
+        from app.services.rag_engine import rag_engine
+        key1 = rag_engine._cache_key("ctx", "q", {"state": "Bihar"})
+        key2 = rag_engine._cache_key("ctx", "q", {"state": "UP"})
+        assert key1 != key2
+
+    def test_cache_key_none_profile(self):
+        from app.services.rag_engine import rag_engine
+        key1 = rag_engine._cache_key("ctx", "q", None)
+        key2 = rag_engine._cache_key("ctx", "q", {})
+        assert isinstance(key1, str)
+        assert isinstance(key2, str)
+
+
+class TestNewStateSchemeLoader:
+    def test_load_gujarat_schemes(self):
+        schemes = load_schemes(state="Gujarat")
+        guj = [s for s in schemes if s.get("state") == "Gujarat"]
+        assert len(guj) >= 3
+
+    def test_load_punjab_schemes(self):
+        schemes = load_schemes(state="Punjab")
+        pun = [s for s in schemes if s.get("state") == "Punjab"]
+        assert len(pun) >= 3
+
+    def test_load_haryana_schemes(self):
+        schemes = load_schemes(state="Haryana")
+        har = [s for s in schemes if s.get("state") == "Haryana"]
+        assert len(har) >= 3
+
+    def test_load_andhra_pradesh_schemes(self):
+        schemes = load_schemes(state="Andhra Pradesh")
+        ap = [s for s in schemes if s.get("state") == "Andhra Pradesh"]
+        assert len(ap) >= 3
+
+    def test_load_kerala_schemes(self):
+        schemes = load_schemes(state="Kerala")
+        ker = [s for s in schemes if s.get("state") == "Kerala"]
+        assert len(ker) >= 3
+
+    def test_load_chhattisgarh_schemes(self):
+        schemes = load_schemes(state="Chhattisgarh")
+        cg = [s for s in schemes if s.get("state") == "Chhattisgarh"]
+        assert len(cg) >= 3
+
+    def test_load_jharkhand_schemes(self):
+        schemes = load_schemes(state="Jharkhand")
+        jh = [s for s in schemes if s.get("state") == "Jharkhand"]
+        assert len(jh) >= 3
+
+    def test_load_assam_schemes(self):
+        schemes = load_schemes(state="Assam")
+        asm = [s for s in schemes if s.get("state") == "Assam"]
+        assert len(asm) >= 3
+
+    def test_total_schemes_minimum_75(self):
+        schemes = load_schemes()
+        assert len(schemes) >= 75
+
+    def test_all_new_state_schemes_have_required_fields(self):
+        new_states = ["Gujarat", "Punjab", "Haryana", "Andhra Pradesh", "Kerala", "Chhattisgarh", "Jharkhand", "Assam"]
+        for state in new_states:
+            schemes = load_schemes(state=state)
+            state_schemes = [s for s in schemes if s.get("state") == state]
+            for s in state_schemes:
+                assert "name" in s, f"Missing name in {state} scheme"
+                assert "description" in s, f"Missing description in {state} scheme"
+                assert "eligibility" in s, f"Missing eligibility in {state} scheme"
+                assert "benefits" in s, f"Missing benefits in {state} scheme"
+                assert "documents" in s, f"Missing documents in {state} scheme"
+                assert "documents_links" in s, f"Missing documents_links in {state} scheme"
+                assert s["type"] == "state"
+                assert s["state"] == state
+
+
+class TestRAGSearchNewStates:
+    def test_search_finds_gujarat_scheme(self):
+        from app.services.rag_engine import rag_engine
+        if not rag_engine.schemes:
+            rag_engine.load_documents()
+        results = rag_engine.search_similar("Gujarat farmer irrigation electricity", user_state="Gujarat")
+        assert len(results) > 0
+
+    def test_search_finds_punjab_scheme(self):
+        from app.services.rag_engine import rag_engine
+        if not rag_engine.schemes:
+            rag_engine.load_documents()
+        results = rag_engine.search_similar("Punjab crop diversification paddy", user_state="Punjab")
+        assert len(results) > 0
+
+    def test_search_finds_chhattisgarh_scheme(self):
+        from app.services.rag_engine import rag_engine
+        if not rag_engine.schemes:
+            rag_engine.load_documents()
+        results = rag_engine.search_similar("Rajiv Gandhi Kisan Nyay Yojana", user_state="Chhattisgarh")
+        assert len(results) > 0
+
+    def test_search_finds_assam_tea_scheme(self):
+        from app.services.rag_engine import rag_engine
+        if not rag_engine.schemes:
+            rag_engine.load_documents()
+        results = rag_engine.search_similar("tea garden workers Assam", user_state="Assam")
+        assert len(results) > 0
+
+    def test_state_boost_works(self):
+        from app.services.rag_engine import rag_engine
+        if not rag_engine.schemes:
+            rag_engine.load_documents()
+        results_guj = rag_engine.search_similar("farmer scheme", user_state="Gujarat")
+        has_guj = any(s.get("state") == "Gujarat" for s in results_guj)
+        assert has_guj, f"Gujarat schemes not boosted: {[s['name'] for s in results_guj]}"

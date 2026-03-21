@@ -165,11 +165,14 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <select id="language-select" class="appearance-none font-sans px-3 py-1.5 text-xs font-semibold rounded-full bg-slate-100 text-slate-600 border-none outline-none cursor-pointer text-center min-w-[90px]">
-                    <option value="auto">Auto Detect</option>
-                    <option value="hi">हिंदी</option>
-                    <option value="en">English</option>
-                </select>
+                <div class="relative">
+                    <select id="language-select" class="font-sans pl-3 pr-7 py-1.5 text-xs font-semibold rounded-full bg-slate-100 text-slate-600 border-none outline-none cursor-pointer text-center min-w-[90px] appearance-none">
+                        <option value="auto">Auto Detect</option>
+                        <option value="hi">हिंदी</option>
+                        <option value="en">English</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute right-1.5 top-1/2 -translate-y-1/2 text-[14px] text-slate-400 pointer-events-none">expand_more</span>
+                </div>
                 <button id="avatar-btn" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 overflow-hidden active:scale-95 transition-transform" title="Farmer Profile">
                     <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1">person</span>
                 </button>

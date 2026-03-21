@@ -10,6 +10,7 @@ from app.services.translator import translator_service
 from app.services.brightdata_service import search_schemes as brightdata_search
 from app.services.brightdata_service import search_document_links
 from app.services.help_center_service import get_help_centers
+from app.services.gov_data_service import enrich_query_context, get_relevant_gov_links
 
 logger = logging.getLogger(__name__)
 
@@ -63,11 +64,15 @@ async def handle_query(request: QueryRequest, raw_request: Request):
     if web_snippets:
         logger.info(f"Bright Data returned {len(web_snippets)} snippet(s)")
 
+    gov_context = enrich_query_context(english_query, crop=request.crop)
+
     context = rag_engine._build_rich_context(
         schemes=top_schemes,
         web_snippets=web_snippets,
         farmer_profile=farmer_profile if farmer_profile else None
     )
+    if gov_context:
+        context = context + "\n\n" + gov_context if context else gov_context
 
     english_answer = rag_engine.generate_answer(
         context,
@@ -114,6 +119,12 @@ async def handle_query(request: QueryRequest, raw_request: Request):
             if el["url"] not in seen_urls:
                 seen_urls.add(el["url"])
                 doc_links.append({"title": el["title"], "url": el["url"]})
+
+    gov_links = get_relevant_gov_links(english_query)
+    for gl in gov_links:
+        if gl["url"] not in seen_urls:
+            seen_urls.add(gl["url"])
+            doc_links.append({"title": gl["title"], "url": gl["url"]})
 
     nearest_centers = []
     user_state = request.state or request.location

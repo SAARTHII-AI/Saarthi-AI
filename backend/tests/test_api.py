@@ -29,8 +29,12 @@ def _mock_translator_detect(text):
 
 @pytest.fixture(autouse=True)
 def _mock_external_services():
+    from app.api.query import _rate_limit
+    _rate_limit.clear()
     with patch("app.api.query.brightdata_search", return_value=[]), \
          patch("app.api.query.search_document_links", return_value=[]), \
+         patch("app.api.query.enrich_query_context", return_value=""), \
+         patch("app.api.query.get_relevant_gov_links", return_value=[]), \
          patch("app.api.query.translator_service") as mock_ts, \
          patch("app.services.rag_engine._build_azure_client", return_value=None):
         mock_ts.detect_language = _mock_translator_detect
@@ -288,3 +292,143 @@ class TestEdgeCases:
         response = client.get("/")
         assert response.status_code == 200
         assert "SaarthiAI" in response.json().get("message", "")
+
+
+class TestNewStateSchemes:
+    def test_gujarat_schemes_exist(self):
+        response = client.get("/schemes?state=Gujarat")
+        data = response.json()
+        state_schemes = [s for s in data["schemes"] if s.get("state") == "Gujarat"]
+        assert len(state_schemes) >= 3
+
+    def test_punjab_schemes_exist(self):
+        response = client.get("/schemes?state=Punjab")
+        data = response.json()
+        state_schemes = [s for s in data["schemes"] if s.get("state") == "Punjab"]
+        assert len(state_schemes) >= 3
+
+    def test_haryana_schemes_exist(self):
+        response = client.get("/schemes?state=Haryana")
+        data = response.json()
+        state_schemes = [s for s in data["schemes"] if s.get("state") == "Haryana"]
+        assert len(state_schemes) >= 3
+
+    def test_andhra_pradesh_schemes_exist(self):
+        response = client.get("/schemes?state=Andhra Pradesh")
+        data = response.json()
+        state_schemes = [s for s in data["schemes"] if s.get("state") == "Andhra Pradesh"]
+        assert len(state_schemes) >= 3
+
+    def test_kerala_schemes_exist(self):
+        response = client.get("/schemes?state=Kerala")
+        data = response.json()
+        state_schemes = [s for s in data["schemes"] if s.get("state") == "Kerala"]
+        assert len(state_schemes) >= 3
+
+    def test_chhattisgarh_schemes_exist(self):
+        response = client.get("/schemes?state=Chhattisgarh")
+        data = response.json()
+        state_schemes = [s for s in data["schemes"] if s.get("state") == "Chhattisgarh"]
+        assert len(state_schemes) >= 3
+
+    def test_jharkhand_schemes_exist(self):
+        response = client.get("/schemes?state=Jharkhand")
+        data = response.json()
+        state_schemes = [s for s in data["schemes"] if s.get("state") == "Jharkhand"]
+        assert len(state_schemes) >= 3
+
+    def test_assam_schemes_exist(self):
+        response = client.get("/schemes?state=Assam")
+        data = response.json()
+        state_schemes = [s for s in data["schemes"] if s.get("state") == "Assam"]
+        assert len(state_schemes) >= 3
+
+    def test_total_schemes_at_least_75(self):
+        response = client.get("/schemes")
+        data = response.json()
+        assert data["total"] >= 75
+
+
+class TestQueryWithFarmerProfile:
+    def test_query_with_crop_and_land_size(self):
+        payload = {
+            "query": "farming scheme for wheat",
+            "language": "en",
+            "occupation": "farmer",
+            "state": "Haryana",
+            "crop": "wheat",
+            "land_size": "3",
+        }
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200
+        data = response.json()
+        assert "answer" in data
+        assert len(data["answer"]) > 10
+
+    def test_query_with_all_profile_fields(self):
+        payload = {
+            "query": "best scheme for me",
+            "language": "en",
+            "occupation": "farmer",
+            "state": "Gujarat",
+            "income": 60000,
+            "crop": "cotton",
+            "land_size": "2",
+        }
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200
+        data = response.json()
+        assert "answer" in data
+        assert "recommended_schemes" in data
+
+    def test_query_with_no_profile(self):
+        payload = {"query": "general farming tips", "language": "en"}
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200
+
+    def test_query_msp_related(self):
+        payload = {"query": "wheat msp price", "language": "en", "crop": "wheat"}
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200
+        data = response.json()
+        assert "answer" in data
+
+
+class TestQueryNewStates:
+    def test_query_gujarat_state(self):
+        payload = {
+            "query": "farming scheme Gujarat irrigation",
+            "language": "en",
+            "state": "Gujarat",
+            "occupation": "farmer",
+        }
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200
+
+    def test_query_punjab_state(self):
+        payload = {
+            "query": "paddy farmer Punjab scheme",
+            "language": "en",
+            "state": "Punjab",
+            "occupation": "farmer",
+        }
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200
+
+    def test_query_chhattisgarh_state(self):
+        payload = {
+            "query": "Rajiv Gandhi Kisan Nyay",
+            "language": "en",
+            "state": "Chhattisgarh",
+        }
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200
+
+    def test_query_assam_state(self):
+        payload = {
+            "query": "tea garden worker scheme Assam",
+            "language": "en",
+            "state": "Assam",
+        }
+        response = client.post("/query", json=payload)
+        assert response.status_code == 200

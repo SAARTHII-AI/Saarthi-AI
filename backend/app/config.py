@@ -29,6 +29,8 @@ class Settings(BaseSettings):
     brightdata_dc_user: Optional[str] = None
     brightdata_dc_pass: Optional[str] = None
 
+    data_gov_api_key: Optional[str] = None
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

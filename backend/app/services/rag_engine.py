@@ -1,9 +1,15 @@
 import logging
+import hashlib
+import time
 from typing import Optional, Dict, Any
 from app.services.scheme_loader import load_schemes
 from app.config import settings
 
 logger = logging.getLogger(__name__)
+
+_answer_cache = {}
+_ANSWER_CACHE_MAX = 200
+_ANSWER_CACHE_TTL = 1800
 
 
 def _build_azure_client():
@@ -135,12 +141,22 @@ class RAGEngine:
 
         return "\n\n".join(parts)
 
+    def _cache_key(self, context: str, question: str, profile: dict = None) -> str:
+        raw = f"{question}|{context[:500]}|{str(sorted((profile or {}).items()))}"
+        return hashlib.md5(raw.encode()).hexdigest()
+
     def generate_answer(self, context: str, question: str, farmer_profile: dict = None) -> str:
         if not context:
             return (
                 "मुझे आपके सवाल के लिए कोई प्रासंगिक योजना (scheme) नहीं मिली। "
                 "I couldn't find a relevant scheme for your question."
             )
+
+        cache_key = self._cache_key(context, question, farmer_profile)
+        cached = _answer_cache.get(cache_key)
+        if cached and (time.time() - cached["ts"]) < _ANSWER_CACHE_TTL:
+            logger.info("Returning cached answer")
+            return cached["answer"]
 
         client = _build_azure_client()
         if client:
@@ -178,7 +194,12 @@ class RAGEngine:
                     ],
                     max_completion_tokens=600,
                 )
-                return response.choices[0].message.content.strip()
+                answer = response.choices[0].message.content.strip()
+                if len(_answer_cache) >= _ANSWER_CACHE_MAX:
+                    oldest = min(_answer_cache, key=lambda k: _answer_cache[k]["ts"])
+                    del _answer_cache[oldest]
+                _answer_cache[cache_key] = {"answer": answer, "ts": time.time()}
+                return answer
             except Exception as e:
                 logger.warning(f"Azure OpenAI call failed, using fallback: {e}")
 

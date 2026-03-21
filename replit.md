@@ -8,21 +8,27 @@ A voice-first AI assistant helping Indian citizens discover government schemes. 
   - ChatGPT-inspired voice chat UI with animated voice orb (listening=green pulse, speaking=purple glow)
   - Voice interrupt: tap mic or start typing to stop speech instantly
   - Stop Speaking button visible during TTS playback
-  - Smart voice selection: prefers Google/Microsoft neural voices, rate 0.9, pitch 1.05
+  - Multi-language STT support: Hindi, English, Marathi, Bengali, Telugu, Tamil, Kannada, Gujarati, Punjabi, Odia, Malayalam
+  - Smart voice selection: prefers Google/Microsoft neural voices, rate 0.88, pitch 1.05
+  - Interim results shown during speech recognition
   - Mobile-first PWA with service worker (`sw.js`) and manifest
   - Offline: Hindi + English i18n; Online: auto-detects any Indian language via Azure Translator
   - LRU cache (50 entries, 7-day TTL) for offline support with fuzzy matching
   - State/Central scheme filtering with seasonal suggestion chips
   - Profile drawer for farmer metadata (state, crop, land size, income)
   - Google Maps links on help center cards ("Open in Maps")
+  - Fixed language selector dropdown with proper arrow icon (no overlap)
   - Scheme type badges, document links, and XSS protection via escapeHtml
 
 - **Backend**: FastAPI Python application in `backend/` directory on port 8000
   - Enhanced RAG engine: keyword search with state/occupation boosting + rich context builder
+  - In-memory answer cache (LRU, 200 entries, 30-min TTL) for Azure OpenAI responses
   - Farmer profile passed to Azure OpenAI for personalized answers (state, crop, land, income)
+  - data.gov.in API integration for live MSP data and agriculture statistics
+  - Gov portal link enrichment (PM-KISAN, PMFBY, eNAM, Soil Health Card, etc.)
   - Bright Data SERP enrichment targeting official gov sites (india.gov.in, data.gov.in, pib.gov.in)
   - Translation via Azure AI Translator (fallback: deep-translator/Google)
-  - 55 government schemes (29 central + 26 state-level across 10 states)
+  - 79 government schemes (29 central + 50 state-level across 18 states)
   - Help center service with 50+ entries + Google Maps URL generation
   - Rate limiting (20 req/min) on query endpoint
   - Language detection via langdetect
@@ -36,19 +42,20 @@ A voice-first AI assistant helping Indian citizens discover government schemes. 
 - `server.py` - Main entry point, starts both servers
 - `backend/app/main.py` - FastAPI app
 - `backend/app/config.py` - Settings (env vars / Replit Secrets)
-- `backend/app/api/query.py` - Main query endpoint with farmer profile context
+- `backend/app/api/query.py` - Main query endpoint with farmer profile context + gov data enrichment
 - `backend/app/api/help_centers.py` - Help centers API endpoint
 - `backend/app/schemas.py` - Pydantic models (QueryRequest accepts crop, land_size; HelpCenter has maps_url)
-- `backend/app/services/rag_engine.py` - Enhanced RAG: keyword search with boosting + rich context + Azure OpenAI
+- `backend/app/services/rag_engine.py` - Enhanced RAG: keyword search with boosting + rich context + Azure OpenAI + answer cache
+- `backend/app/services/gov_data_service.py` - data.gov.in API integration + gov portal links
 - `backend/app/services/brightdata_service.py` - Bright Data SERP with gov site targeting
 - `backend/app/services/translator.py` - Azure AI Translator with fallback
 - `backend/app/services/recommendation_engine.py` - Data-driven scheme scoring
 - `backend/app/services/help_center_service.py` - Help centers with Google Maps URL generation
 - `backend/app/services/scheme_loader.py` - Scheme data loader with filtering
-- `backend/app/data/schemes.json` - 55 government schemes
+- `backend/app/data/schemes.json` - 79 government schemes (18 states + central)
 - `frontend/index.html` - ChatGPT-inspired mobile voice chat UI
 - `frontend/script.js` - API calls, cache, chat, scheme filtering, Google Maps rendering
-- `frontend/voice.js` - Voice recognition/synthesis with interrupt, voice selection, speaking states
+- `frontend/voice.js` - Voice recognition/synthesis with multi-language support, interrupt, voice selection
 - `frontend/sw.js` - Service worker for offline PWA
 - `frontend/manifest.json` - PWA manifest
 
@@ -88,4 +95,4 @@ The "Start application" workflow runs `python server.py`.
 cd backend && python -m pytest tests/ -v
 ```
 
-78 tests covering: API endpoints, edge cases, intent detection, scheme loading, recommendations, help centers, services.
+120 tests covering: API endpoints, edge cases, intent detection, scheme loading (18 states), recommendations, help centers, services, gov data service, RAG cache, farmer profile queries, new state scheme validation.

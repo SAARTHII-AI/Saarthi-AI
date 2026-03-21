@@ -7,24 +7,49 @@ let isListening = false;
 let isSpeaking = false;
 let currentUtterance = null;
 
+const INDIAN_LANG_MAP = {
+    "hi": "hi-IN",
+    "en": "en-IN",
+    "mr": "mr-IN",
+    "bn": "bn-IN",
+    "te": "te-IN",
+    "ta": "ta-IN",
+    "kn": "kn-IN",
+    "gu": "gu-IN",
+    "pa": "pa-IN",
+    "or": "or-IN",
+    "ml": "ml-IN",
+    "as": "as-IN",
+    "ur": "ur-IN",
+};
+
+function getRecognitionLang() {
+    const langCode = languageSelect.value;
+    if (langCode === "hi") return "hi-IN";
+    if (langCode === "en") return "en-IN";
+
+    const nav = (navigator.language || "").toLowerCase();
+    for (const [code, bcp] of Object.entries(INDIAN_LANG_MAP)) {
+        if (nav.startsWith(code)) return bcp;
+    }
+    return "hi-IN";
+}
+
 function selectBestVoice(langCode) {
     const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
     if (!voices.length) return null;
 
-    const langMap = {
-        "hi": "hi-IN",
-        "en": "en-IN",
-    };
-    const targetLang = langMap[langCode] || "hi-IN";
+    const targetLang = INDIAN_LANG_MAP[langCode] || "hi-IN";
+    const langPrefix = targetLang.split("-")[0];
 
-    const preferredKeywords = ["google", "microsoft", "neural", "natural", "premium"];
-    const fallbackKeywords = ["female", "zira", "heera"];
+    const preferredKeywords = ["google", "microsoft", "neural", "natural", "premium", "wavenet"];
+    const fallbackKeywords = ["female", "zira", "heera", "swara"];
 
     let bestVoice = null;
     let bestScore = -1;
 
     for (const voice of voices) {
-        if (!voice.lang.startsWith(targetLang.split("-")[0])) continue;
+        if (!voice.lang.toLowerCase().startsWith(langPrefix)) continue;
         let score = 0;
         const nameLower = voice.name.toLowerCase();
 
@@ -60,12 +85,18 @@ function stopSpeaking() {
 
 function showStopButton() {
     const btn = document.getElementById("stop-speech-btn");
-    if (btn) btn.classList.remove("hidden");
+    if (btn) {
+        btn.classList.remove("hidden");
+        btn.classList.add("flex");
+    }
 }
 
 function hideStopButton() {
     const btn = document.getElementById("stop-speech-btn");
-    if (btn) btn.classList.add("hidden");
+    if (btn) {
+        btn.classList.add("hidden");
+        btn.classList.remove("flex");
+    }
 }
 
 function updateVoiceOrb() {
@@ -73,40 +104,72 @@ function updateVoiceOrb() {
     if (!orb) return;
 
     orb.classList.remove("listening", "speaking");
+
+    const micIcon = orb.querySelector(".material-symbols-outlined");
+
     if (isListening) {
         orb.classList.add("listening");
+        if (micIcon) micIcon.textContent = "hearing";
     } else if (isSpeaking) {
         orb.classList.add("speaking");
+        if (micIcon) micIcon.textContent = "volume_up";
+    } else {
+        if (micIcon) micIcon.textContent = "mic";
     }
 }
 
 if (SpeechRecognition) {
     recognition = new SpeechRecognition();
     recognition.continuous = false;
-    recognition.interimResults = false;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
 
     recognition.onstart = function () {
         isListening = true;
         updateVoiceOrb();
-        if (window.showStatus) showStatus(window.t ? window.t("listening") : "Listening...");
+        if (window.showStatus) window.showStatus(window.t ? window.t("listening") : "Listening...");
     };
 
     recognition.onresult = function (event) {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById("text-input").value = transcript;
-        if (window.showStatus) showStatus(window.t ? window.t("understood") : "Understood!");
-        setTimeout(sendTextMessage, 400);
+        let finalTranscript = "";
+        let interimTranscript = "";
+
+        for (let i = 0; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+                finalTranscript += event.results[i][0].transcript;
+            } else {
+                interimTranscript += event.results[i][0].transcript;
+            }
+        }
+
+        const textInput = document.getElementById("text-input");
+
+        if (finalTranscript) {
+            textInput.value = finalTranscript;
+            if (window.showStatus) window.showStatus(window.t ? window.t("understood") : "Understood!");
+            setTimeout(sendTextMessage, 400);
+        } else if (interimTranscript) {
+            textInput.value = interimTranscript;
+        }
     };
 
     recognition.onerror = function (event) {
         console.error("Speech recognition error", event.error);
-        if (window.showStatus) showStatus(window.t ? window.t("hearError") : "Sorry, I couldn't hear you.");
+
+        if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+            if (window.showStatus) window.showStatus("Microphone access denied. Please allow microphone in browser settings.");
+        } else if (event.error === "no-speech") {
+            if (window.showStatus) window.showStatus("No speech detected. Try again.");
+        } else if (event.error === "network") {
+            if (window.showStatus) window.showStatus("Network error. Check your connection.");
+        } else {
+            if (window.showStatus) window.showStatus(window.t ? window.t("hearError") : "Sorry, I couldn't hear you.");
+        }
         stopListening();
     };
 
     recognition.onend = function () {
         stopListening();
-        if (window.showStatus) showStatus("");
     };
 
     micBtn.addEventListener("click", () => {
@@ -118,25 +181,25 @@ if (SpeechRecognition) {
         if (isListening) {
             recognition.stop();
         } else {
-            const langCode = languageSelect.value;
-            if (langCode === "hi") {
-                recognition.lang = "hi-IN";
-            } else if (langCode === "en") {
-                recognition.lang = "en-IN";
-            } else {
-                recognition.lang = "hi-IN";
-            }
+            recognition.lang = getRecognitionLang();
             try {
                 recognition.start();
             } catch (e) {
                 console.error("Could not start recognition", e);
+                if (e.message && e.message.includes("already started")) {
+                    recognition.stop();
+                    setTimeout(() => {
+                        recognition.lang = getRecognitionLang();
+                        recognition.start();
+                    }, 300);
+                }
             }
         }
     });
 } else {
     micBtn.disabled = true;
     micBtn.classList.add("mic-disabled");
-    micBtn.innerHTML = '<span class="material-symbols-outlined text-3xl">mic_off</span>';
+    micBtn.innerHTML = '<span class="material-symbols-outlined text-2xl">mic_off</span>';
 
     const hint = document.getElementById("mic-unsupported-hint");
     if (hint) {
@@ -156,6 +219,7 @@ if (SpeechRecognition) {
 function stopListening() {
     isListening = false;
     updateVoiceOrb();
+    if (window.showStatus) window.showStatus("");
 }
 
 if (window.speechSynthesis) {
@@ -172,28 +236,27 @@ window.speakText = function (text, responseLang = null) {
 
     const cleanText = text
         .replace(/[*_~`#]/g, "")
+        .replace(/https?:\/\/\S+/g, "")
         .replace(/\n{2,}/g, ". ")
         .replace(/\n/g, ". ")
         .replace(/\s{2,}/g, " ")
+        .replace(/\. \./g, ".")
         .trim();
 
-    if (!cleanText) return;
+    if (!cleanText || cleanText.length < 2) return;
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
 
-    const langCode = responseLang || languageSelect.value;
-    if (langCode === "hi") {
-        utterance.lang = "hi-IN";
-    } else {
-        utterance.lang = "en-IN";
-    }
+    const langCode = responseLang || languageSelect.value || "hi";
+    const resolvedLang = INDIAN_LANG_MAP[langCode] || "hi-IN";
+    utterance.lang = resolvedLang;
 
-    const voice = selectBestVoice(langCode === "hi" ? "hi" : "en");
+    const voice = selectBestVoice(langCode);
     if (voice) {
         utterance.voice = voice;
     }
 
-    utterance.rate = 0.9;
+    utterance.rate = 0.88;
     utterance.pitch = 1.05;
     utterance.volume = 1.0;
 
@@ -210,7 +273,10 @@ window.speakText = function (text, responseLang = null) {
         hideStopButton();
     };
 
-    utterance.onerror = function () {
+    utterance.onerror = function (e) {
+        if (e.error !== "interrupted") {
+            console.warn("TTS error:", e.error);
+        }
         isSpeaking = false;
         currentUtterance = null;
         updateVoiceOrb();
@@ -222,10 +288,11 @@ window.speakText = function (text, responseLang = null) {
 };
 
 window.stopSpeaking = stopSpeaking;
+window.isSpeaking = () => isSpeaking;
 
 const textInput = document.getElementById("text-input");
 if (textInput) {
-    textInput.addEventListener("focus", () => {
+    textInput.addEventListener("input", () => {
         if (isSpeaking) stopSpeaking();
     });
 }
