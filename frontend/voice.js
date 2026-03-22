@@ -6,6 +6,7 @@ let recognition = null;
 let isListening = false;
 let isSpeaking = false;
 let currentUtterance = null;
+let speechQueue = [];
 
 const INDIAN_LANG_MAP = {
     "hi": "hi-IN",
@@ -23,6 +24,20 @@ const INDIAN_LANG_MAP = {
     "ur": "ur-IN",
 };
 
+const FEMALE_VOICE_NAMES = [
+    "heera", "swara", "kalpana", "shruti",
+    "zira", "hazel", "susan", "samantha", "karen",
+    "monika", "amala", "aditi", "raveena", "priya",
+    "neerja", "lekha", "meera", "female",
+    "google हिन्दी", "google hindi",
+    "google বাংলা", "google తెలుగు", "google தமிழ்",
+    "google ગુજરાતી", "google ಕನ್ನಡ", "google മലയാളം",
+];
+
+const MALE_VOICE_NAMES = [
+    "ravi", "hemant", "male", "madhur", "prabhat",
+];
+
 function getRecognitionLang() {
     const langCode = languageSelect.value;
     if (langCode && INDIAN_LANG_MAP[langCode]) {
@@ -35,39 +50,63 @@ function getRecognitionLang() {
     return "hi-IN";
 }
 
+function resolveLangCode(langCode) {
+    if (!langCode) return { short: "hi", bcp: "hi-IN" };
+    if (INDIAN_LANG_MAP[langCode]) return { short: langCode, bcp: INDIAN_LANG_MAP[langCode] };
+    const lower = langCode.toLowerCase();
+    for (const [code, bcp] of Object.entries(INDIAN_LANG_MAP)) {
+        if (lower === bcp.toLowerCase() || lower.startsWith(code + "-")) {
+            return { short: code, bcp: bcp };
+        }
+    }
+    return { short: langCode.split("-")[0], bcp: langCode };
+}
+
 function selectBestVoice(langCode) {
     const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
     if (!voices.length) return null;
 
-    const targetLang = INDIAN_LANG_MAP[langCode] || "hi-IN";
-    const langPrefix = targetLang.split("-")[0];
-
-    const preferredKeywords = ["google", "microsoft", "neural", "natural", "premium", "wavenet"];
-    const fallbackKeywords = ["female", "zira", "heera", "swara"];
+    const resolved = resolveLangCode(langCode);
+    const targetLang = resolved.bcp;
+    const langPrefix = resolved.short;
 
     let bestVoice = null;
     let bestScore = -1;
 
     for (const voice of voices) {
         if (!voice.lang.toLowerCase().startsWith(langPrefix)) continue;
+
         let score = 0;
         const nameLower = voice.name.toLowerCase();
 
         if (voice.lang === targetLang) score += 2;
 
-        for (const kw of preferredKeywords) {
-            if (nameLower.includes(kw)) { score += 3; break; }
-        }
-        for (const kw of fallbackKeywords) {
-            if (nameLower.includes(kw)) { score += 1; break; }
+        const isFemale = FEMALE_VOICE_NAMES.some(fn => nameLower.includes(fn));
+        const isMale = MALE_VOICE_NAMES.some(mn => nameLower.includes(mn));
+
+        if (isFemale && !isMale) score += 10;
+        if (isMale && !isFemale) score -= 5;
+
+        const premiumKeywords = ["neural", "natural", "premium", "wavenet", "enhanced"];
+        for (const kw of premiumKeywords) {
+            if (nameLower.includes(kw)) { score += 6; break; }
         }
 
-        if (!voice.localService) score += 1;
+        const providerKeywords = ["google", "microsoft"];
+        for (const kw of providerKeywords) {
+            if (nameLower.includes(kw)) { score += 4; break; }
+        }
+
+        if (!voice.localService) score += 2;
 
         if (score > bestScore) {
             bestScore = score;
             bestVoice = voice;
         }
+    }
+
+    if (bestVoice) {
+        console.log(`[SaarthiAI] Selected voice: "${bestVoice.name}" (${bestVoice.lang})`);
     }
 
     return bestVoice;
@@ -77,6 +116,7 @@ function stopSpeaking() {
     if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
     }
+    speechQueue = [];
     isSpeaking = false;
     currentUtterance = null;
     updateVoiceOrb();
@@ -226,38 +266,98 @@ if (window.speechSynthesis) {
     window.speechSynthesis.onvoiceschanged = function () {};
 }
 
-window.speakText = function (text, responseLang = null) {
-    if (!window.speechSynthesis) {
-        console.warn("Speech Synthesis API not supported.");
+function cleanTextForSpeech(text) {
+    return text
+        .replace(/\*\*(.+?)\*\*/g, "$1")
+        .replace(/\*(.+?)\*/g, "$1")
+        .replace(/#{1,3}\s*/g, "")
+        .replace(/[_~`]/g, "")
+        .replace(/https?:\/\/\S+/g, "")
+        .replace(/[─━═▬]{2,}/g, "")
+        .replace(/[💰✅📄📞🔗📋📍🛡️📝🌐]/g, "")
+        .replace(/\d+\)\s*/g, "")
+        .replace(/[-•]\s*/g, "")
+        .replace(/\(\s*\)/g, "")
+        .replace(/\n{2,}/g, ". ")
+        .replace(/\n/g, ". ")
+        .replace(/\.\s*\./g, ".")
+        .replace(/\s{2,}/g, " ")
+        .replace(/,\s*,/g, ",")
+        .trim();
+}
+
+function splitAtBoundary(text, maxLen, separatorPattern) {
+    if (text.length <= maxLen) return [text];
+
+    const parts = text.split(separatorPattern).filter(p => p.length > 0);
+    const chunks = [];
+    let current = "";
+
+    for (const part of parts) {
+        if (current.length + part.length + 1 > maxLen && current.length > 0) {
+            chunks.push(current.trim());
+            current = part;
+        } else {
+            current += (current ? " " : "") + part;
+        }
+    }
+    if (current.trim()) chunks.push(current.trim());
+    return chunks;
+}
+
+function splitTextIntoChunks(text, maxLen) {
+    if (text.length <= maxLen) return [text];
+
+    let chunks = splitAtBoundary(text, maxLen, /[।.!?]+\s*/);
+
+    const result = [];
+    for (const chunk of chunks) {
+        if (chunk.length <= maxLen) {
+            result.push(chunk);
+        } else {
+            const commaChunks = splitAtBoundary(chunk, maxLen, /[,;:]\s*/);
+            for (const cc of commaChunks) {
+                if (cc.length <= maxLen) {
+                    result.push(cc);
+                } else {
+                    const words = cc.split(/\s+/);
+                    let line = "";
+                    for (const word of words) {
+                        if (line.length + word.length + 1 > maxLen && line.length > 0) {
+                            result.push(line.trim());
+                            line = word;
+                        } else {
+                            line += (line ? " " : "") + word;
+                        }
+                    }
+                    if (line.trim()) result.push(line.trim());
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
+function speakNextChunk() {
+    if (speechQueue.length === 0) {
+        isSpeaking = false;
+        currentUtterance = null;
+        updateVoiceOrb();
+        hideStopButton();
         return;
     }
 
-    stopSpeaking();
-
-    const cleanText = text
-        .replace(/[*_~`#]/g, "")
-        .replace(/https?:\/\/\S+/g, "")
-        .replace(/\n{2,}/g, ". ")
-        .replace(/\n/g, ". ")
-        .replace(/\s{2,}/g, " ")
-        .replace(/\. \./g, ".")
-        .trim();
-
-    if (!cleanText || cleanText.length < 2) return;
-
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-
-    const langCode = responseLang || languageSelect.value || "hi";
+    const { text, langCode, voice } = speechQueue.shift();
     const resolvedLang = INDIAN_LANG_MAP[langCode] || "hi-IN";
+
+    const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = resolvedLang;
 
-    const voice = selectBestVoice(langCode);
-    if (voice) {
-        utterance.voice = voice;
-    }
+    if (voice) utterance.voice = voice;
 
-    utterance.rate = 0.88;
-    utterance.pitch = 1.05;
+    utterance.rate = 0.92;
+    utterance.pitch = 1.12;
     utterance.volume = 1.0;
 
     utterance.onstart = function () {
@@ -267,16 +367,14 @@ window.speakText = function (text, responseLang = null) {
     };
 
     utterance.onend = function () {
-        isSpeaking = false;
-        currentUtterance = null;
-        updateVoiceOrb();
-        hideStopButton();
+        speakNextChunk();
     };
 
     utterance.onerror = function (e) {
         if (e.error !== "interrupted") {
             console.warn("TTS error:", e.error);
         }
+        speechQueue = [];
         isSpeaking = false;
         currentUtterance = null;
         updateVoiceOrb();
@@ -285,6 +383,31 @@ window.speakText = function (text, responseLang = null) {
 
     currentUtterance = utterance;
     window.speechSynthesis.speak(utterance);
+}
+
+window.speakText = function (text, responseLang = null) {
+    if (!window.speechSynthesis) {
+        console.warn("Speech Synthesis API not supported.");
+        return;
+    }
+
+    stopSpeaking();
+
+    const cleanText = cleanTextForSpeech(text);
+    if (!cleanText || cleanText.length < 2) return;
+
+    const langCode = responseLang || languageSelect.value || "hi";
+    const voice = selectBestVoice(langCode);
+
+    const chunks = splitTextIntoChunks(cleanText, 180);
+
+    speechQueue = chunks.map(chunk => ({
+        text: chunk,
+        langCode: langCode,
+        voice: voice,
+    }));
+
+    speakNextChunk();
 };
 
 window.stopSpeaking = stopSpeaking;
