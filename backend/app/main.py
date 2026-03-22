@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import health, schemes, query
+from app.api import health, schemes, query, help_centers, speech, connection
 from app.services.rag_engine import rag_engine
 from mangum import Mangum
 
@@ -20,6 +20,9 @@ api_router = APIRouter(prefix="/api")
 api_router.include_router(health.router, prefix="/health", tags=["health"])
 api_router.include_router(schemes.router, prefix="/schemes", tags=["schemes"])
 api_router.include_router(query.router, prefix="/query", tags=["query"])
+api_router.include_router(help_centers.router, prefix="/help-centers", tags=["help-centers"])
+api_router.include_router(speech.router, prefix="/speech", tags=["speech"])
+api_router.include_router(connection.router, prefix="/connection", tags=["connection"])
 
 app.include_router(api_router)
 
@@ -27,6 +30,9 @@ app.include_router(api_router)
 app.include_router(health.router, prefix="/health", tags=["health"])
 app.include_router(schemes.router, prefix="/schemes", tags=["schemes"])
 app.include_router(query.router, prefix="/query", tags=["query"])
+app.include_router(help_centers.router, prefix="/help-centers", tags=["help-centers"])
+app.include_router(speech.router, prefix="/speech", tags=["speech"])
+app.include_router(connection.router, prefix="/connection", tags=["connection"])
 
 @app.on_event("startup")
 async def startup_event():

@@ -1,7 +1,5 @@
-import os
-import json
 from app.services.scheme_loader import load_schemes
-from app.config import settings
+
 
 class RAGEngine:
     def __init__(self):

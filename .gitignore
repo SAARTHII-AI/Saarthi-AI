@@ -1,5 +1,53 @@
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-venv/
+*.egg-info/
+.eggs/
+dist/
+build/
 .pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.tox/
+*.cover
+.hypothesis/
+
+# Environments & local secrets
+venv/
+.venv/
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p12
+credentials.json
+service-account*.json
+secrets/
+
+# Node (MCP / tooling)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# AWS SAM / CDK
+.aws-sam/
+samconfig.toml.bak
+
+# Cursor / MCP (local tokens, MCP env — keep out of the repo)
+.mcp.json
+.cursor/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+*.sublime-*

@@ -1,11 +1,46 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: SaarthiAI Backend - FastAPI on AWS Lambda
+Description: SaarthiAI — FastAPI on AWS Lambda (container). Optional Azure OpenAI + Bright Data env vars.
+
+Parameters:
+  AzureOpenAiEndpoint:
+    Type: String
+    Default: ""
+    Description: Azure OpenAI resource endpoint (https://YOUR_RESOURCE.openai.azure.com)
+  AzureOpenAiApiKey:
+    Type: String
+    Default: ""
+    NoEcho: true
+    Description: Azure OpenAI API key
+  AzureOpenAiDeployment:
+    Type: String
+    Default: ""
+    Description: Azure OpenAI deployment name
+  AzureOpenAiApiVersion:
+    Type: String
+    Default: "2025-01-01-preview"
+    Description: Azure OpenAI API version
+  BrightDataApiToken:
+    Type: String
+    Default: ""
+    NoEcho: true
+    Description: Bright Data API token (Bearer) for SERP /request API
+  BrightDataSerpZone:
+    Type: String
+    Default: ""
+    Description: Bright Data SERP zone name
+  OfflineOnly:
+    Type: String
+    Default: "false"
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: If true, skip Azure and Bright Data calls (local fallback only)
 
 Globals:
   Function:
-    Timeout: 30
-    MemorySize: 2048
+    Timeout: 60
+    MemorySize: 3008
 
 Resources:
   SaarthiAiFunction:
@@ -14,6 +49,23 @@ Resources:
       PackageType: Image
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          ENV: production
+          OFFLINE_ONLY:
+            Ref: OfflineOnly
+          AZURE_OPENAI_ENDPOINT:
+            Ref: AzureOpenAiEndpoint
+          AZURE_OPENAI_API_KEY:
+            Ref: AzureOpenAiApiKey
+          AZURE_OPENAI_DEPLOYMENT:
+            Ref: AzureOpenAiDeployment
+          AZURE_OPENAI_API_VERSION:
+            Ref: AzureOpenAiApiVersion
+          BRIGHTDATA_API_TOKEN:
+            Ref: BrightDataApiToken
+          BRIGHTDATA_SERP_ZONE:
+            Ref: BrightDataSerpZone
       Events:
         SaarthiAiApi:
           Type: Api
@@ -27,5 +79,6 @@ Resources:
 
 Outputs:
   SaarthiAiApi:
-    Description: "API Gateway endpoint URL for Prod stage"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Description: API Gateway endpoint URL for Prod stage
+    Value:
+      Fn::Sub: "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
