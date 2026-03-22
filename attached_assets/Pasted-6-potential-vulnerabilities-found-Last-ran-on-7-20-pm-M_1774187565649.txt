@@ -1,0 +1,65 @@
+6 potential vulnerabilities found.
+Last ran on
+ 
+7:20 pm, Mar 22, 2026
+Security
+XSS Vulnerability: Unsafe DOM Manipulation. User controlled data in methods like `innerHTML`, `outerHTML` or `document.write` is an anti-pattern that can lead to XSS vulnerabilities. Replace with safe DOM methods: Use createElement() + appendChild() + textContent for dynamic content. Avoid use innerHTML with user data: Even escaped data can be risky. If HTML injection is absolutely necessary: Sanitize with DOMPurify library first.
+XSS Vulnerability: Unsafe DOM Manipulation. User controlled data in methods like `innerHTML`, `outerHTML` or `document.write` is an anti-pattern that can lead to XSS vulnerabilities. Replace with safe DOM methods: Use createElement() + appendChild() + textContent for dynamic content. Avoid use innerHTML with user data: Even escaped data can be risky. If HTML injection is absolutely necessary: Sanitize with DOMPurify library first.
+backend/frontend_dist/script.js
+    banner.innerHTML = `<span class="material-symbols-outlined text-sm mt-0.5" style="font-variation-settings:'FILL' 1">wifi_off</span>
+        <div>
+            <div class="font-semibold mb-1">${t("offlinePill")}</div>
+            <div>${t("offlineFeatures")}</div>
+        </div>`;
+Security
+XSS Vulnerability: Unsafe DOM Manipulation. User controlled data in methods like `innerHTML`, `outerHTML` or `document.write` is an anti-pattern that can lead to XSS vulnerabilities. Replace with safe DOM methods: Use createElement() + appendChild() + textContent for dynamic content. Avoid use innerHTML with user data: Even escaped data can be risky. If HTML injection is absolutely necessary: Sanitize with DOMPurify library first.
+XSS Vulnerability: Unsafe DOM Manipulation. User controlled data in methods like `innerHTML`, `outerHTML` or `document.write` is an anti-pattern that can lead to XSS vulnerabilities. Replace with safe DOM methods: Use createElement() + appendChild() + textContent for dynamic content. Avoid use innerHTML with user data: Even escaped data can be risky. If HTML injection is absolutely necessary: Sanitize with DOMPurify library first.
+backend/frontend_dist/script.js
+    container.innerHTML = chips.map(chip => `
+        <button onclick="useChip(${JSON.stringify(chip.query).replace(/"/g, '&quot;')})"
+            class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-full text-[12px] font-medium text-slate-600 shadow-sm active:bg-slate-50 transition-colors flex items-center gap-1">
+            <span class="material-symbols-outlined text-[13px] ${chip.color}">${chip.icon}</span>
+            ${chip.label}
+        </button>
+    `).join("");
+Security
+XSS Vulnerability: Unsafe DOM Manipulation. User controlled data in methods like `innerHTML`, `outerHTML` or `document.write` is an anti-pattern that can lead to XSS vulnerabilities. Replace with safe DOM methods: Use createElement() + appendChild() + textContent for dynamic content. Avoid use innerHTML with user data: Even escaped data can be risky. If HTML injection is absolutely necessary: Sanitize with DOMPurify library first.
+XSS Vulnerability: Unsafe DOM Manipulation. User controlled data in methods like `innerHTML`, `outerHTML` or `document.write` is an anti-pattern that can lead to XSS vulnerabilities. Replace with safe DOM methods: Use createElement() + appendChild() + textContent for dynamic content. Avoid use innerHTML with user data: Even escaped data can be risky. If HTML injection is absolutely necessary: Sanitize with DOMPurify library first.
+frontend/script.js
+    banner.innerHTML = `<span class="material-symbols-outlined text-sm mt-0.5" style="font-variation-settings:'FILL' 1">wifi_off</span>
+        <div>
+            <div class="font-semibold mb-1">${t("offlinePill")}</div>
+            <div>${t("offlineFeatures")}</div>
+        </div>`;
+Security
+XSS Vulnerability: Unsafe DOM Manipulation. User controlled data in methods like `innerHTML`, `outerHTML` or `document.write` is an anti-pattern that can lead to XSS vulnerabilities. Replace with safe DOM methods: Use createElement() + appendChild() + textContent for dynamic content. Avoid use innerHTML with user data: Even escaped data can be risky. If HTML injection is absolutely necessary: Sanitize with DOMPurify library first.
+XSS Vulnerability: Unsafe DOM Manipulation. User controlled data in methods like `innerHTML`, `outerHTML` or `document.write` is an anti-pattern that can lead to XSS vulnerabilities. Replace with safe DOM methods: Use createElement() + appendChild() + textContent for dynamic content. Avoid use innerHTML with user data: Even escaped data can be risky. If HTML injection is absolutely necessary: Sanitize with DOMPurify library first.
+frontend/script.js
+    container.innerHTML = chips.map(chip => `
+        <button onclick="useChip(${JSON.stringify(chip.query).replace(/"/g, '&quot;')})"
+            class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-full text-[12px] font-medium text-slate-600 shadow-sm active:bg-slate-50 transition-colors flex items-center gap-1">
+            <span class="material-symbols-outlined text-[13px] ${chip.color}">${chip.icon}</span>
+            ${chip.label}
+        </button>
+    `).join("");
+Security
+Detected subprocess function 'Popen' without a static string. If this data can be controlled by a malicious actor, it may be an instance of command injection. Audit the use of this call to ensure it is not controllable by an external resource. You may consider using 'shlex.escape()'.
+Detected subprocess function 'Popen' without a static string. If this data can be controlled by a malicious actor, it may be an instance of command injection. Audit the use of this call to ensure it is not controllable by an external resource. You may consider using 'shlex.escape()'.
+server.py
+    proc = subprocess.Popen(
+        [sys.executable, "-m", "uvicorn", "app.main:app", "--host", "localhost", "--port", "8000"],
+        cwd=backend_dir
+    )
+Privacy
+Auth Token exposed to OpenAI OpenAI
+Auth Token exposed to OpenAI OpenAI
+Associated Compliance Framework
+GDPR-A5-28, CCPA, NIST-800-53
+Remediation Strategy:
+Verify that shared data aligns with the sensitive data types defined in your privacy notice and data processing agreement. Adjust or restrict sharing as necessary to maintain compliance and minimize privacy risks.
+backend/app/services/rag_engine.py
+         AzureOpenAI(
+    azure_endpoint=settings.azure_openai_endpoint,
+    api_key=settings.azure_openai_api_key,
+    api_version=settings.azure_openai_api_version,
+)

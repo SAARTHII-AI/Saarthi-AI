@@ -885,13 +885,18 @@ function renderSuggestionChips() {
     const container = document.getElementById("suggestion-chips");
     if (!container) return;
     const chips = getSeasonalChips();
-    container.innerHTML = chips.map(chip => `
-        <button onclick="useChip(${JSON.stringify(chip.query).replace(/"/g, '&quot;')})"
-            class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-full text-[12px] font-medium text-slate-600 shadow-sm active:bg-slate-50 transition-colors flex items-center gap-1">
-            <span class="material-symbols-outlined text-[13px] ${chip.color}">${chip.icon}</span>
-            ${chip.label}
-        </button>
-    `).join("");
+    container.textContent = "";
+    chips.forEach(chip => {
+        const btn = document.createElement("button");
+        btn.className = "px-2.5 py-1.5 bg-white border border-slate-200 rounded-full text-[12px] font-medium text-slate-600 shadow-sm active:bg-slate-50 transition-colors flex items-center gap-1";
+        btn.addEventListener("click", () => useChip(chip.query));
+        const icon = document.createElement("span");
+        icon.className = "material-symbols-outlined text-[13px] " + chip.color;
+        icon.textContent = chip.icon;
+        btn.appendChild(icon);
+        btn.appendChild(document.createTextNode(" " + chip.label));
+        container.appendChild(btn);
+    });
 }
 
 function useChip(query) {
