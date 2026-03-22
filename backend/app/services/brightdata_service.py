@@ -4,7 +4,11 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
-GOV_SITES = ["data.gov.in", "india.gov.in", "pmkisan.gov.in", "agricoop.nic.in", "pib.gov.in"]
+GOV_SITES = ["data.gov.in", "india.gov.in", "pmkisan.gov.in", "agricoop.nic.in", "pib.gov.in", "agmarknet.gov.in", "enam.gov.in"]
+
+PRICE_KEYWORDS = ["mandi", "market price", "crop price", "rate today", "bhav", "daam", "price today", "msp", "selling price"]
+PRICE_SITES = "site:agmarknet.gov.in OR site:enam.gov.in OR site:data.gov.in"
+SCHEME_SITES = "site:india.gov.in OR site:data.gov.in OR site:pib.gov.in"
 
 
 def _is_safe_url(url: str) -> bool:
@@ -25,7 +29,12 @@ def search_schemes(query: str, top_k: int = 3) -> list[str]:
         return []
 
     try:
-        search_query = f"{query} government scheme india site:india.gov.in OR site:data.gov.in OR site:pib.gov.in"
+        query_lower = query.lower()
+        is_price_query = any(kw in query_lower for kw in PRICE_KEYWORDS)
+        if is_price_query:
+            search_query = f"{query} today price rate per quintal {PRICE_SITES}"
+        else:
+            search_query = f"{query} government scheme india {SCHEME_SITES}"
 
         url = "https://api.brightdata.com/request"
         headers = {

@@ -50,7 +50,7 @@ class ProxyHandler(SimpleHTTPRequestHandler):
         )
 
         try:
-            with urllib.request.urlopen(req) as response:
+            with urllib.request.urlopen(req, timeout=55) as response:
                 self.send_response(response.status)
                 for header, value in response.headers.items():
                     if header.lower() not in ("transfer-encoding", "connection"):

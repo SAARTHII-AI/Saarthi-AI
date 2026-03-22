@@ -36,7 +36,9 @@ A voice-first AI assistant helping Indian citizens discover and **apply for** go
   - **In-memory answer cache**: LRU, 500 entries, 1-hour TTL, conversation-aware cache keys
   - Farmer profile passed to Azure OpenAI for personalized answers (state, crop, land, income)
   - Azure OpenAI: deployment=gpt-5.3-chat, max_completion_tokens=1500, anti-hallucination guardrails in prompt
-  - Bright Data SERP enrichment targeting official gov sites (india.gov.in, data.gov.in, pib.gov.in)
+  - **Intent-aware response filtering**: 7 intents (scheme_search, eligibility_check, benefits_query, document_requirements, application_process, price_query, helpline_query) control which response sections (schemes, centers, links) are included
+  - **Mandi price routing**: price queries automatically search agmarknet.gov.in, enam.gov.in, data.gov.in instead of generic scheme sites
+  - Bright Data SERP enrichment targeting official gov sites (india.gov.in, data.gov.in, pib.gov.in, agmarknet.gov.in, enam.gov.in)
   - data.gov.in API integration for live MSP data and agriculture statistics
   - Gov portal link enrichment (PM-KISAN, PMFBY, eNAM, Soil Health Card, etc.)
   - Translation via deep-translator/Google (Azure AI Translator as optional enhancement)
@@ -64,7 +66,8 @@ A voice-first AI assistant helping Indian citizens discover and **apply for** go
 - `backend/app/services/rag_engine.py` - RAG engine: conversation-aware system prompt, multi-turn message building (last 6 turns), keyword search, Azure OpenAI with 1500 token limit, conversation-aware cache, offline fallback
 - `backend/app/services/offline_answer_engine.py` - KCC-quality template answers for all 11 languages with LANG_LABELS
 - `backend/app/services/gov_data_service.py` - data.gov.in API integration + gov portal links
-- `backend/app/services/brightdata_service.py` - Bright Data SERP with gov site targeting
+- `backend/app/services/intent_detection.py` - 7-intent classifier for query routing and response filtering
+- `backend/app/services/brightdata_service.py` - Bright Data SERP with gov site targeting + mandi price site routing
 - `backend/app/services/translator.py` - Translation with Google Translator fallback
 - `backend/app/services/recommendation_engine.py` - Data-driven scheme scoring
 - `backend/app/services/help_center_service.py` - Help centers with Google Maps URL generation

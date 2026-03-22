@@ -139,66 +139,85 @@ async def handle_query(request: QueryRequest, raw_request: Request):
             except Exception as e:
                 logger.warning(f"Post-answer translation failed (non-fatal): {e}")
 
-    raw_recommendations = recommend_schemes(request.model_dump())
+    include_schemes = intent in ("scheme_search", "eligibility_check", "benefits_query",
+                                    "document_requirements", "application_process", "general_information")
+    include_centers = intent in ("helpline_query", "application_process", "general_information")
+    include_doc_links = intent not in ("helpline_query",)
 
     final_recommendations = []
-    for rec in raw_recommendations:
-        rec_name = rec["name"]
-        rec_desc = rec["description"]
-        if detected_lang != "en":
-            try:
-                rec_name = translator_service.translate_text(rec_name, source="en", target=detected_lang)
-                rec_desc = translator_service.translate_text(rec_desc, source="en", target=detected_lang)
-            except Exception:
-                pass
-        final_recommendations.append({
-            "name": rec_name,
-            "description": rec_desc,
-            "type": rec.get("type"),
-            "state": rec.get("state"),
-            "documents_links": rec.get("documents_links")
-        })
+    if include_schemes:
+        raw_recommendations = recommend_schemes(request.model_dump())
+        query_words = set(english_query.lower().split())
+        scored_recs = []
+        for rec in raw_recommendations:
+            rec_name_lower = rec["name"].lower()
+            rec_desc_lower = rec.get("description", "").lower()
+            relevance = sum(1 for w in query_words if len(w) > 3 and (w in rec_name_lower or w in rec_desc_lower))
+            scored_recs.append((relevance, rec))
+        scored_recs.sort(key=lambda x: x[0], reverse=True)
+        filtered_recs = [r for score, r in scored_recs if score > 0]
+        if not filtered_recs:
+            filtered_recs = [r for _, r in scored_recs[:3]]
+
+        for rec in filtered_recs:
+            rec_name = rec["name"]
+            rec_desc = rec["description"]
+            if detected_lang != "en":
+                try:
+                    rec_name = translator_service.translate_text(rec_name, source="en", target=detected_lang)
+                    rec_desc = translator_service.translate_text(rec_desc, source="en", target=detected_lang)
+                except Exception:
+                    pass
+            final_recommendations.append({
+                "name": rec_name,
+                "description": rec_desc,
+                "type": rec.get("type"),
+                "state": rec.get("state"),
+                "documents_links": rec.get("documents_links")
+            })
 
     doc_links = []
-    seen_urls = set()
-    for scheme in top_schemes:
-        for link in scheme.get("documents_links", []) or []:
-            if link not in seen_urls and _is_safe_url(link):
-                seen_urls.add(link)
-                doc_links.append({"title": scheme["name"], "url": link})
+    if include_doc_links:
+        seen_urls = set()
+        for scheme in top_schemes:
+            for link in scheme.get("documents_links", []) or []:
+                if link not in seen_urls and _is_safe_url(link):
+                    seen_urls.add(link)
+                    doc_links.append({"title": scheme["name"], "url": link})
 
-    if top_schemes:
-        primary_scheme = top_schemes[0]
+        if top_schemes:
+            primary_scheme = top_schemes[0]
+            try:
+                enriched_links = search_document_links(english_query, primary_scheme["name"])
+                for el in enriched_links:
+                    if el["url"] not in seen_urls and _is_safe_url(el["url"]):
+                        seen_urls.add(el["url"])
+                        doc_links.append({"title": el["title"], "url": el["url"]})
+            except Exception as e:
+                logger.warning(f"Bright Data doc link search failed (non-fatal): {e}")
+
         try:
-            enriched_links = search_document_links(english_query, primary_scheme["name"])
-            for el in enriched_links:
-                if el["url"] not in seen_urls and _is_safe_url(el["url"]):
-                    seen_urls.add(el["url"])
-                    doc_links.append({"title": el["title"], "url": el["url"]})
+            gov_links = get_relevant_gov_links(english_query)
+            for gl in gov_links:
+                if gl["url"] not in seen_urls and _is_safe_url(gl["url"]):
+                    seen_urls.add(gl["url"])
+                    doc_links.append({"title": gl["title"], "url": gl["url"]})
         except Exception as e:
-            logger.warning(f"Bright Data doc link search failed (non-fatal): {e}")
-
-    try:
-        gov_links = get_relevant_gov_links(english_query)
-        for gl in gov_links:
-            if gl["url"] not in seen_urls and _is_safe_url(gl["url"]):
-                seen_urls.add(gl["url"])
-                doc_links.append({"title": gl["title"], "url": gl["url"]})
-    except Exception as e:
-        logger.warning(f"Gov links failed (non-fatal): {e}")
+            logger.warning(f"Gov links failed (non-fatal): {e}")
 
     nearest_centers = []
-    user_state = request.state or request.location
-    centers = get_help_centers(state=user_state)
-    for c in centers:
-        nearest_centers.append({
-            "name": c["name"],
-            "type": c["type"],
-            "phone": c["phone"],
-            "address": c["address"],
-            "district": c["district"],
-            "maps_url": c.get("maps_url"),
-        })
+    if include_centers:
+        user_state = request.state or request.location
+        centers = get_help_centers(state=user_state)
+        for c in centers:
+            nearest_centers.append({
+                "name": c["name"],
+                "type": c["type"],
+                "phone": c["phone"],
+                "address": c["address"],
+                "district": c["district"],
+                "maps_url": c.get("maps_url"),
+            })
 
     return QueryResponse(
         intent=intent,

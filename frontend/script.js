@@ -1030,18 +1030,25 @@ function escapeHtml(str) {
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
 
+function sanitizeUrl(url) {
+    if (!url || typeof url !== 'string') return '';
+    try {
+        const parsed = new URL(url);
+        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '';
+        return parsed.href;
+    } catch(e) { return ''; }
+}
+
 function renderMarkdown(str) {
     if (!str) return '';
     let html = escapeHtml(str);
     html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
     html = html.replace(/(https?:\/\/[^\s<]+)/g, function(url) {
-        try {
-            const parsed = new URL(url);
-            if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
-                return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline break-all">' + url + '</a>';
-            }
-        } catch(e) {}
+        const safe = sanitizeUrl(url);
+        if (safe) {
+            return '<a href="' + escapeHtml(safe) + '" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline break-all">' + escapeHtml(safe) + '</a>';
+        }
         return url;
     });
     html = html.replace(/^(#{1,3})\s+(.+)$/gm, (match, hashes, text) => {
@@ -1092,7 +1099,7 @@ function displayResponse(data, isCached, isOfflineGenerated) {
                 ? `<span class="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${scheme.type === 'central' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}">${scheme.type === 'central' ? t("central") : scheme.state || 'State'}</span>`
                 : '';
             const docLinks = (scheme.documents_links && scheme.documents_links.length > 0)
-                ? `<div class="flex flex-wrap gap-1 mt-1.5">${scheme.documents_links.map(url => `<a href="${url}" target="_blank" rel="noopener" class="inline-flex items-center gap-0.5 text-[10px] text-primary hover:underline font-medium"><span class="material-symbols-outlined text-[11px]">open_in_new</span>${t("officialLink")}</a>`).join('')}</div>`
+                ? `<div class="flex flex-wrap gap-1 mt-1.5">${scheme.documents_links.map(url => { const safe = sanitizeUrl(url); return safe ? `<a href="${escapeHtml(safe)}" target="_blank" rel="noopener" class="inline-flex items-center gap-0.5 text-[10px] text-primary hover:underline font-medium"><span class="material-symbols-outlined text-[11px]">open_in_new</span>${t("officialLink")}</a>` : ''; }).join('')}</div>`
                 : '';
             htmlContent += `
                 <div class="scheme-card bg-white border border-slate-200 rounded-xl p-3 transition-all">
@@ -1111,12 +1118,15 @@ function displayResponse(data, isCached, isOfflineGenerated) {
     if (data.doc_links && data.doc_links.length > 0) {
         htmlContent += `<div class="flex flex-col gap-1.5 mb-3 ml-9"><span class="text-[12px] font-semibold text-slate-500 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">link</span>${t("usefulLinks")}</span>`;
         data.doc_links.forEach(link => {
-            htmlContent += `
-                <a href="${link.url}" target="_blank" rel="noopener" class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-2.5 hover:border-primary/40 transition-colors no-underline">
-                    <span class="material-symbols-outlined text-primary text-[16px] shrink-0">open_in_new</span>
-                    <span class="text-[12px] text-slate-600 font-medium leading-snug">${escapeHtml(link.title)}</span>
-                </a>
-            `;
+            const safeUrl = sanitizeUrl(link.url);
+            if (safeUrl) {
+                htmlContent += `
+                    <a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener" class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-2.5 hover:border-primary/40 transition-colors no-underline">
+                        <span class="material-symbols-outlined text-primary text-[16px] shrink-0">open_in_new</span>
+                        <span class="text-[12px] text-slate-600 font-medium leading-snug">${escapeHtml(link.title)}</span>
+                    </a>
+                `;
+            }
         });
         htmlContent += '</div>';
     }
@@ -1124,8 +1134,10 @@ function displayResponse(data, isCached, isOfflineGenerated) {
     if (data.nearest_centers && data.nearest_centers.length > 0) {
         htmlContent += `<div class="flex flex-col gap-1.5 mb-3 ml-9"><span class="text-[12px] font-semibold text-slate-500 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span>${t("nearbyCenters")}</span>`;
         data.nearest_centers.forEach(center => {
-            const phone = center.phone ? `<a href="tel:${center.phone}" class="inline-flex items-center gap-0.5 text-primary text-[11px] font-medium"><span class="material-symbols-outlined text-[13px]">call</span>${escapeHtml(center.phone)}</a>` : '';
-            const mapsLink = center.maps_url ? `<a href="${center.maps_url}" target="_blank" rel="noopener" class="inline-flex items-center gap-0.5 text-primary text-[11px] font-medium hover:underline"><span class="material-symbols-outlined text-[13px]">map</span>${t("openMaps")}</a>` : '';
+            const phoneNum = center.phone ? escapeHtml(center.phone.replace(/[^0-9+\-\s\/]/g, '')) : '';
+            const phone = phoneNum ? `<a href="tel:${phoneNum}" class="inline-flex items-center gap-0.5 text-primary text-[11px] font-medium"><span class="material-symbols-outlined text-[13px]">call</span>${escapeHtml(center.phone)}</a>` : '';
+            const safeMapsUrl = sanitizeUrl(center.maps_url);
+            const mapsLink = safeMapsUrl ? `<a href="${escapeHtml(safeMapsUrl)}" target="_blank" rel="noopener" class="inline-flex items-center gap-0.5 text-primary text-[11px] font-medium hover:underline"><span class="material-symbols-outlined text-[13px]">map</span>${t("openMaps")}</a>` : '';
             htmlContent += `
                 <div class="bg-white border border-slate-200 rounded-xl p-2.5 transition-all hover:border-slate-300">
                     <div class="flex items-start justify-between gap-2">
