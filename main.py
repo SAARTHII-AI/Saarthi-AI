@@ -1,8 +1,10 @@
 import sys
 import os
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "backend"))
-os.chdir(os.path.join(os.path.dirname(__file__), "backend"))
+WORKSPACE_ROOT = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(WORKSPACE_ROOT, "backend"))
+
+os.environ["SAARTHI_FRONTEND_DIR"] = os.path.join(WORKSPACE_ROOT, "frontend")
 
 from app.main import app
 

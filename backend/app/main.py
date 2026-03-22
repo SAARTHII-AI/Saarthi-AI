@@ -3,7 +3,7 @@ from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, PlainTextResponse
 from app.api import health, schemes, query, help_centers
 from app.services.rag_engine import rag_engine
 from mangum import Mangum
@@ -41,32 +41,46 @@ async def startup_event():
     except Exception as e:
         print(f"Error initializing RAG engine on startup: {e}")
 
-FRONTEND_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "frontend")
+FRONTEND_DIR = os.environ.get(
+    "SAARTHI_FRONTEND_DIR",
+    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend")
+)
 
-@app.get("/")
-def serve_index():
-    return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
+_FRONTEND_AVAILABLE = os.path.isdir(FRONTEND_DIR)
+if _FRONTEND_AVAILABLE:
+    print(f"Frontend directory found: {FRONTEND_DIR}")
+else:
+    print(f"WARNING: Frontend directory not found at {FRONTEND_DIR} — static file serving disabled")
 
-app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="frontend_static")
+if _FRONTEND_AVAILABLE:
+    @app.get("/")
+    def serve_index():
+        return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
 
-@app.get("/manifest.json")
-def serve_manifest():
-    return FileResponse(os.path.join(FRONTEND_DIR, "manifest.json"))
+    app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="frontend_static")
 
-@app.get("/sw.js")
-def serve_sw():
-    return FileResponse(os.path.join(FRONTEND_DIR, "sw.js"), media_type="application/javascript")
+    @app.get("/manifest.json")
+    def serve_manifest():
+        return FileResponse(os.path.join(FRONTEND_DIR, "manifest.json"))
 
-@app.get("/script.js")
-def serve_script():
-    return FileResponse(os.path.join(FRONTEND_DIR, "script.js"), media_type="application/javascript")
+    @app.get("/sw.js")
+    def serve_sw():
+        return FileResponse(os.path.join(FRONTEND_DIR, "sw.js"), media_type="application/javascript")
 
-@app.get("/voice.js")
-def serve_voice():
-    return FileResponse(os.path.join(FRONTEND_DIR, "voice.js"), media_type="application/javascript")
+    @app.get("/script.js")
+    def serve_script():
+        return FileResponse(os.path.join(FRONTEND_DIR, "script.js"), media_type="application/javascript")
 
-@app.get("/style.css")
-def serve_style():
-    return FileResponse(os.path.join(FRONTEND_DIR, "style.css"), media_type="text/css")
+    @app.get("/voice.js")
+    def serve_voice():
+        return FileResponse(os.path.join(FRONTEND_DIR, "voice.js"), media_type="application/javascript")
+
+    @app.get("/style.css")
+    def serve_style():
+        return FileResponse(os.path.join(FRONTEND_DIR, "style.css"), media_type="text/css")
+else:
+    @app.get("/")
+    def serve_fallback():
+        return PlainTextResponse("SaarthiAI API is running. Frontend not available.")
 
 handler = Mangum(app)
