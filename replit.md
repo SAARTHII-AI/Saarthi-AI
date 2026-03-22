@@ -15,9 +15,12 @@ A voice-first AI assistant helping Indian citizens discover and **apply for** go
   - Text chunking: splits long responses into 180-char chunks at sentence/phrase boundaries for clear TTS
   - Interim results shown during speech recognition
   - Mobile-first PWA with service worker (`sw.js`) and manifest
-  - Full i18n for all 11 languages (20+ keys per language including offline labels)
+  - Full i18n for all 11 languages (23+ keys per language including offline labels, sync messages, feature indicators)
   - Markdown rendering for AI responses (bold, italic, headings, clickable URLs)
   - Offline answer engine: caches all schemes via /schemes endpoint; keyword search + template response generation in user's selected language
+  - **Emergency info cache**: 6 agriculture helplines (Kisan Call Center, PM-KISAN, PMFBY, Soil Health, CSC, DAO) + 5 emergency URLs stored in localStorage for offline access
+  - **Offline feature banner**: when offline, shows localized banner indicating available features (saved answers, scheme info, helpline numbers)
+  - **Sync on reconnect**: when internet comes back, atomically fetches fresh scheme data (keeps old cache if fetch fails), updates emergency info, shows sync status
   - **Enhanced LRU cache**: 150 entries, 14-day TTL, fuzzy word-overlap matching (filters stop words in English + Hindi), pre-caches 8 popular farmer queries
   - State/Central scheme filtering with seasonal suggestion chips
   - Profile drawer for farmer metadata (state, crop, land size, income)
@@ -41,6 +44,7 @@ A voice-first AI assistant helping Indian citizens discover and **apply for** go
   - Script-based language detection: verifies AI response is in target language's native script
   - 60+ government schemes (central + state-level) with rich data
   - Help center service with 50+ entries + Google Maps URL generation
+  - **GZip compression**: all API responses >500 bytes compressed (67KB→17KB for schemes, 74% reduction)
   - Rate limiting (20 req/min) on query endpoint
   - Resilient error handling: all external service calls (Bright Data, translation, gov API) wrapped in try/except to prevent hard failures
 

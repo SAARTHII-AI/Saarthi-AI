@@ -1,10 +1,13 @@
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from app.api import health, schemes, query, help_centers
 from app.services.rag_engine import rag_engine
 from mangum import Mangum
 
 app = FastAPI(title="SaarthiAI", description="Voice-first AI assistant for government schemes.")
+
+app.add_middleware(GZipMiddleware, minimum_size=500)
 
 app.add_middleware(
     CORSMiddleware,

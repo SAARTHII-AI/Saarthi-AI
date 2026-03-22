@@ -26,6 +26,9 @@ const I18N = {
         typeMessage:    "संदेश टाइप करें...",
         allSchemes:     "सभी योजनाएं",
         central:        "केंद्र",
+        offlineFeatures: "ऑफलाइन में उपलब्ध: सहेजे गए उत्तर • योजना जानकारी • हेल्पलाइन नंबर",
+        syncing:        "इंटरनेट वापस आया! डेटा अपडेट हो रहा है...",
+        syncDone:       "डेटा अपडेट हो गया!",
     },
     en: {
         thinking:       "Thinking...",
@@ -49,6 +52,9 @@ const I18N = {
         typeMessage:    "Type a message...",
         allSchemes:     "All Schemes",
         central:        "Central",
+        offlineFeatures: "Available offline: Saved answers • Scheme info • Helpline numbers",
+        syncing:        "Back online! Syncing data...",
+        syncDone:       "Data synced!",
     },
     bn: {
         thinking:       "ভাবছি...",
@@ -72,6 +78,9 @@ const I18N = {
         typeMessage:    "একটি বার্তা টাইপ করুন...",
         allSchemes:     "সকল প্রকল্প",
         central:        "কেন্দ্রীয়",
+        offlineFeatures: "অফলাইনে পাওয়া যায়: সংরক্ষিত উত্তর • প্রকল্পের তথ্য • হেল্পলাইন নম্বর",
+        syncing:        "অনলাইনে ফিরে এসেছেন! ডেটা আপডেট হচ্ছে...",
+        syncDone:       "ডেটা আপডেট হয়েছে!",
     },
     te: {
         thinking:       "ఆలోచిస్తున్నాను...",
@@ -95,6 +104,9 @@ const I18N = {
         typeMessage:    "సందేశం టైప్ చేయండి...",
         allSchemes:     "అన్ని పథకాలు",
         central:        "కేంద్ర",
+        offlineFeatures: "ఆఫ్‌లైన్‌లో అందుబాటులో: సేవ్ చేసిన సమాధానాలు • పథకాల సమాచారం • హెల్ప్‌లైన్ నంబర్లు",
+        syncing:        "ఆన్‌లైన్‌కు తిరిగి వచ్చారు! డేటా అప్‌డేట్ అవుతోంది...",
+        syncDone:       "డేటా అప్‌డేట్ అయింది!",
     },
     mr: {
         thinking:       "विचार करत आहे...",
@@ -118,6 +130,9 @@ const I18N = {
         typeMessage:    "संदेश टाइप करा...",
         allSchemes:     "सर्व योजना",
         central:        "केंद्र",
+        offlineFeatures: "ऑफलाइनमध्ये उपलब्ध: जतन केलेली उत्तरे • योजनांची माहिती • हेल्पलाइन क्रमांक",
+        syncing:        "ऑनलाइन परत आलात! डेटा अपडेट होत आहे...",
+        syncDone:       "डेटा अपडेट झाला!",
     },
     ta: {
         thinking:       "யோசிக்கிறேன்...",
@@ -141,6 +156,9 @@ const I18N = {
         typeMessage:    "செய்தியை தட்டச்சு செய்யுங்கள்...",
         allSchemes:     "அனைத்து திட்டங்கள்",
         central:        "மத்திய",
+        offlineFeatures: "ஆஃப்லைனில் கிடைக்கும்: சேமிக்கப்பட்ட பதில்கள் • திட்டத் தகவல்கள் • ஹெல்ப்லைன் எண்கள்",
+        syncing:        "ஆன்லைனில் திரும்பிவிட்டீர்கள்! தரவு புதுப்பிக்கப்படுகிறது...",
+        syncDone:       "தரவு புதுப்பிக்கப்பட்டது!",
     },
     gu: {
         thinking:       "વિચારી રહ્યો છું...",
@@ -164,6 +182,9 @@ const I18N = {
         typeMessage:    "સંદેશ ટાઇપ કરો...",
         allSchemes:     "બધી યોજનાઓ",
         central:        "કેન્દ્ર",
+        offlineFeatures: "ઑફલાઇનમાં ઉપલબ્ધ: સાચવેલા જવાબો • યોજનાની માહિતી • હેલ્પલાઇન નંબર",
+        syncing:        "ઑનલાઇન પાછા આવ્યા! ડેટા અપડેટ થઈ રહ્યો છે...",
+        syncDone:       "ડેટા અપડેટ થઈ ગયો!",
     },
     kn: {
         thinking:       "ಯೋಚಿಸುತ್ತಿದ್ದೇನೆ...",
@@ -187,6 +208,9 @@ const I18N = {
         typeMessage:    "ಸಂದೇಶ ಟೈಪ್ ಮಾಡಿ...",
         allSchemes:     "ಎಲ್ಲಾ ಯೋಜನೆಗಳು",
         central:        "ಕೇಂದ್ರ",
+        offlineFeatures: "ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಲಭ್ಯ: ಉಳಿಸಿದ ಉತ್ತರಗಳು • ಯೋಜನೆಯ ಮಾಹಿತಿ • ಹೆಲ್ಪ್‌ಲೈನ್ ಸಂಖ್ಯೆಗಳು",
+        syncing:        "ಆನ್‌ಲೈನ್‌ಗೆ ಮರಳಿದ್ದೀರಿ! ಡೇಟಾ ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತಿದೆ...",
+        syncDone:       "ಡೇಟಾ ಅಪ್‌ಡೇಟ್ ಆಯಿತು!",
     },
     ml: {
         thinking:       "ആലോചിക്കുന്നു...",
@@ -210,6 +234,9 @@ const I18N = {
         typeMessage:    "ഒരു സന്ദേശം ടൈപ്പ് ചെയ്യുക...",
         allSchemes:     "എല്ലാ പദ്ധതികളും",
         central:        "കേന്ദ്ര",
+        offlineFeatures: "ഓഫ്‌ലൈനിൽ ലഭ്യം: സേവ് ചെയ്ത ഉത്തരങ്ങൾ • പദ്ധതി വിവരങ്ങൾ • ഹെൽപ്‌ലൈൻ നമ്പറുകൾ",
+        syncing:        "ഓൺലൈനിൽ തിരിച്ചെത്തി! ഡാറ്റ അപ്‌ഡേറ്റ് ചെയ്യുന്നു...",
+        syncDone:       "ഡാറ്റ അപ്‌ഡേറ്റ് ചെയ്തു!",
     },
     pa: {
         thinking:       "ਸੋਚ ਰਿਹਾ ਹਾਂ...",
@@ -233,6 +260,9 @@ const I18N = {
         typeMessage:    "ਸੁਨੇਹਾ ਟਾਈਪ ਕਰੋ...",
         allSchemes:     "ਸਾਰੀਆਂ ਯੋਜਨਾਵਾਂ",
         central:        "ਕੇਂਦਰ",
+        offlineFeatures: "ਔਫਲਾਈਨ ਵਿੱਚ ਉਪਲਬਧ: ਸੰਭਾਲੇ ਹੋਏ ਜਵਾਬ • ਯੋਜਨਾ ਜਾਣਕਾਰੀ • ਹੈਲਪਲਾਈਨ ਨੰਬਰ",
+        syncing:        "ਔਨਲਾਈਨ ਵਾਪਸ ਆ ਗਏ! ਡੇਟਾ ਅੱਪਡੇਟ ਹੋ ਰਿਹਾ ਹੈ...",
+        syncDone:       "ਡੇਟਾ ਅੱਪਡੇਟ ਹੋ ਗਿਆ!",
     },
     or: {
         thinking:       "ଚିନ୍ତା କରୁଛି...",
@@ -256,6 +286,9 @@ const I18N = {
         typeMessage:    "ଏକ ସନ୍ଦେଶ ଟାଇପ୍ କରନ୍ତୁ...",
         allSchemes:     "ସମସ୍ତ ଯୋଜନା",
         central:        "କେନ୍ଦ୍ର",
+        offlineFeatures: "ଅଫଲାଇନ୍ ରେ ଉପଲବ୍ଧ: ସଞ୍ଚିତ ଉତ୍ତର • ଯୋଜନା ତଥ୍ୟ • ହେଲ୍ପଲାଇନ୍ ନମ୍ବର",
+        syncing:        "ଅନଲାଇନ୍ ରେ ଫେରି ଆସିଛନ୍ତି! ତଥ୍ୟ ଅପଡେଟ୍ ହେଉଛି...",
+        syncDone:       "ତଥ୍ୟ ଅପଡେଟ୍ ହୋଇଗଲା!",
     },
 };
 
@@ -299,8 +332,100 @@ function updateConnectivityPill() {
     }
 }
 
-window.addEventListener("online",  updateConnectivityPill);
-window.addEventListener("offline", updateConnectivityPill);
+const SCHEMES_CACHE_KEY = "saarthi_schemes_offline";
+const EMERGENCY_CACHE_KEY = "saarthi_emergency_info";
+
+const EMERGENCY_INFO = {
+    helplines: [
+        { name: "Kisan Call Center", number: "1800-180-1551", desc: "24/7 toll-free agriculture helpline" },
+        { name: "PM-KISAN Helpline", number: "155261", desc: "PM-KISAN registration & status" },
+        { name: "Crop Insurance (PMFBY)", number: "1800-200-7710", desc: "Crop insurance claims" },
+        { name: "Soil Health Card", number: "1800-180-1551", desc: "Soil testing & card status" },
+        { name: "CSC Helpline", number: "1800-121-3468", desc: "Common Service Center locator" },
+        { name: "District Agriculture Officer", number: "Local DAO", desc: "Contact via District Collectorate" },
+    ],
+    emergency_urls: {
+        "PM-KISAN": "https://pmkisan.gov.in",
+        "PMFBY": "https://pmfby.gov.in",
+        "Soil Health Card": "https://soilhealth.dac.gov.in",
+        "e-NAM (Mandi Prices)": "https://enam.gov.in",
+        "KCC": "https://eseva.csccloud.in/KCC/",
+    },
+};
+
+function saveEmergencyInfo() {
+    try {
+        localStorage.setItem(EMERGENCY_CACHE_KEY, JSON.stringify({
+            data: EMERGENCY_INFO,
+            timestamp: Date.now()
+        }));
+    } catch (e) {}
+}
+
+function loadEmergencyInfo() {
+    try {
+        const raw = localStorage.getItem(EMERGENCY_CACHE_KEY);
+        if (raw) return JSON.parse(raw).data;
+    } catch (e) {}
+    return EMERGENCY_INFO;
+}
+
+saveEmergencyInfo();
+
+function showOfflineFeatureBanner() {
+    const existing = document.getElementById("offline-features-banner");
+    if (existing) existing.remove();
+    if (isOnline()) return;
+
+    const chatBox = document.getElementById("chat-box");
+    if (!chatBox) return;
+
+    const banner = document.createElement("div");
+    banner.id = "offline-features-banner";
+    banner.className = "mx-4 mt-2 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-start gap-2 message-fade-in";
+    banner.innerHTML = `<span class="material-symbols-outlined text-sm mt-0.5" style="font-variation-settings:'FILL' 1">wifi_off</span>
+        <div>
+            <div class="font-semibold mb-1">${t("offlinePill")}</div>
+            <div>${t("offlineFeatures")}</div>
+        </div>`;
+    chatBox.insertBefore(banner, chatBox.firstChild);
+}
+
+function hideOfflineFeatureBanner() {
+    const existing = document.getElementById("offline-features-banner");
+    if (existing) existing.remove();
+}
+
+function syncOnReconnect() {
+    if (!isOnline()) return;
+    showStatus(t("syncing"));
+    saveEmergencyInfo();
+
+    fetch(`${API_URL}/schemes`)
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+            if (data && data.schemes) {
+                saveOfflineSchemes(data.schemes);
+                showStatus(t("syncDone"));
+            } else {
+                showStatus("");
+            }
+            setTimeout(() => showStatus(""), 2000);
+        })
+        .catch(() => {
+            showStatus("");
+        });
+}
+
+window.addEventListener("online", () => {
+    updateConnectivityPill();
+    hideOfflineFeatureBanner();
+    syncOnReconnect();
+});
+window.addEventListener("offline", () => {
+    updateConnectivityPill();
+    showOfflineFeatureBanner();
+});
 
 const PROFILE_KEY = "saarthi_farmer_profile";
 
@@ -494,7 +619,6 @@ function findBestCachedAnswer(query, language) {
     return null;
 }
 
-const SCHEMES_CACHE_KEY = "saarthi_schemes_offline";
 const SCHEMES_CACHE_TTL = 24 * 60 * 60 * 1000;
 
 function loadOfflineSchemes() {
@@ -597,8 +721,12 @@ function generateOfflineResponse(query, matchedSchemes) {
     const lang = getLang();
     const labels = getOfflineLabels();
 
+    const emergency = loadEmergencyInfo();
+    const helplineText = emergency.helplines.slice(0, 3)
+        .map(h => `📞 ${h.name}: ${h.number}`).join("\n");
+
     if (!matchedSchemes || matchedSchemes.length === 0) {
-        const fallbackAnswer = `${labels.noMatch}\n\n${labels.commonSchemes}\n• PM-KISAN (₹6,000) - pmkisan.gov.in\n• Ayushman Bharat (₹5 lakh) - pmjay.gov.in\n• PM Awas Yojana - pmayg.nic.in`;
+        const fallbackAnswer = `${labels.noMatch}\n\n${labels.commonSchemes}\n• PM-KISAN (₹6,000) - pmkisan.gov.in\n• Ayushman Bharat (₹5 lakh) - pmjay.gov.in\n• PM Awas Yojana - pmayg.nic.in\n\n${labels.helpline}:\n${helplineText}`;
 
         return {
             intent: "scheme_query",
@@ -643,6 +771,7 @@ function generateOfflineResponse(query, matchedSchemes) {
         }
     }
 
+    answerParts.push(`\n${helplineText}`);
     answerParts.push(`\n${labels.footer}`);
 
     const recommendations = matchedSchemes.slice(0, 5).map(s => ({
@@ -1072,6 +1201,7 @@ function showStatus(text) {
 document.addEventListener("DOMContentLoaded", () => {
     pruneOldCacheEntries();
     updateConnectivityPill();
+    if (!isOnline()) showOfflineFeatureBanner();
     updateStateFilterButton();
     renderSuggestionChips();
     fetchAndCacheSchemes();

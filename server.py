@@ -45,6 +45,7 @@ class ProxyHandler(SimpleHTTPRequestHandler):
             method=method,
             headers={
                 "Content-Type": self.headers.get("Content-Type", "application/json"),
+                "Accept-Encoding": self.headers.get("Accept-Encoding", "gzip, deflate"),
             }
         )
 
