@@ -383,11 +383,22 @@ function showOfflineFeatureBanner() {
     const banner = document.createElement("div");
     banner.id = "offline-features-banner";
     banner.className = "mx-4 mt-2 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-start gap-2 message-fade-in";
-    banner.innerHTML = `<span class="material-symbols-outlined text-sm mt-0.5" style="font-variation-settings:'FILL' 1">wifi_off</span>
-        <div>
-            <div class="font-semibold mb-1">${t("offlinePill")}</div>
-            <div>${t("offlineFeatures")}</div>
-        </div>`;
+    const icon = document.createElement("span");
+    icon.className = "material-symbols-outlined text-sm mt-0.5";
+    icon.style.fontVariationSettings = "'FILL' 1";
+    icon.textContent = "wifi_off";
+
+    const inner = document.createElement("div");
+    const title = document.createElement("div");
+    title.className = "font-semibold mb-1";
+    title.textContent = t("offlinePill");
+    const desc = document.createElement("div");
+    desc.textContent = t("offlineFeatures");
+    inner.appendChild(title);
+    inner.appendChild(desc);
+
+    banner.appendChild(icon);
+    banner.appendChild(inner);
     chatBox.insertBefore(banner, chatBox.firstChild);
 }
 
