@@ -1,6 +1,10 @@
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 
+class ConversationMessage(BaseModel):
+    role: str
+    content: str
+
 class QueryRequest(BaseModel):
     query: str
     language: Optional[str] = "auto"
@@ -13,6 +17,7 @@ class QueryRequest(BaseModel):
     scheme_type: Optional[str] = None
     crop: Optional[str] = None
     land_size: Optional[str] = None
+    conversation_history: Optional[List[ConversationMessage]] = None
 
 class SchemeRecommedation(BaseModel):
     name: str

@@ -1,5 +1,8 @@
 const API_URL = "";
 
+let conversationHistory = [];
+const MAX_CONVERSATION_HISTORY = 12;
+
 const I18N = {
     hi: {
         thinking:       "सोच रहा है...",
@@ -362,8 +365,8 @@ function saveProfileFromDrawer() {
 }
 
 const CACHE_META_KEY  = "saarthi_cache_meta";
-const CACHE_MAX       = 50;
-const CACHE_TTL_MS    = 7 * 24 * 60 * 60 * 1000;
+const CACHE_MAX       = 150;
+const CACHE_TTL_MS    = 14 * 24 * 60 * 60 * 1000;
 
 function simpleHash(str) {
     let h = 0;
@@ -445,36 +448,48 @@ function cacheResponse(cacheKey, data, query, language) {
     saveCacheMeta(meta);
 }
 
-function querySimilar(lq, eq) {
-    return eq.includes(lq) || lq.includes(eq);
+function queryWordOverlap(lq, eq) {
+    const stopWords = new Set(["the","a","an","is","are","was","were","for","and","or","in","of","to","my","me","i","how","what","which","can","do","does","get","about","this","that","please","kya","hai","ka","ke","ki","ko","se","mein","kaise","mera","meri","mere"]);
+    const wordsA = lq.split(/\s+/).filter(w => w.length >= 2 && !stopWords.has(w));
+    const wordsB = eq.split(/\s+/).filter(w => w.length >= 2 && !stopWords.has(w));
+    if (wordsA.length === 0 || wordsB.length === 0) return 0;
+    let overlap = 0;
+    for (const w of wordsA) {
+        if (wordsB.some(b => b.includes(w) || w.includes(b))) overlap++;
+    }
+    return overlap / Math.max(wordsA.length, wordsB.length);
 }
 
 function findBestCachedAnswer(query, language) {
     const meta = loadCacheMeta();
     const lq = query.toLowerCase().trim();
+    const now = Date.now();
+    let bestMatch = null;
+    let bestScore = 0;
+
     for (let i = meta.length - 1; i >= 0; i--) {
         const raw = localStorage.getItem(meta[i].key);
         if (!raw) continue;
         try {
             const entry = JSON.parse(raw);
+            if (now - entry.timestamp > CACHE_TTL_MS) {
+                localStorage.removeItem(meta[i].key);
+                continue;
+            }
             const eq = (entry.query || "").toLowerCase().trim();
-            if (entry.language === language && eq && querySimilar(lq, eq)) {
-                touchCacheMeta(meta[i].key);
-                return entry.data;
+            if (!eq) continue;
+            let score = queryWordOverlap(lq, eq);
+            if (entry.language === language) score += 0.1;
+            if (score > bestScore && score >= 0.4) {
+                bestScore = score;
+                bestMatch = { data: entry.data, key: meta[i].key };
             }
         } catch (e) {}
     }
-    for (let i = meta.length - 1; i >= 0; i--) {
-        const raw = localStorage.getItem(meta[i].key);
-        if (!raw) continue;
-        try {
-            const entry = JSON.parse(raw);
-            const eq = (entry.query || "").toLowerCase().trim();
-            if (eq && querySimilar(lq, eq)) {
-                touchCacheMeta(meta[i].key);
-                return entry.data;
-            }
-        } catch (e) {}
+
+    if (bestMatch) {
+        touchCacheMeta(bestMatch.key);
+        return bestMatch.data;
     }
     return null;
 }
@@ -750,6 +765,8 @@ function handleEnterKeyPress(event) {
     }
 }
 
+let conversationToken = 0;
+
 async function sendTextMessage() {
     const inputField = document.getElementById("text-input");
     const query = inputField.value.trim();
@@ -759,25 +776,65 @@ async function sendTextMessage() {
     if (window.stopSpeaking) window.stopSpeaking();
 
     addMessageToChat(query, "user");
+    conversationHistory.push({ role: "user", content: query });
+    if (conversationHistory.length > MAX_CONVERSATION_HISTORY) {
+        conversationHistory = conversationHistory.slice(-MAX_CONVERSATION_HISTORY);
+    }
     await processQuery(query);
+}
+
+function startNewConversation() {
+    conversationHistory = [];
+    conversationToken++;
+    const chatBox = document.getElementById("chat-box");
+    chatBox.innerHTML = `
+        <div class="flex items-start gap-2.5 max-w-[90%] message-fade-in">
+            <div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white shrink-0 mt-1">
+                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1">agriculture</span>
+            </div>
+            <div class="flex flex-col gap-1">
+                <span class="text-[11px] font-medium text-slate-400 ml-0.5">SaarthiAI</span>
+                <div class="bg-slate-50 rounded-2xl rounded-tl-md px-4 py-3">
+                    <p class="text-[14px] leading-relaxed text-slate-700">
+                        How can I help you today?<br/>
+                        <span class="text-slate-500 mt-1 block">${getLang() === 'hi' ? 'मैं आज आपकी कैसे मदद कर सकता हूँ?' : getLang() === 'en' ? 'Ask me about any government scheme!' : 'मैं आज आपकी कैसे मदद कर सकता हूँ?'}</span>
+                    </p>
+                </div>
+            </div>
+        </div>`;
+    renderSuggestionChips();
+    if (window.stopSpeaking) window.stopSpeaking();
+}
+
+function trackAssistantResponse(answer) {
+    if (answer) {
+        conversationHistory.push({ role: "assistant", content: answer });
+        if (conversationHistory.length > MAX_CONVERSATION_HISTORY) {
+            conversationHistory = conversationHistory.slice(-MAX_CONVERSATION_HISTORY);
+        }
+    }
 }
 
 async function processQuery(query) {
     const resolvedLang = getLang();
     const profileSnapshot = getFarmerProfileSnapshot();
     const cacheKey = buildCacheKey(query, resolvedLang, profileSnapshot);
+    const myToken = conversationToken;
 
     showStatus(t("thinking"));
 
     if (!isOnline()) {
         const exact = getCachedResponse(cacheKey);
         const best  = exact || findBestCachedAnswer(query, resolvedLang);
+        if (myToken !== conversationToken) return;
         if (best) {
+            trackAssistantResponse(best.answer);
             displayResponse(best, true);
             addOfflineBanner(t("offline"));
         } else {
             const matched = searchOfflineSchemes(query);
             const offlineData = generateOfflineResponse(query, matched);
+            trackAssistantResponse(offlineData.answer);
             displayResponse(offlineData, true, true);
             addOfflineBanner(t("noCache"));
         }
@@ -787,6 +844,10 @@ async function processQuery(query) {
 
     const profile = loadFarmerProfile();
     try {
+        const historyToSend = conversationHistory.length > 1
+            ? conversationHistory.slice(0, -1)
+            : [];
+
         const response = await fetch(`${API_URL}/query`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -798,26 +859,32 @@ async function processQuery(query) {
                 income: profile.income ? parseInt(profile.income) || undefined : undefined,
                 crop: profile.crop || undefined,
                 land_size: profile.landSize || undefined,
+                conversation_history: historyToSend.length > 0 ? historyToSend : undefined,
             })
         });
 
         if (!response.ok) throw new Error("server_error");
 
         const data = await response.json();
+        if (myToken !== conversationToken) return;
+        trackAssistantResponse(data.answer);
         cacheResponse(cacheKey, data, query, resolvedLang);
         displayResponse(data, false);
     } catch (error) {
+        if (myToken !== conversationToken) return;
         const isNetworkErr = !navigator.onLine || error instanceof TypeError || error.message === "Failed to fetch" || error.name === "AbortError";
 
         const exact   = getCachedResponse(cacheKey);
         const fallback = exact || findBestCachedAnswer(query, resolvedLang);
         if (fallback) {
+            trackAssistantResponse(fallback.answer);
             displayResponse(fallback, true);
             addOfflineBanner(isNetworkErr ? t("offline") : t("serverError"));
         } else {
             const matched = searchOfflineSchemes(query);
             if (matched.length > 0) {
                 const offlineData = generateOfflineResponse(query, matched);
+                trackAssistantResponse(offlineData.answer);
                 displayResponse(offlineData, true, true);
                 addOfflineBanner(isNetworkErr ? t("noCache") : t("serverError"));
             } else {
@@ -1046,6 +1113,11 @@ function preCachePopularQueries() {
         "PM-KISAN scheme eligibility and benefits",
         "Kisan Credit Card scheme details",
         "PMFBY crop insurance scheme benefits",
+        "How to apply for PM-KISAN step by step",
+        "Soil Health Card scheme how to get",
+        "PM Awas Yojana Gramin eligibility",
+        "Ayushman Bharat health insurance for farmers",
+        "PM Fasal Bima Yojana claim process",
     ];
 
     const profile = loadFarmerProfile();

@@ -1,7 +1,7 @@
 import logging
 import hashlib
 import time
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from app.services.scheme_loader import load_schemes
 from app.services.offline_answer_engine import generate_offline_answer
 from app.config import settings
@@ -9,8 +9,8 @@ from app.config import settings
 logger = logging.getLogger(__name__)
 
 _answer_cache = {}
-_ANSWER_CACHE_MAX = 200
-_ANSWER_CACHE_TTL = 1800
+_ANSWER_CACHE_MAX = 500
+_ANSWER_CACHE_TTL = 3600
 
 LANG_NAMES = {
     "hi": "Hindi", "en": "English", "bn": "Bengali", "te": "Telugu",
@@ -37,49 +37,50 @@ def _build_azure_client():
         return None
 
 
-SYSTEM_PROMPT_TEMPLATE = """You are **SaarthiAI** — a warm, expert government-scheme advisor built for Indian farmers and citizens. Your goal is to give **complete, actionable, and personalized** answers that a rural farmer or first-generation beneficiary can immediately use.
+SYSTEM_PROMPT_TEMPLATE = """You are **SaarthiAI** — a warm, patient government-scheme advisor who helps Indian farmers and citizens apply for schemes **step by step** through voice conversation. Think of yourself as a helpful village-level guide sitting next to the farmer.
+
+## YOUR ROLE
+- You guide farmers through the ENTIRE application process — from understanding the scheme to actually submitting their application.
+- You speak in simple, everyday language a rural farmer can understand.
+- You remember what was discussed earlier in the conversation and build on it.
+- You proactively ask what step they need help with next.
+- You never overwhelm with too much information at once — break it into digestible steps.
 
 ## RESPONSE LANGUAGE
 {lang_instruction}
 
-## RESPONSE FORMAT (always follow this structure)
-Use **bold headings**, numbered lists, and bullet points. Structure EVERY answer like this:
+## CONVERSATION AWARENESS
+- If this is the FIRST message about a scheme, give a warm overview with key benefits and ask if they want to apply.
+- If they say YES or ask HOW TO APPLY, walk them through Step 1 first and ask if they are ready for the next step.
+- If they ask about DOCUMENTS, list exactly what they need and explain where to get each one.
+- If they ask about ELIGIBILITY, check their profile and tell them clearly if they qualify.
+- If they are continuing a conversation, pick up from where you left off — do NOT repeat information already given.
+- If they ask a follow-up like "what next?" or "aage kya karna hai?", give them the NEXT step.
 
-**[Scheme Name]** — one-line summary of what it does.
+## RESPONSE FORMAT
+For a FIRST question about a scheme, structure your answer like this:
 
-1) **आपके लिए क्या फायदा / Benefits for You**
-   - List 3-5 concrete benefits with ₹ amounts, percentages, or specifics
-   - Mention interest rate subsidies, insurance coverage, or cash transfers with exact figures
-   - Highlight any special advantage for the user based on their profile
+**[Scheme Name]** — one-line summary
 
-2) **मुख्य पात्रता / Eligibility**
-   - List who qualifies (farmer type, land size, income ceiling, age, gender)
-   - Directly tell the user whether they likely qualify based on their profile
-   - Mention if sharecroppers, tenant farmers, or landless laborers are included
+1) **💰 Benefits** — 3-5 concrete benefits with ₹ amounts
+2) **✅ Eligibility** — who qualifies (directly tell farmer if they qualify based on profile)
+3) **📋 How to Apply** — step-by-step (number each step clearly)
+4) **📄 Required Documents** — bulleted list of every document needed
+5) **📞 Helpline** — phone numbers and official website URLs
 
-3) **आवेदन कैसे करें / How to Apply**
-   - Step-by-step (visit bank/CSC/portal, fill form, submit documents)
-   - Mention specific portals with URLs
-   - Mention if PM-KISAN beneficiaries get automatic benefits
+End with a friendly follow-up like: "Kya aap iske liye apply karna chahte hain? Main aapko step-by-step bata sakta hoon." (in the response language)
 
-4) **जरूरी दस्तावेज़ / Required Documents**
-   - Bulleted list of every document needed (Aadhaar, land papers, bank passbook, photos, PAN if needed)
-
-5) **हेल्पलाइन / Helpline**
-   - Phone numbers and toll-free numbers
-   - Official website URLs
-
-6) **Follow-up prompt**: End with "अगर आप बताएं कि आपका राज्य, जमीन कितनी है, और कौन सी फसल उगाते हैं, तो मैं और भी योजनाएं बता सकता हूँ।" (or equivalent in the response language)
+For FOLLOW-UP messages in a conversation:
+- Give ONLY the information they asked about
+- Keep it concise and actionable
+- Always end with "Agle step ke liye poochiye" or equivalent prompt in the response language
 
 ## KEY RULES
 - **NEVER** say "I don't have information" if the context contains scheme data — use it fully.
-- **NEVER** give a short 2-3 line answer. Always give a comprehensive, detailed response.
 - Include ₹ amounts, percentages, exact figures from the scheme data.
-- If multiple schemes are relevant, cover the top 2-3 in detail.
+- If multiple schemes are relevant, mention top 2-3 but focus on the most relevant one.
 - Personalize based on farmer profile (state, crop, land size, income).
 - Use emojis sparingly: 💰 for money, ✅ for eligibility, 📄 for documents, 📞 for helpline, 🔗 for links.
-- When web search results provide additional details, incorporate them naturally.
-- For state-specific schemes, highlight that the scheme is specific to their state.
 - Do NOT fabricate scheme details, eligibility criteria, ₹ amounts, or helpline numbers that are not in the context.
 - If the context does not have specific details, say so honestly — do not invent information.
 - Only include URLs and helpline numbers that appear in the provided context.
@@ -92,6 +93,8 @@ The user is a farmer/citizen. Their profile details are in the context below. Us
 - Tell them directly "आप इस योजना के लिए पात्र हैं" if they likely qualify
 - Suggest additional schemes based on their profile
 - Mention state-specific benefits if their state matches any scheme"""
+
+MAX_HISTORY_TURNS = 6
 
 
 class RAGEngine:
@@ -212,8 +215,8 @@ class RAGEngine:
 
         return "\n\n".join(parts)
 
-    def _cache_key(self, context: str, question: str, profile: dict = None) -> str:
-        raw = f"{question}|{context[:500]}|{str(sorted((profile or {}).items()))}"
+    def _cache_key(self, context: str, question: str, profile: dict = None, history_summary: str = "") -> str:
+        raw = f"{question}|{context[:500]}|{str(sorted((profile or {}).items()))}|{history_summary}"
         return hashlib.md5(raw.encode()).hexdigest()
 
     def _build_system_prompt(self, language: str = "en", farmer_profile: dict = None) -> str:
@@ -242,11 +245,39 @@ class RAGEngine:
             profile_instruction=profile_instruction,
         )
 
-    def generate_answer(self, context: str, question: str, farmer_profile: dict = None, language: str = "en", matched_schemes: list = None) -> str:
+    def _build_conversation_messages(self, system_prompt: str, context: str, question: str, conversation_history: list = None) -> list:
+        messages = [{"role": "system", "content": system_prompt}]
+
+        if conversation_history:
+            recent = conversation_history[-MAX_HISTORY_TURNS * 2:]
+            for msg in recent:
+                role = msg.get("role", "user")
+                content = msg.get("content", "")
+                if role in ("user", "assistant") and content:
+                    if role == "assistant" and len(content) > 800:
+                        content = content[:800] + "..."
+                    messages.append({"role": role, "content": content})
+
+        user_prompt = (
+            f"Context:\n{context}\n\n"
+            f"User question: {question}\n\n"
+            "Give a comprehensive, personalized answer using the scheme data from the context. "
+            "Include specific ₹ amounts, eligibility criteria, application steps, required documents, and helpline numbers. "
+            "If this is a follow-up question in a conversation, build on what was already discussed — do not repeat."
+        )
+        messages.append({"role": "user", "content": user_prompt})
+
+        return messages
+
+    def generate_answer(self, context: str, question: str, farmer_profile: dict = None, language: str = "en", matched_schemes: list = None, conversation_history: list = None) -> str:
         if not context:
             return generate_offline_answer([], question, farmer_profile, language)
 
-        cache_key = self._cache_key(context, question, farmer_profile)
+        history_summary = ""
+        if conversation_history:
+            history_summary = "|".join(m.get("content", "")[:50] for m in conversation_history[-4:])
+
+        cache_key = self._cache_key(context, question, farmer_profile, history_summary)
         cached = _answer_cache.get(cache_key)
         if cached and (time.time() - cached["ts"]) < _ANSWER_CACHE_TTL:
             logger.info("Returning cached answer")
@@ -256,20 +287,13 @@ class RAGEngine:
         if client:
             try:
                 system_prompt = self._build_system_prompt(language, farmer_profile)
-
-                user_prompt = (
-                    f"Context:\n{context}\n\n"
-                    f"User question: {question}\n\n"
-                    "Give a comprehensive, detailed, and personalized answer using ALL the scheme data from the context. "
-                    "Include specific ₹ amounts, eligibility criteria, application steps, required documents, and helpline numbers. "
-                    "Do NOT give a short answer. Cover every relevant detail."
+                messages = self._build_conversation_messages(
+                    system_prompt, context, question, conversation_history
                 )
+
                 response = client.chat.completions.create(
                     model=settings.azure_openai_deployment,
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": user_prompt},
-                    ],
+                    messages=messages,
                     max_completion_tokens=1500,
                 )
                 answer = response.choices[0].message.content.strip()

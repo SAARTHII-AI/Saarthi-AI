@@ -115,12 +115,17 @@ async def handle_query(request: QueryRequest, raw_request: Request):
     if gov_context:
         context = context + "\n\n" + gov_context if context else gov_context
 
+    conv_history = None
+    if request.conversation_history:
+        conv_history = [{"role": m.role, "content": m.content} for m in request.conversation_history]
+
     answer = rag_engine.generate_answer(
         context,
         english_query,
         farmer_profile=farmer_profile if farmer_profile else None,
         language=detected_lang,
         matched_schemes=top_schemes,
+        conversation_history=conv_history,
     )
 
     final_answer = answer
