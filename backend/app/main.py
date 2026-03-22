@@ -79,6 +79,10 @@ if FRONTEND_DIR:
     @app.get("/style.css")
     def serve_style():
         return FileResponse(os.path.join(FRONTEND_DIR, "style.css"), media_type="text/css")
+
+    icons_dir = os.path.join(FRONTEND_DIR, "icons")
+    if os.path.isdir(icons_dir):
+        app.mount("/icons", StaticFiles(directory=icons_dir), name="icons")
 else:
     print(f"WARNING: No frontend directory found — static file serving disabled")
     print(f"  Checked: {_CANDIDATE_DIRS}")
