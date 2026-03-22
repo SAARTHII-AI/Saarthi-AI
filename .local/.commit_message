@@ -1,9 +1,0 @@
-Fix deployment: serve frontend from FastAPI, use uvicorn on $PORT
-
-- FastAPI now serves frontend files directly (index.html, script.js,
-  voice.js, style.css, manifest.json, sw.js) via FileResponse routes
-- Deployment command changed from proxy server to direct uvicorn:
-  cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
-- Single process, single port — no more two-server proxy setup for prod
-- Local dev still works via server.py proxy on port 5000
-- All 145 tests passing
