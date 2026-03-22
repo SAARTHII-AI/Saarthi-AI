@@ -1,11 +1,13 @@
-const CACHE_NAME = 'saarthi-v1';
+const CACHE_NAME = 'saarthi-v2';
 const APP_SHELL = [
   '/',
   '/index.html',
   '/script.js',
   '/voice.js',
-
+  '/style.css',
   '/manifest.json',
+  '/icons/icon-192x192.png',
+  '/icons/icon-512x512.png',
   'https://cdn.tailwindcss.com?plugins=forms,container-queries',
   'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
@@ -21,8 +23,10 @@ self.addEventListener('install', event => {
           '/index.html',
           '/script.js',
           '/voice.js',
-        
-          '/manifest.json'
+          '/style.css',
+          '/manifest.json',
+          '/icons/icon-192x192.png',
+          '/icons/icon-512x512.png'
         ]);
       });
     })
