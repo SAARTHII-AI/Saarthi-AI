@@ -86,8 +86,9 @@ def main():
     print("Waiting for backend to start...")
     time.sleep(3)
 
-    print("Starting frontend proxy server on port 5000...")
-    server = HTTPServer(("0.0.0.0", 5000), ProxyHandler)
+    port = int(os.environ.get("PORT", 5000))
+    print(f"Starting frontend proxy server on port {port}...")
+    server = HTTPServer(("0.0.0.0", port), ProxyHandler)
 
     def shutdown(signum, frame):
         print("Shutting down...")
@@ -98,7 +99,7 @@ def main():
     signal.signal(signal.SIGTERM, shutdown)
     signal.signal(signal.SIGINT, shutdown)
 
-    print("SaarthiAI is running at http://0.0.0.0:5000")
+    print(f"SaarthiAI is running at http://0.0.0.0:{port}")
     server.serve_forever()
 
 

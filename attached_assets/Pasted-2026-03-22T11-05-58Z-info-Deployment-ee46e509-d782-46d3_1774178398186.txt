@@ -1,0 +1,154 @@
+2026-03-22T11:05:58Z info: Deployment: ee46e509-d782-46d3-b8d9-e3aecbb514e4
+2026-03-22T11:05:58Z info: Build: 2466b550-7d7c-4b04-81ab-79cc4304714b
+2026-03-22T11:05:58Z info: Running Security Scan
+2026-03-22T11:06:01Z info: Security Scan Complete
+2026-03-22T11:06:01Z info: Connecting to builder
+2026-03-22T11:06:01Z info: Builder connected
+2026-03-22T11:06:04Z info: Installing packages
+--> pip install -r requirements.txt
+
+--> pip install -r requirements.txt
+
+Requirement already satisfied: fastapi in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 1)) (0.135.1)
+
+Requirement already satisfied: fastapi in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 1)) (0.135.1)
+
+Requirement already satisfied: uvicorn in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 2)) (0.42.0)
+
+Requirement already satisfied: uvicorn in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 2)) (0.42.0)
+
+Requirement already satisfied: pydantic-settings in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 3)) (2.13.1)
+
+Requirement already satisfied: pydantic-settings in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 3)) (2.13.1)
+
+Requirement already satisfied: mangum in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 4)) (0.21.0)
+
+Requirement already satisfied: mangum in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 4)) (0.21.0)
+
+Requirement already satisfied: numpy in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 5)) (2.4.3)
+
+Requirement already satisfied: numpy in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 5)) (2.4.3)
+
+Requirement already satisfied: deep-translator in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 6)) (1.11.4)
+
+Requirement already satisfied: deep-translator in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 6)) (1.11.4)
+
+Requirement already satisfied: langdetect in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 7)) (1.0.9)
+
+Requirement already satisfied: langdetect in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 7)) (1.0.9)
+
+Requirement already satisfied: pypdf in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 8)) (6.9.1)
+
+Requirement already satisfied: pypdf in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 8)) (6.9.1)
+
+Requirement already satisfied: python-dotenv in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 9)) (1.2.2)
+
+Requirement already satisfied: python-dotenv in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 9)) (1.2.2)
+
+Requirement already satisfied: beautifulsoup4 in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 10)) (4.14.3)
+
+Requirement already satisfied: beautifulsoup4 in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 10)) (4.14.3)
+
+Requirement already satisfied: requests in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 11)) (2.32.5)
+
+Requirement already satisfied: requests in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 11)) (2.32.5)
+
+Requirement already satisfied: openai in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 12)) (2.29.0)
+
+Requirement already satisfied: openai in ./.pythonlibs/lib/python3.12/site-packages (from -r requirements.txt (line 12)) (2.29.0)
+
+Requirement already satisfied: starlette>=0.46.0 in ./.pythonlibs/lib/python3.12/site-packages (from fastapi->-r requirements.txt (line 1)) (0.52.1)
+
+Requirement already satisfied: starlette>=0.46.0 in ./.pythonlibs/lib/python3.12/site-packages (from fastapi->-r requirements.txt (line 1)) (0.52.1)
+
+Requirement already satisfied: pydantic>=2.7.0 in ./.pythonlibs/lib/python3.12/site-packages (from fastapi->-r requirements.txt (line 1)) (2.12.5)
+
+Requirement already satisfied: pydantic>=2.7.0 in ./.pythonlibs/lib/python3.12/site-packages (from fastapi->-r requirements.txt (line 1)) (2.12.5)
+
+Requirement already satisfied: typing-extensions>=4.8.0 in ./.pythonlibs/lib/python3.12/site-packages (from fastapi->-r requirements.txt (line 1)) (4.15.0)
+
+Requirement already satisfied: typing-extensions>=4.8.0 in ./.pythonlibs/lib/python3.12/site-packages (from fastapi->-r requirements.txt (line 1)) (4.15.0)
+
+Requirement already satisfied: typing-inspection>=0.4.2 in ./.pythonlibs/lib/python3.12/site-packages (from fastapi->-r requirements.txt (line 1)) (0.4.2)
+
+Requirement already satisfied: typing-inspection>=0.4.2 in ./.pythonlibs/lib/python3.12/site-packages (from fastapi->-r requirements.txt (line 1)) (0.4.2)
+
+Requirement already satisfied: annotated-doc>=0.0.2 in ./.pythonlibs/lib/python3.12/site-packages (from fastapi->-r requirements.txt (line 1)) (0.0.4)
+
+Requirement already satisfied: annotated-doc>=0.0.2 in ./.pythonlibs/lib/python3.12/site-packages (from fastapi->-r requirements.txt (line 1)) (0.0.4)
+
+Requirement already satisfied: click>=7.0 in ./.pythonlibs/lib/python3.12/site-packages (from uvicorn->-r requirements.txt (line 2)) (8.3.1)
+
+Requirement already satisfied: click>=7.0 in ./.pythonlibs/lib/python3.12/site-packages (from uvicorn->-r requirements.txt (line 2)) (8.3.1)
+
+Requirement already satisfied: h11>=0.8 in ./.pythonlibs/lib/python3.12/site-packages (from uvicorn->-r requirements.txt (line 2)) (0.16.0)
+
+Requirement already satisfied: h11>=0.8 in ./.pythonlibs/lib/python3.12/site-packages (from uvicorn->-r requirements.txt (line 2)) (0.16.0)
+
+Requirement already satisfied: six in ./.pythonlibs/lib/python3.12/site-packages (from langdetect->-r requirements.txt (line 7)) (1.17.0)
+
+Requirement already satisfied: six in ./.pythonlibs/lib/python3.12/site-packages (from langdetect->-r requirements.txt (line 7)) (1.17.0)
+
+Requirement already satisfied: soupsieve>=1.6.1 in ./.pythonlibs/lib/python3.12/site-packages (from beautifulsoup4->-r requirements.txt (line 10)) (2.8.3)
+
+Requirement already satisfied: soupsieve>=1.6.1 in ./.pythonlibs/lib/python3.12/site-packages (from beautifulsoup4->-r requirements.txt (line 10)) (2.8.3)
+
+Requirement already satisfied: charset_normalizer<4,>=2 in ./.pythonlibs/lib/python3.12/site-packages (from requests->-r requirements.txt (line 11)) (3.4.6)
+
+Requirement already satisfied: charset_normalizer<4,>=2 in ./.pythonlibs/lib/python3.12/site-packages (from requests->-r requirements.txt (line 11)) (3.4.6)
+
+Requirement already satisfied: idna<4,>=2.5 in ./.pythonlibs/lib/python3.12/site-packages (from requests->-r requirements.txt (line 11)) (3.11)
+
+Requirement already satisfied: idna<4,>=2.5 in ./.pythonlibs/lib/python3.12/site-packages (from requests->-r requirements.txt (line 11)) (3.11)
+
+Requirement already satisfied: urllib3<3,>=1.21.1 in ./.pythonlibs/lib/python3.12/site-packages (from requests->-r requirements.txt (line 11)) (2.6.3)
+
+Requirement already satisfied: urllib3<3,>=1.21.1 in ./.pythonlibs/lib/python3.12/site-packages (from requests->-r requirements.txt (line 11)) (2.6.3)
+
+Requirement already satisfied: certifi>=2017.4.17 in ./.pythonlibs/lib/python3.12/site-packages (from requests->-r requirements.txt (line 11)) (2026.2.25)
+
+Requirement already satisfied: certifi>=2017.4.17 in ./.pythonlibs/lib/python3.12/site-packages (from requests->-r requirements.txt (line 11)) (2026.2.25)
+
+Requirement already satisfied: anyio<5,>=3.5.0 in ./.pythonlibs/lib/python3.12/site-packages (from openai->-r requirements.txt (line 12)) (4.12.1)
+
+Requirement already satisfied: anyio<5,>=3.5.0 in ./.pythonlibs/lib/python3.12/site-packages (from openai->-r requirements.txt (line 12)) (4.12.1)
+
+Requirement already satisfied: distro<2,>=1.7.0 in ./.pythonlibs/lib/python3.12/site-packages (from openai->-r requirements.txt (line 12)) (1.9.0)
+
+Requirement already satisfied: distro<2,>=1.7.0 in ./.pythonlibs/lib/python3.12/site-packages (from openai->-r requirements.txt (line 12)) (1.9.0)
+
+Requirement already satisfied: httpx<1,>=0.23.0 in ./.pythonlibs/lib/python3.12/site-packages (from openai->-r requirements.txt (line 12)) (0.28.1)
+
+Requirement already satisfied: httpx<1,>=0.23.0 in ./.pythonlibs/lib/python3.12/site-packages (from openai->-r requirements.txt (line 12)) (0.28.1)
+
+Requirement already satisfied: jiter<1,>=0.10.0 in ./.pythonlibs/lib/python3.12/site-packages (from openai->-r requirements.txt (line 12)) (0.13.0)
+
+Requirement already satisfied: jiter<1,>=0.10.0 in ./.pythonlibs/lib/python3.12/site-packages (from openai->-r requirements.txt (line 12)) (0.13.0)
+
+Requirement already satisfied: sniffio in ./.pythonlibs/lib/python3.12/site-packages (from openai->-r requirements.txt (line 12)) (1.3.1)
+
+Requirement already satisfied: sniffio in ./.pythonlibs/lib/python3.12/site-packages (from openai->-r requirements.txt (line 12)) (1.3.1)
+
+Requirement already satisfied: tqdm>4 in ./.pythonlibs/lib/python3.12/site-packages (from openai->-r requirements.txt (line 12)) (4.67.3)
+
+Requirement already satisfied: tqdm>4 in ./.pythonlibs/lib/python3.12/site-packages (from openai->-r requirements.txt (line 12)) (4.67.3)
+
+Requirement already satisfied: httpcore==1.* in ./.pythonlibs/lib/python3.12/site-packages (from httpx<1,>=0.23.0->openai->-r requirements.txt (line 12)) (1.0.9)
+
+Requirement already satisfied: httpcore==1.* in ./.pythonlibs/lib/python3.12/site-packages (from httpx<1,>=0.23.0->openai->-r requirements.txt (line 12)) (1.0.9)
+
+Requirement already satisfied: annotated-types>=0.6.0 in ./.pythonlibs/lib/python3.12/site-packages (from pydantic>=2.7.0->fastapi->-r requirements.txt (line 1)) (0.7.0)
+
+Requirement already satisfied: annotated-types>=0.6.0 in ./.pythonlibs/lib/python3.12/site-packages (from pydantic>=2.7.0->fastapi->-r requirements.txt (line 1)) (0.7.0)
+
+Requirement already satisfied: pydantic-core==2.41.5 in ./.pythonlibs/lib/python3.12/site-packages (from pydantic>=2.7.0->fastapi->-r requirements.txt (line 1)) (2.41.5)
+
+Requirement already satisfied: pydantic-core==2.41.5 in ./.pythonlibs/lib/python3.12/site-packages (from pydantic>=2.7.0->fastapi->-r requirements.txt (line 1)) (2.41.5)
+
+2026-03-22T11:06:08Z info: Skipping Build as no Build command set
+2026-03-22T11:06:09Z info: Pushing pid1 binary layer...
+2026-03-22T11:06:13Z info: Pushing Repl layer...
+2026-03-22T11:06:13Z info: Pushing hosting layer...
+2026-03-22T11:06:15Z info: Created hosting layer
+2026-03-22T11:06:23Z info: Created pid1 binary layer
+Deployment timed out. Check the Logs tab for more details. - 2026-03-22T11:14:58.853Z
