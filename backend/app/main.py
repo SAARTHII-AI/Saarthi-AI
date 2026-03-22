@@ -1,6 +1,9 @@
+import os
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from app.api import health, schemes, query, help_centers
 from app.services.rag_engine import rag_engine
 from mangum import Mangum
@@ -32,16 +35,38 @@ app.include_router(help_centers.router, prefix="/help-centers", tags=["help-cent
 
 @app.on_event("startup")
 async def startup_event():
-    # Attempt to load documents and build vector index if it hasn't been built
     try:
         rag_engine.load_documents()
         rag_engine.build_vector_index()
     except Exception as e:
         print(f"Error initializing RAG engine on startup: {e}")
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to SaarthiAI Backend. Use /docs to view API documentation."}
+FRONTEND_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "frontend")
 
-# AWS Lambda handler
+@app.get("/")
+def serve_index():
+    return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
+
+app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="frontend_static")
+
+@app.get("/manifest.json")
+def serve_manifest():
+    return FileResponse(os.path.join(FRONTEND_DIR, "manifest.json"))
+
+@app.get("/sw.js")
+def serve_sw():
+    return FileResponse(os.path.join(FRONTEND_DIR, "sw.js"), media_type="application/javascript")
+
+@app.get("/script.js")
+def serve_script():
+    return FileResponse(os.path.join(FRONTEND_DIR, "script.js"), media_type="application/javascript")
+
+@app.get("/voice.js")
+def serve_voice():
+    return FileResponse(os.path.join(FRONTEND_DIR, "voice.js"), media_type="application/javascript")
+
+@app.get("/style.css")
+def serve_style():
+    return FileResponse(os.path.join(FRONTEND_DIR, "style.css"), media_type="text/css")
+
 handler = Mangum(app)

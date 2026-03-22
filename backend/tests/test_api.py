@@ -268,7 +268,6 @@ class TestQueryEdgeCases:
     def test_root_endpoint(self):
         response = client.get("/")
         assert response.status_code == 200
-        assert "SaarthiAI" in response.json().get("message", "")
 
 
 class TestStateSchemes:

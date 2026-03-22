@@ -6,13 +6,16 @@ expertMode = true
 channel = "stable-25_05"
 
 [[ports]]
+localPort = 3000
+externalPort = 3000
+
+[[ports]]
 localPort = 5000
 externalPort = 80
 
 [[ports]]
 localPort = 8000
 externalPort = 8000
-exposeLocalhost = true
 
 [workflows]
 runButton = "Project"
@@ -40,7 +43,7 @@ outputType = "webview"
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["python", "server.py"]
+run = ["sh", "-c", "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"]
 
 [userenv]
 
