@@ -22,6 +22,10 @@ localPort = 3003
 externalPort = 3003
 
 [[ports]]
+localPort = 3005
+externalPort = 4200
+
+[[ports]]
 localPort = 5000
 externalPort = 80
 
@@ -54,9 +58,9 @@ waitForPort = 5000
 outputType = "webview"
 
 [deployment]
-deploymentTarget = "gce"
-run = ["python", "main.py"]
-build = ["sh", "-c", "pip install -r requirements.txt"]
+deploymentTarget = "autoscale"
+run = ["sh", "-c", "cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-80}"]
+build = ["sh", "-c", "pip install -r requirements.txt && cp -r frontend backend/frontend_dist"]
 
 [userenv]
 

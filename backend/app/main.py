@@ -41,18 +41,19 @@ async def startup_event():
     except Exception as e:
         print(f"Error initializing RAG engine on startup: {e}")
 
-FRONTEND_DIR = os.environ.get(
-    "SAARTHI_FRONTEND_DIR",
-    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend")
-)
+_BACKEND_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_WORKSPACE_ROOT = os.path.dirname(_BACKEND_ROOT)
 
-_FRONTEND_AVAILABLE = os.path.isdir(FRONTEND_DIR)
-if _FRONTEND_AVAILABLE:
+_CANDIDATE_DIRS = [
+    os.environ.get("SAARTHI_FRONTEND_DIR", ""),
+    os.path.join(_BACKEND_ROOT, "frontend_dist"),
+    os.path.join(_WORKSPACE_ROOT, "frontend"),
+]
+FRONTEND_DIR = next((d for d in _CANDIDATE_DIRS if d and os.path.isdir(d)), None)
+
+if FRONTEND_DIR:
     print(f"Frontend directory found: {FRONTEND_DIR}")
-else:
-    print(f"WARNING: Frontend directory not found at {FRONTEND_DIR} — static file serving disabled")
 
-if _FRONTEND_AVAILABLE:
     @app.get("/")
     def serve_index():
         return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
@@ -79,6 +80,9 @@ if _FRONTEND_AVAILABLE:
     def serve_style():
         return FileResponse(os.path.join(FRONTEND_DIR, "style.css"), media_type="text/css")
 else:
+    print(f"WARNING: No frontend directory found — static file serving disabled")
+    print(f"  Checked: {_CANDIDATE_DIRS}")
+
     @app.get("/")
     def serve_fallback():
         return PlainTextResponse("SaarthiAI API is running. Frontend not available.")
