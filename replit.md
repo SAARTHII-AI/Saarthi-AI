@@ -7,45 +7,62 @@ A voice-first AI assistant helping Indian farmers discover and **apply for** gov
 ## Architecture Overview
 
 ```
-User (Mobile Browser) → Proxy Server (Port 5000) → FastAPI Backend (Port 8000)
-                                                          ↓
-                                            ┌─────────────┴─────────────┐
-                                            │    Query Orchestrator      │
-                                            │                           │
-                                    ┌───────┴───────┐                   │
-                                    │ Intent Detect  │                   │
-                                    │ (7 intents)    │                   │
-                                    └───────┬───────┘                   │
-                                            │                           │
-                              ┌─────────────┼─────────────┐             │
-                              ↓             ↓             ↓             │
-                        RAG Engine    Bright Data    Gov Data API        │
-                        + Azure LLM   SERP Search   + Portal Links      │
-                        + Conv Track  + Mandi Route                     │
-                              │             │             │             │
-                              └─────────────┼─────────────┘             │
-                                            ↓                           │
-                                  Section Filtering                     │
-                                  (schemes/centers/links                │
-                                   based on intent)                     │
-                                            ↓                           │
-                                   Response + GZip                      │
+User (Mobile Browser)
+        │
+        ▼
+┌──────────────────────────────────────────────────┐
+│          FastAPI Server (uvicorn on $PORT)        │
+│                                                  │
+│  ┌─────────────┐   ┌──────────────────────────┐  │
+│  │  Static File │   │     API Routes           │  │
+│  │  Serving     │   │  /query  /schemes        │  │
+│  │  / (index)   │   │  /health /help-centers   │  │
+│  │  /script.js  │   └──────────┬───────────────┘  │
+│  │  /voice.js   │              │                  │
+│  │  /style.css  │              ▼                  │
+│  │  /sw.js      │   ┌──────────────────────────┐  │
+│  └─────────────┘   │   Query Orchestrator      │  │
+│                     │                          │  │
+│              ┌──────┴──────┐                   │  │
+│              │ Intent Det. │                   │  │
+│              │ (7 intents) │                   │  │
+│              └──────┬──────┘                   │  │
+│                     │                          │  │
+│        ┌────────────┼────────────┐             │  │
+│        ▼            ▼            ▼             │  │
+│   RAG Engine   Bright Data   Gov Data API      │  │
+│   + Azure LLM  SERP Search  + Portal Links    │  │
+│   + Conv Track + Mandi Route                   │  │
+│        │            │            │             │  │
+│        └────────────┼────────────┘             │  │
+│                     ▼                          │  │
+│           Section Filtering                    │  │
+│           (schemes/centers/links               │  │
+│            based on intent)                    │  │
+│                     ▼                          │  │
+│            Response + GZip                     │  │
+│                                                │  │
+│  Middleware: GZip | CORS | Rate Limiting       │  │
+└──────────────────────────────────────────────────┘
 ```
 
-### Two-Server Setup
+### Server Setup
 
-- **Port 5000** — Python HTTP proxy server (`server.py`)
-  - Serves static frontend files from `frontend/` directory
-  - Proxies API requests (`/query`, `/schemes`, `/health`, `/api/help-centers`) to backend
-  - Forwards `Accept-Encoding` header for end-to-end GZip compression
-  - 55-second proxy timeout for slow Azure OpenAI responses
-  - Normalizes trailing slashes for API paths
+- **Production (deployment)**: Single uvicorn process on `$PORT`
+  - `cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+  - Build step: `pip install -r requirements.txt`
+  - FastAPI serves both frontend static files and API routes
 
-- **Port 8000** — FastAPI backend (`backend/app/main.py`)
+- **Local development**: Two-server setup via `python server.py`
+  - Port 5000: Proxy server serves frontend + proxies API calls to backend
+  - Port 8000: FastAPI backend (internal)
+
+- **FastAPI app** (`backend/app/main.py`)
+  - Serves frontend files: `/` (index.html), `/script.js`, `/voice.js`, `/style.css`, `/sw.js`, `/manifest.json`
+  - API routes: `/query`, `/schemes`, `/health`, `/api/help-centers`
   - GZipMiddleware (minimum_size=500 bytes)
   - CORS middleware (allow_origins=["*"], allow_credentials=False)
   - Rate limiting: 20 requests/minute on query endpoint
-  - All API routes registered via FastAPI routers
 
 ---
 
