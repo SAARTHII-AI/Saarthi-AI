@@ -10,3 +10,15 @@ python-dotenv
 beautifulsoup4
 requests
 openai
+beautifulsoup4
+deep-translator
+fastapi
+langdetect
+mangum
+numpy
+openai
+pydantic-settings
+pypdf
+python-dotenv
+requests
+uvicorn
