@@ -199,10 +199,11 @@ async def handle_query(request: QueryRequest, raw_request: Request):
     doc_links_task = None
     gov_links_task = None
 
-    if include_doc_links and top_schemes:
-        primary_scheme = top_schemes[0]
-        doc_links_task = _run_doc_link_search(english_query, primary_scheme["name"])
+    if include_doc_links:
         gov_links_task = _run_gov_links(english_query)
+        if top_schemes:
+            primary_scheme = top_schemes[0]
+            doc_links_task = _run_doc_link_search(english_query, primary_scheme["name"])
 
     if include_schemes:
         raw_recommendations = recommend_schemes(request.model_dump())
