@@ -1,6 +1,11 @@
 import os
 from typing import Optional
+from pathlib import Path
 from pydantic_settings import BaseSettings
+
+WORKSPACE_ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
+BACKEND_ENV_FILE = Path(__file__).resolve().parents[1] / ".env"
+
 
 class Settings(BaseSettings):
     app_name: str = "SaarthiAI"
@@ -32,7 +37,9 @@ class Settings(BaseSettings):
     data_gov_api_key: Optional[str] = None
 
     class Config:
-        env_file = ".env"
+        env_file = (str(WORKSPACE_ENV_FILE), str(BACKEND_ENV_FILE), ".env")
         env_file_encoding = "utf-8"
+        extra = "ignore"
+
 
 settings = Settings()
