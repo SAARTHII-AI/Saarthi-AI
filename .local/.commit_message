@@ -1,0 +1,16 @@
+Parallelize API calls & add transliterated TTS support
+
+- Rewrote query.py to use asyncio.gather for concurrent RAG search,
+  Bright Data SERP, and gov data enrichment calls
+- Wrapped all sync service calls with asyncio.to_thread
+- Added transliterate_text method to translator.py using Azure
+  Translator /transliterate endpoint with script mappings for all 11
+  Indian languages
+- Added answer_romanized field to QueryResponse schema
+- Frontend TTS now speaks romanized Latin text via English voice when
+  transliteration succeeds, falls back to native-language TTS otherwise
+- transliterate_text returns None (not original text) on failure,
+  preventing English TTS from speaking native-script text
+- Added ur/as to SCRIPT_RANGES for complete language coverage
+- Fixed BrokenPipeError handling in proxy server
+- Updated replit.md with parallelization and transliteration docs

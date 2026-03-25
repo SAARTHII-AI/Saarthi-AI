@@ -1,0 +1,25 @@
+Starting SaarthiAI backend on port 8000...
+Waiting for backend to start...
+Frontend directory found: /home/runner/workspace/backend/frontend_dist
+[32mINFO[0m:     Started server process [[36m1637[0m]
+[32mINFO[0m:     Waiting for application startup.
+Loading schemes for RAG Engine...
+Vector index build skipped (keyword-search mode).
+[32mINFO[0m:     Application startup complete.
+[31mERROR[0m:    [Errno 98] error while attempting to bind on address ('::1', 8000, 0, 0): [errno 98] address already in use
+[32mINFO[0m:     Waiting for application shutdown.
+[32mINFO[0m:     Application shutdown complete.
+Starting frontend proxy server on port 5000...
+Traceback (most recent call last):
+  File "/home/runner/workspace/server.py", line 107, in <module>
+    main()
+  File "/home/runner/workspace/server.py", line 91, in main
+    server = HTTPServer(("0.0.0.0", port), ProxyHandler)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 457, in __init__
+    self.server_bind()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+OSError: [Errno 98] Address already in use

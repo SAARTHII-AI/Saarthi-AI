@@ -1,0 +1,274 @@
+Starting SaarthiAI backend on port 8000...
+Waiting for backend to start...
+[32mINFO[0m:     Started server process [[36m8368[0m]
+[32mINFO[0m:     Waiting for application startup.
+Loading schemes for RAG Engine...
+Vector index build skipped (keyword-search mode).
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://localhost:8000[0m (Press CTRL+C to quit)
+Starting frontend proxy server on port 5000...
+SaarthiAI is running at http://0.0.0.0:5000
+[32mINFO[0m:     ::1:48514 - "[1mGET /health/ HTTP/1.1[0m" [32m200 OK[0m
+[32mINFO[0m:     ::1:48158 - "[1mPOST /query/ HTTP/1.1[0m" [32m200 OK[0m
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 35384)
+Traceback (most recent call last):
+  File "/home/runner/workspace/server.py", line 60, in _proxy_request
+    self.wfile.write(response.read())
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/home/runner/workspace/server.py", line 17, in __init__
+    super().__init__(*args, directory=FRONTEND_DIR, **kwargs)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 766, in __init__
+    self.handle()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/runner/workspace/server.py", line 27, in do_POST
+    self._proxy_request("POST")
+  File "/home/runner/workspace/server.py", line 67, in _proxy_request
+    self.send_error(502, f"Backend unavailable: {e}")
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 488, in send_error
+    self.end_headers()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 538, in end_headers
+    self.flush_headers()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 542, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+[32mINFO[0m:     ::1:47752 - "[1mGET /schemes/ HTTP/1.1[0m" [32m200 OK[0m
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 35396)
+Traceback (most recent call last):
+  File "/home/runner/workspace/server.py", line 60, in _proxy_request
+    self.wfile.write(response.read())
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/home/runner/workspace/server.py", line 17, in __init__
+    super().__init__(*args, directory=FRONTEND_DIR, **kwargs)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 766, in __init__
+    self.handle()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/runner/workspace/server.py", line 21, in do_GET
+    self._proxy_request("GET")
+  File "/home/runner/workspace/server.py", line 67, in _proxy_request
+    self.send_error(502, f"Backend unavailable: {e}")
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 488, in send_error
+    self.end_headers()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 538, in end_headers
+    self.flush_headers()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 542, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+[32mINFO[0m:     ::1:47764 - "[1mPOST /query/ HTTP/1.1[0m" [32m200 OK[0m
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 35406)
+Traceback (most recent call last):
+  File "/home/runner/workspace/server.py", line 60, in _proxy_request
+    self.wfile.write(response.read())
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/home/runner/workspace/server.py", line 17, in __init__
+    super().__init__(*args, directory=FRONTEND_DIR, **kwargs)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 766, in __init__
+    self.handle()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/runner/workspace/server.py", line 27, in do_POST
+    self._proxy_request("POST")
+  File "/home/runner/workspace/server.py", line 67, in _proxy_request
+    self.send_error(502, f"Backend unavailable: {e}")
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 488, in send_error
+    self.end_headers()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 538, in end_headers
+    self.flush_headers()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 542, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+[32mINFO[0m:     ::1:47550 - "[1mPOST /query/ HTTP/1.1[0m" [32m200 OK[0m
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 35422)
+Traceback (most recent call last):
+  File "/home/runner/workspace/server.py", line 60, in _proxy_request
+    self.wfile.write(response.read())
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/home/runner/workspace/server.py", line 17, in __init__
+    super().__init__(*args, directory=FRONTEND_DIR, **kwargs)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 766, in __init__
+    self.handle()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/runner/workspace/server.py", line 27, in do_POST
+    self._proxy_request("POST")
+  File "/home/runner/workspace/server.py", line 67, in _proxy_request
+    self.send_error(502, f"Backend unavailable: {e}")
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 488, in send_error
+    self.end_headers()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 538, in end_headers
+    self.flush_headers()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 542, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+[32mINFO[0m:     ::1:35968 - "[1mPOST /query/ HTTP/1.1[0m" [32m200 OK[0m
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 35428)
+Traceback (most recent call last):
+  File "/home/runner/workspace/server.py", line 60, in _proxy_request
+    self.wfile.write(response.read())
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/home/runner/workspace/server.py", line 17, in __init__
+    super().__init__(*args, directory=FRONTEND_DIR, **kwargs)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 766, in __init__
+    self.handle()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/runner/workspace/server.py", line 27, in do_POST
+    self._proxy_request("POST")
+  File "/home/runner/workspace/server.py", line 67, in _proxy_request
+    self.send_error(502, f"Backend unavailable: {e}")
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 488, in send_error
+    self.end_headers()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 538, in end_headers
+    self.flush_headers()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 542, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+[32mINFO[0m:     ::1:48936 - "[1mPOST /query/ HTTP/1.1[0m" [32m200 OK[0m
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 35438)
+Traceback (most recent call last):
+  File "/home/runner/workspace/server.py", line 60, in _proxy_request
+    self.wfile.write(response.read())
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 318, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 349, in process_request
+    self.finish_request(request, client_address)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/home/runner/workspace/server.py", line 17, in __init__
+    super().__init__(*args, directory=FRONTEND_DIR, **kwargs)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 766, in __init__
+    self.handle()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/runner/workspace/server.py", line 27, in do_POST
+    self._proxy_request("POST")
+  File "/home/runner/workspace/server.py", line 67, in _proxy_request
+    self.send_error(502, f"Backend unavailable: {e}")
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 488, in send_error
+    self.end_headers()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 538, in end_headers
+    self.flush_headers()
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/http/server.py", line 542, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+  File "/nix/store/iizfzmqjdfvbyx82gqw92glb5zl6m4my-python3-3.12.12/lib/python3.12/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+Shutting down...
+[32mINFO[0m:     Shutting down
+[32mINFO[0m:     Waiting for application shutdown.
+[32mINFO[0m:     Application shutdown complete.
+[32mINFO[0m:     Finished server process [[36m8368[0m]
