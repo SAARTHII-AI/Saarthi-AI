@@ -41,6 +41,7 @@ class HelpCenter(BaseModel):
 class QueryResponse(BaseModel):
     intent: str
     answer: str
+    answer_romanized: Optional[str] = None
     recommended_schemes: List[SchemeRecommedation] = []
     response_language: str = "en"
     doc_links: List[DocLink] = []

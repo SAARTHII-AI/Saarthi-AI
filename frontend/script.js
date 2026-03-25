@@ -1105,7 +1105,9 @@ function displayResponse(data, isCached, isOfflineGenerated) {
     `;
 
     if (window.speakText && data.answer) {
-        window.speakText(data.answer, data.response_language || getLang());
+        const textToSpeak = data.answer_romanized || data.answer;
+        const speakLang = data.answer_romanized ? "en" : (data.response_language || getLang());
+        window.speakText(textToSpeak, speakLang);
     }
 
     if (data.recommended_schemes && data.recommended_schemes.length > 0) {

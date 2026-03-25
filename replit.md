@@ -23,6 +23,8 @@ The application features a FastAPI backend serving both static frontend files an
 - **Intent Detection & Response Filtering:** A rule-based classifier identifies 7 intents (`price_query`, `helpline_query`, `eligibility_check`, `benefits_query`, `document_requirements`, `application_process`, `scheme_search`, `general_information`) to tailor responses and data retrieval.
 - **Offline-First PWA:** Implemented with a Service Worker for app shell caching and a network-first strategy for API calls. It includes an offline answer engine providing template-based responses, emergency info caching, and sync-on-reconnect functionality. PWA is fully installable on Android and iOS with proper manifest, PNG icons (72–512px), apple-touch-icon meta tags (including 180x180 for iOS), and standalone display mode. Icons are served from `/icons/` via both the proxy server and FastAPI static mount.
 - **GZip Compression:** Enabled on the backend to reduce payload size for faster data transfer.
+- **Parallelized API Calls:** The `/query` endpoint uses `asyncio.gather` and `asyncio.to_thread` to run RAG search, Bright Data SERP, and gov data enrichment concurrently, significantly reducing response times.
+- **Transliterated TTS:** For non-English responses, Azure Translator's `/transliterate` endpoint converts native script text (e.g., Hindi Devanagari) to romanized Latin script (`answer_romanized` field). The frontend speaks this romanized text using an English TTS voice, avoiding the need for native-language voice downloads. Display still shows native script. Returns `null` when transliteration is unavailable, so frontend falls back to native-language TTS.
 - **Multi-Language Support:** Comprehensive i18n for 11 Indian languages, covering UI labels, voice STT/TTS (Web Speech API with smart voice selection), AI responses (language-specific prompts), and offline templates.
 - **Farmer Profile System:** Captures state, crop, land size, income, and occupation to personalize scheme recommendations and contextualize AI responses.
 - **Recommendation Engine:** Scores schemes based on state, occupation, income eligibility, crop relevance, and query word overlap.
@@ -42,6 +44,7 @@ The application features a FastAPI backend serving both static frontend files an
 - **data.gov.in API:** Integrated for fetching live Minimum Support Price (MSP) data and other agricultural statistics.
 - **Google Maps API:** Used for generating map URLs for help centers.
 - **Web Speech API:** Utilized on the frontend for Speech-to-Text (STT) and Text-to-Speech (TTS) functionalities.
+- **Azure Translator:** Used for language detection, translation, and transliteration (native script to Latin/romanized) via the Cognitive Services API. Configured with `AZURE_TRANSLATOR_KEY` secret and `AZURE_TRANSLATOR_REGION=eastasia` env var.
 - **deep-translator (Google Translate):** Used as a fallback for translation in multilingual contexts.
 - **SlowAPI:** For rate limiting on API endpoints.
 - **uvicorn:** ASGI server for running the FastAPI application.
