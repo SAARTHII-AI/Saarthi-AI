@@ -1,0 +1,111 @@
+{
+    "apiVersion": "2025-12-01",
+    "id": "/subscriptions/198724ed-152e-43aa-aef4-9e040b7f6ba9/resourceGroups/prepwise/providers/Microsoft.CognitiveServices/accounts/Langtranslat",
+    "name": "Langtranslat",
+    "type": "microsoft.cognitiveservices/accounts",
+    "sku": {
+        "name": "F0"
+    },
+    "kind": "TextTranslation",
+    "location": "eastasia",
+    "tags": {},
+    "identity": {
+        "type": "None"
+    },
+    "properties": {
+        "endpoint": "https://api.cognitive.microsofttranslator.com/",
+        "internalId": "9851d98eb3d74f498d9d0ccf0086c6ae",
+        "dateCreated": "2026-03-25T05:14:38.298Z",
+        "callRateLimit": {
+            "rules": [
+                {
+                    "key": "documentTranslation.default",
+                    "renewalPeriod": 1,
+                    "count": 10,
+                    "matchPatterns": [
+                        {
+                            "path": "translator/text/batch/*",
+                            "method": "*"
+                        }
+                    ]
+                },
+                {
+                    "key": "singledocumentTranslation.default",
+                    "renewalPeriod": 1,
+                    "count": 1,
+                    "matchPatterns": [
+                        {
+                            "path": "translator/document:translate",
+                            "method": "*"
+                        }
+                    ]
+                },
+                {
+                    "key": "batchDocumentTranslation.default",
+                    "renewalPeriod": 1,
+                    "count": 10,
+                    "matchPatterns": [
+                        {
+                            "path": "translator/document/*",
+                            "method": "*"
+                        }
+                    ]
+                },
+                {
+                    "key": "default",
+                    "renewalPeriod": 1,
+                    "count": 10,
+                    "matchPatterns": [
+                        {
+                            "path": "*",
+                            "method": "*"
+                        }
+                    ]
+                }
+            ]
+        },
+        "isMigrated": false,
+        "customSubDomainName": "langtranslat",
+        "networkAcls": {
+            "defaultAction": "Allow",
+            "virtualNetworkRules": [],
+            "ipRules": []
+        },
+        "allowProjectManagement": false,
+        "privateEndpointConnections": [],
+        "publicNetworkAccess": "Enabled",
+        "capabilities": [
+            {
+                "name": "VirtualNetworks"
+            },
+            {
+                "name": "EnabledApimVnet",
+                "value": "true"
+            },
+            {
+                "name": "NetworkSecurityPerimeter"
+            },
+            {
+                "name": "CustomerManagedKey"
+            }
+        ],
+        "endpoints": {
+            "TextTranslation-Global": "https://api.cognitive.microsofttranslator.com/",
+            "TextTranslation": "https://langtranslat.cognitiveservices.azure.com/",
+            "DocumentTranslation": "https://langtranslat.cognitiveservices.azure.com/",
+            "Token": "https://langtranslat.cognitiveservices.azure.com/",
+            "Container": "https://langtranslat.cognitiveservices.azure.com/",
+            "CustomTranslator": "https://langtranslat.cognitiveservices.azure.com/"
+        },
+        "provisioningState": "Succeeded"
+    },
+    "systemData": {
+        "createdBy": "aditjain2005@gmail.com",
+        "createdByType": "User",
+        "createdAt": "2026-03-25T05:14:36.48Z",
+        "lastModifiedBy": "aditjain2005@gmail.com",
+        "lastModifiedByType": "User",
+        "lastModifiedAt": "2026-03-25T05:14:36.48Z"
+    },
+    "etag": "\"5500420a-0000-1900-0000-69c36f3f0000\""
+}
