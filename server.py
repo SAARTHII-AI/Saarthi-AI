@@ -63,8 +63,13 @@ class ProxyHandler(SimpleHTTPRequestHandler):
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             self.wfile.write(e.read())
+        except BrokenPipeError:
+            pass
         except Exception as e:
-            self.send_error(502, f"Backend unavailable: {e}")
+            try:
+                self.send_error(502, f"Backend unavailable: {e}")
+            except BrokenPipeError:
+                pass
 
     def log_message(self, format, *args):
         pass

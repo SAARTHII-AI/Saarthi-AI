@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import time
 from collections import defaultdict
@@ -28,6 +29,8 @@ SCRIPT_RANGES = {
     "ml": range(0x0D00, 0x0D7F + 1),
     "pa": range(0x0A00, 0x0A7F + 1),
     "or": range(0x0B00, 0x0B7F + 1),
+    "ur": range(0x0600, 0x06FF + 1),
+    "as": range(0x0980, 0x09FF + 1),
 }
 
 def _text_likely_in_language(text: str, lang: str) -> bool:
@@ -56,6 +59,67 @@ def _check_rate_limit(client_ip: str):
         raise HTTPException(status_code=429, detail="Too many requests. Please wait a moment.")
     _rate_limit[client_ip].append(now)
 
+
+async def _run_brightdata_search(english_query):
+    try:
+        result = await asyncio.to_thread(brightdata_search, english_query)
+        if result:
+            logger.info(f"Bright Data returned {len(result)} snippet(s)")
+        return result or []
+    except Exception as e:
+        logger.warning(f"Bright Data search failed (non-fatal): {e}")
+        return []
+
+
+async def _run_gov_enrichment(english_query, crop):
+    try:
+        return await asyncio.to_thread(enrich_query_context, english_query, crop=crop)
+    except Exception as e:
+        logger.warning(f"Gov data enrichment failed (non-fatal): {e}")
+        return ""
+
+
+async def _run_rag_search(english_query, user_state, occupation):
+    return await asyncio.to_thread(
+        rag_engine.search_similar,
+        english_query,
+        user_state=user_state,
+        occupation=occupation
+    )
+
+
+async def _run_doc_link_search(english_query, primary_scheme_name):
+    try:
+        return await asyncio.to_thread(search_document_links, english_query, primary_scheme_name)
+    except Exception as e:
+        logger.warning(f"Bright Data doc link search failed (non-fatal): {e}")
+        return []
+
+
+async def _run_gov_links(english_query):
+    try:
+        return await asyncio.to_thread(get_relevant_gov_links, english_query)
+    except Exception as e:
+        logger.warning(f"Gov links failed (non-fatal): {e}")
+        return []
+
+
+async def _run_translate(text, source, target):
+    try:
+        return await asyncio.to_thread(translator_service.translate_text, text, source, target)
+    except Exception as e:
+        logger.warning(f"Translation failed (non-fatal): {e}")
+        return text
+
+
+async def _run_transliterate(text, language):
+    try:
+        return await asyncio.to_thread(translator_service.transliterate_text, text, language)
+    except Exception as e:
+        logger.warning(f"Transliteration failed (non-fatal): {e}")
+        return None
+
+
 @router.post("/", response_model=QueryResponse)
 async def handle_query(request: QueryRequest, raw_request: Request):
     client_ip = raw_request.client.host if raw_request.client else "unknown"
@@ -64,17 +128,13 @@ async def handle_query(request: QueryRequest, raw_request: Request):
 
     detected_lang = request.language
     if request.language == "auto" or not request.language:
-        detected_lang = translator_service.detect_language(original_query)
+        detected_lang = await asyncio.to_thread(translator_service.detect_language, original_query)
         if not detected_lang:
             detected_lang = "en"
 
     english_query = original_query
     if detected_lang != "en":
-        try:
-            english_query = translator_service.translate_text(original_query, source=detected_lang, target="en")
-        except Exception as e:
-            logger.warning(f"Translation to English failed: {e}")
-            english_query = original_query
+        english_query = await _run_translate(original_query, detected_lang, "en")
 
     intent = detect_intent(english_query)
 
@@ -87,25 +147,15 @@ async def handle_query(request: QueryRequest, raw_request: Request):
     }
     farmer_profile = {k: v for k, v in farmer_profile.items() if v}
 
-    top_schemes = rag_engine.search_similar(
-        english_query,
-        user_state=request.state or request.location,
-        occupation=request.occupation
+    top_schemes, web_snippets, gov_context = await asyncio.gather(
+        _run_rag_search(
+            english_query,
+            user_state=request.state or request.location,
+            occupation=request.occupation
+        ),
+        _run_brightdata_search(english_query),
+        _run_gov_enrichment(english_query, crop=request.crop),
     )
-
-    web_snippets = []
-    try:
-        web_snippets = brightdata_search(english_query)
-        if web_snippets:
-            logger.info(f"Bright Data returned {len(web_snippets)} snippet(s)")
-    except Exception as e:
-        logger.warning(f"Bright Data search failed (non-fatal): {e}")
-
-    gov_context = ""
-    try:
-        gov_context = enrich_query_context(english_query, crop=request.crop)
-    except Exception as e:
-        logger.warning(f"Gov data enrichment failed (non-fatal): {e}")
 
     context = rag_engine._build_rich_context(
         schemes=top_schemes,
@@ -119,7 +169,8 @@ async def handle_query(request: QueryRequest, raw_request: Request):
     if request.conversation_history:
         conv_history = [{"role": m.role, "content": m.content} for m in request.conversation_history]
 
-    answer = rag_engine.generate_answer(
+    answer = await asyncio.to_thread(
+        rag_engine.generate_answer,
         context,
         english_query,
         farmer_profile=farmer_profile if farmer_profile else None,
@@ -129,15 +180,15 @@ async def handle_query(request: QueryRequest, raw_request: Request):
     )
 
     final_answer = answer
+    answer_romanized = None
     if detected_lang != "en" and answer:
         answer_has_target_lang = _text_likely_in_language(answer, detected_lang)
         if not answer_has_target_lang:
-            try:
-                translated = translator_service.translate_text(answer, source="en", target=detected_lang)
-                if translated and len(translated) > 20:
-                    final_answer = translated
-            except Exception as e:
-                logger.warning(f"Post-answer translation failed (non-fatal): {e}")
+            translated = await _run_translate(answer, "en", detected_lang)
+            if translated and len(translated) > 20:
+                final_answer = translated
+
+        answer_romanized = await _run_transliterate(final_answer, detected_lang)
 
     include_schemes = intent in ("scheme_search", "eligibility_check", "benefits_query",
                                     "document_requirements", "application_process", "general_information")
@@ -145,6 +196,14 @@ async def handle_query(request: QueryRequest, raw_request: Request):
     include_doc_links = intent not in ("helpline_query",)
 
     final_recommendations = []
+    doc_links_task = None
+    gov_links_task = None
+
+    if include_doc_links and top_schemes:
+        primary_scheme = top_schemes[0]
+        doc_links_task = _run_doc_link_search(english_query, primary_scheme["name"])
+        gov_links_task = _run_gov_links(english_query)
+
     if include_schemes:
         raw_recommendations = recommend_schemes(request.model_dump())
         query_words = set(english_query.lower().split())
@@ -159,22 +218,30 @@ async def handle_query(request: QueryRequest, raw_request: Request):
         if not filtered_recs:
             filtered_recs = [r for _, r in scored_recs[:3]]
 
-        for rec in filtered_recs:
-            rec_name = rec["name"]
-            rec_desc = rec["description"]
-            if detected_lang != "en":
-                try:
-                    rec_name = translator_service.translate_text(rec_name, source="en", target=detected_lang)
-                    rec_desc = translator_service.translate_text(rec_desc, source="en", target=detected_lang)
-                except Exception:
-                    pass
-            final_recommendations.append({
-                "name": rec_name,
-                "description": rec_desc,
-                "type": rec.get("type"),
-                "state": rec.get("state"),
-                "documents_links": rec.get("documents_links")
-            })
+        if detected_lang != "en" and filtered_recs:
+            translate_tasks = []
+            for rec in filtered_recs:
+                translate_tasks.append(_run_translate(rec["name"], "en", detected_lang))
+                translate_tasks.append(_run_translate(rec["description"], "en", detected_lang))
+            translated_texts = await asyncio.gather(*translate_tasks)
+
+            for i, rec in enumerate(filtered_recs):
+                final_recommendations.append({
+                    "name": translated_texts[i * 2],
+                    "description": translated_texts[i * 2 + 1],
+                    "type": rec.get("type"),
+                    "state": rec.get("state"),
+                    "documents_links": rec.get("documents_links")
+                })
+        else:
+            for rec in filtered_recs:
+                final_recommendations.append({
+                    "name": rec["name"],
+                    "description": rec["description"],
+                    "type": rec.get("type"),
+                    "state": rec.get("state"),
+                    "documents_links": rec.get("documents_links")
+                })
 
     doc_links = []
     if include_doc_links:
@@ -185,25 +252,19 @@ async def handle_query(request: QueryRequest, raw_request: Request):
                     seen_urls.add(link)
                     doc_links.append({"title": scheme["name"], "url": link})
 
-        if top_schemes:
-            primary_scheme = top_schemes[0]
-            try:
-                enriched_links = search_document_links(english_query, primary_scheme["name"])
-                for el in enriched_links:
-                    if el["url"] not in seen_urls and _is_safe_url(el["url"]):
-                        seen_urls.add(el["url"])
-                        doc_links.append({"title": el["title"], "url": el["url"]})
-            except Exception as e:
-                logger.warning(f"Bright Data doc link search failed (non-fatal): {e}")
+        if doc_links_task:
+            enriched_links = await doc_links_task
+            for el in enriched_links:
+                if el["url"] not in seen_urls and _is_safe_url(el["url"]):
+                    seen_urls.add(el["url"])
+                    doc_links.append({"title": el["title"], "url": el["url"]})
 
-        try:
-            gov_links = get_relevant_gov_links(english_query)
+        if gov_links_task:
+            gov_links = await gov_links_task
             for gl in gov_links:
                 if gl["url"] not in seen_urls and _is_safe_url(gl["url"]):
                     seen_urls.add(gl["url"])
                     doc_links.append({"title": gl["title"], "url": gl["url"]})
-        except Exception as e:
-            logger.warning(f"Gov links failed (non-fatal): {e}")
 
     nearest_centers = []
     if include_centers:
@@ -222,6 +283,7 @@ async def handle_query(request: QueryRequest, raw_request: Request):
     return QueryResponse(
         intent=intent,
         answer=final_answer,
+        answer_romanized=answer_romanized,
         recommended_schemes=final_recommendations,
         response_language=detected_lang,
         doc_links=doc_links,
