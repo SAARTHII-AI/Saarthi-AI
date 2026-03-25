@@ -76,6 +76,7 @@ BRIGHTDATA_SERP_ZONE = "serp_api1"
 BRIGHTDATA_DC_HOST = "brd.superproxy.io"
 BRIGHTDATA_DC_PORT = "33335"
 BRIGHTDATA_DC_USER = "brd-customer-hl_68343586-zone-datacenter_proxy1"
+AZURE_TRANSLATOR_REGION = "eastasia"
 
 [postMerge]
 path = "scripts/post-merge.sh"
