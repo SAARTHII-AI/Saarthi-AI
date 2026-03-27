@@ -127,13 +127,11 @@
                 <option value="te" class="text-slate-800">తెలుగు</option>
                 <option value="mr" class="text-slate-800">मराठी</option>
                 <option value="ta" class="text-slate-800">தமிழ்</option>
-                <option value="ur" class="text-slate-800">اردو</option>
                 <option value="gu" class="text-slate-800">ગુજરાતી</option>
                 <option value="kn" class="text-slate-800">ಕನ್ನಡ</option>
                 <option value="or" class="text-slate-800">ଓଡ଼ିଆ</option>
                 <option value="ml" class="text-slate-800">മലയാളം</option>
                 <option value="pa" class="text-slate-800">ਪੰਜਾਬੀ</option>
-                <option value="as" class="text-slate-800">অসমীয়া</option>
             </select>
             <button id="avatar-btn" class="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center border border-white/20 hover:bg-white/20 transition-all" title="Profile">
                 <span class="material-symbols-outlined text-2xl">person</span>
@@ -205,13 +203,13 @@
         <div id="status-indicator" class="text-center text-sm font-medium text-slate-400 h-6 mb-2"></div>
 
         <div class="flex items-center gap-2 sm:gap-4 bg-input-bg p-1.5 sm:p-2 rounded-full shadow-inner border border-stone-300">
-            <input id="text-input" onkeypress="handleEnterKeyPress(event)" class="flex-1 min-w-0 bg-transparent border-none focus:ring-0 text-base sm:text-xl placeholder:text-slate-500 text-slate-900 px-4 sm:px-6 py-2 sm:py-3 outline-none" placeholder="Type a message... (एक संदेश लिखें...)" type="text"/>
+            <input id="text-input" class="flex-1 min-w-0 bg-transparent border-none focus:ring-0 text-base sm:text-xl placeholder:text-slate-500 text-slate-900 px-4 sm:px-6 py-2 sm:py-3 outline-none" placeholder="Type a message... (एक संदेश लिखें...)" type="text"/>
 
             <div class="flex items-center gap-1.5 sm:gap-2 pr-1.5 sm:pr-2 shrink-0">
                 <button id="mic-btn" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-header-bg flex items-center justify-center text-white shadow-md hover:bg-primary-dark transition-all scale-110 active:scale-95">
                     <span class="material-symbols-outlined text-2xl sm:text-3xl">mic</span>
                 </button>
-                <button id="send-btn" onclick="sendTextMessage()" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-header-bg flex items-center justify-center text-white shadow-md hover:bg-primary-dark transition-all scale-110 active:scale-95">
+                <button id="send-btn" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-header-bg flex items-center justify-center text-white shadow-md hover:bg-primary-dark transition-all scale-110 active:scale-95">
                     <span class="material-symbols-outlined text-2xl sm:text-3xl">send</span>
                 </button>
             </div>
@@ -220,7 +218,7 @@
 
     <!-- Profile Drawer -->
     <div id="profile-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] hidden"></div>
-    <div id="profile-drawer" class="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl z-[70] transform translate-x-full transition-transform duration-300 overflow-y-auto hidden">
+    <div id="profile-drawer" class="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl z-[70] transform translate-x-full transition-transform duration-300 overflow-y-auto">
         <div class="p-8">
             <div class="flex items-center justify-between mb-8">
                 <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-3">
@@ -236,8 +234,18 @@
 
             <div class="space-y-6">
                 <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2 uppercase">Name / नाम</label>
+                    <input id="prof-name" type="text" placeholder="Your name..." class="w-full rounded-2xl border border-stone-300 bg-stone-50 text-slate-800 px-4 py-4 text-lg outline-none focus:ring-2 focus:ring-header-bg/30"/>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2 uppercase">Phone / फ़ोन</label>
+                    <input id="prof-phone" type="tel" placeholder="e.g. 9876543210" class="w-full rounded-2xl border border-stone-300 bg-stone-50 text-slate-800 px-4 py-4 text-lg outline-none focus:ring-2 focus:ring-header-bg/30"/>
+                </div>
+
+                <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2 uppercase">State / राज्य</label>
-                    <select id="profile-state" class="w-full rounded-2xl border-stone-300 bg-stone-50 text-slate-800 px-4 py-4 text-lg outline-none focus:ring-2 focus:ring-header-bg/30">
+                    <select id="prof-state" class="w-full rounded-2xl border-stone-300 bg-stone-50 text-slate-800 px-4 py-4 text-lg outline-none focus:ring-2 focus:ring-header-bg/30">
                         <option value="">Select state</option>
                         <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option>
                         <option>Bihar</option><option>Chhattisgarh</option><option>Goa</option>
@@ -253,18 +261,23 @@
                 </div>
 
                 <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2 uppercase">District / जिला</label>
+                    <input id="prof-district" type="text" placeholder="e.g. Varanasi..." class="w-full rounded-2xl border border-stone-300 bg-stone-50 text-slate-800 px-4 py-4 text-lg outline-none focus:ring-2 focus:ring-header-bg/30"/>
+                </div>
+
+                <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2 uppercase">Primary Crop / मुख्य फसल</label>
-                    <input id="profile-crop" type="text" placeholder="e.g. Wheat, Paddy..." class="w-full rounded-2xl border border-stone-300 bg-stone-50 text-slate-800 px-4 py-4 text-lg outline-none focus:ring-2 focus:ring-header-bg/30"/>
+                    <input id="prof-crop" type="text" placeholder="e.g. Wheat, Paddy..." class="w-full rounded-2xl border border-stone-300 bg-stone-50 text-slate-800 px-4 py-4 text-lg outline-none focus:ring-2 focus:ring-header-bg/30"/>
                 </div>
 
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2 uppercase">Land Size (acres) / भूमि (एकड़)</label>
-                    <input id="profile-land" type="number" min="0" step="0.1" placeholder="e.g. 2.5" class="w-full rounded-2xl border border-stone-300 bg-stone-50 text-slate-800 px-4 py-4 text-lg outline-none focus:ring-2 focus:ring-header-bg/30"/>
+                    <input id="prof-land" type="number" min="0" step="0.1" placeholder="e.g. 2.5" class="w-full rounded-2xl border border-stone-300 bg-stone-50 text-slate-800 px-4 py-4 text-lg outline-none focus:ring-2 focus:ring-header-bg/30"/>
                 </div>
 
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2 uppercase">Annual Income (₹) / वार्षिक आय</label>
-                    <select id="profile-income" class="w-full rounded-2xl border border-stone-300 bg-stone-50 text-slate-800 px-4 py-4 text-lg outline-none focus:ring-2 focus:ring-header-bg/30">
+                    <select id="prof-income" class="w-full rounded-2xl border border-stone-300 bg-stone-50 text-slate-800 px-4 py-4 text-lg outline-none focus:ring-2 focus:ring-header-bg/30">
                         <option value="">Select range</option>
                         <option value="0-60000">Below ₹60,000</option>
                         <option value="60000-120000">₹60,000 – ₹1,20,000</option>

@@ -43,7 +43,187 @@ const I18N = {
         typeMessage: "Type your query here...",
         micUnsupported: "Microphone not supported on this browser",
         hearError: "Sorry, I couldn't hear you.",
-    }
+    },
+    bn: {
+        thinking: "ভাবছি...",
+        listening: "শুনছি...",
+        understood: "বুঝেছি!",
+        online: "অনলাইন",
+        offline: "অফলাইন (সংরক্ষিত তথ্য মাত্র)",
+        noCache: "ইন্টারনেট নেই এবং কোনো সংরক্ষিত তথ্য নেই।",
+        serverError: "সার্ভারে যোগাযোগ করা যাচ্ছে না।",
+        offlineAnswer: "অফলাইন উত্তর",
+        savedAnswer: "সংরক্ষিত উত্তর",
+        schemesHeading: "প্রস্তাবিত প্রকল্পসমূহ",
+        usefulLinks: "দরকারি লিংক",
+        nearbyCenters: "নিকটবর্তী কেন্দ্র",
+        openMaps: "মানচিত্রে দেখুন",
+        officialLink: "অফিসিয়াল লিংক",
+        central: "কেন্দ্রীয়",
+        typeMessage: "একটি বার্তা টাইপ করুন...",
+        micUnsupported: "এই ব্রাউজারে ভয়েস ইনপুট সমর্থিত নয়।",
+        hearError: "দুঃখিত, আমি শুনতে পাইনি।",
+    },
+    te: {
+        thinking: "ఆలోచిస్తున్నాను...",
+        listening: "వింటున్నాను...",
+        understood: "అర్థమైంది!",
+        online: "ఆన్‌లైన్",
+        offline: "ఆఫ్‌లైన్ (సేవ్ చేసిన సమాచారం మాత్రమే)",
+        noCache: "ఇంటర్నెట్ లేదు మరియు సేవ్ చేసిన సమాచారం లేదు.",
+        serverError: "సర్వర్‌ను సంప్రదించడం సాధ్యం కాలేదు.",
+        offlineAnswer: "ఆఫ్‌లైన్ సమాధానం",
+        savedAnswer: "సేవ్ చేసిన సమాధానం",
+        schemesHeading: "సిఫార్సు చేసిన పథకాలు",
+        usefulLinks: "ఉపయోగకరమైన లింకులు",
+        nearbyCenters: "సమీపంలోని కేంద్రాలు",
+        openMaps: "మ్యాప్‌లో చూడండి",
+        officialLink: "అధికారిక లింక్",
+        central: "కేంద్ర",
+        typeMessage: "సందేశం టైప్ చేయండి...",
+        micUnsupported: "ఈ బ్రౌజర్‌లో వాయిస్ ఇన్‌పుట్ మద్దతు లేదు.",
+        hearError: "క్షమించండి, నేను వినలేకపోయాను.",
+    },
+    mr: {
+        thinking: "विचार करत आहे...",
+        listening: "ऐकत आहे...",
+        understood: "समजले!",
+        online: "ऑनलाइन",
+        offline: "ऑफलाइन (फक्त सहेजलेली माहिती)",
+        noCache: "इंटरनेट नाही आणि सहेजलेली माहिती नाही.",
+        serverError: "सर्व्हरशी संपर्क होऊ शकला नाही.",
+        offlineAnswer: "ऑफलाइन उत्तर",
+        savedAnswer: "जतन केलेले उत्तर",
+        schemesHeading: "शिफारस केलेल्या योजना",
+        usefulLinks: "उपयुक्त दुवे",
+        nearbyCenters: "जवळचे केंद्र",
+        openMaps: "नकाशावर पहा",
+        officialLink: "अधिकृत दुवा",
+        central: "केंद्र",
+        typeMessage: "संदेश टाइप करा...",
+        micUnsupported: "या ब्राउझरमध्ये व्हॉइस इनपुट समर्थित नाही.",
+        hearError: "माफ करा, मला ऐकू आले नाही.",
+    },
+    ta: {
+        thinking: "யோசிக்கிறேன்...",
+        listening: "கேட்கிறேன்...",
+        understood: "புரிந்தது!",
+        online: "ஆன்லைன்",
+        offline: "ஆஃப்லைன் (சேமிக்கப்பட்ட தகவல் மட்டும்)",
+        noCache: "இணையம் இல்லை மற்றும் சேமிக்கப்பட்ட தகவல் இல்லை.",
+        serverError: "சர்வரை தொடர்பு கொள்ள இயலவில்லை.",
+        offlineAnswer: "ஆஃப்லைன் பதில்",
+        savedAnswer: "சேமிக்கப்பட்ட பதில்",
+        schemesHeading: "பரிந்துரைக்கப்பட்ட திட்டங்கள்",
+        usefulLinks: "பயனுள்ள இணைப்புகள்",
+        nearbyCenters: "அருகிலுள்ள மையங்கள்",
+        openMaps: "வரைபடத்தில் பாருங்கள்",
+        officialLink: "அதிகாரப்பூர்வ இணைப்பு",
+        central: "மத்திய",
+        typeMessage: "செய்தியை தட்டச்சு செய்யுங்கள்...",
+        micUnsupported: "இந்த உலாவியில் குரல் உள்ளீடு ஆதரிக்கப்படவில்லை.",
+        hearError: "மன்னிக்கவும், என்னால் கேட்க இயலவில்லை.",
+    },
+    gu: {
+        thinking: "વિચારી રહ્યો છું...",
+        listening: "સાંભળી રહ્યો છું...",
+        understood: "સમજી ગયો!",
+        online: "ઑનલાઇન",
+        offline: "ઑફલાઇન (ફક્ત સાચવેલી માહિતી)",
+        noCache: "ઇન્ટરનેટ નથી અને સાચવેલી માહિતી નથી.",
+        serverError: "સર્વર સાથે સંપર્ક કરી શકાયો નહીં.",
+        offlineAnswer: "ઑફલાઇન જવાબ",
+        savedAnswer: "સાચવેલો જવાબ",
+        schemesHeading: "ભલામણ કરેલી યોજનાઓ",
+        usefulLinks: "ઉપયોગી લિંક્સ",
+        nearbyCenters: "નજીકના કેન્દ્રો",
+        openMaps: "નકશામાં જુઓ",
+        officialLink: "અધિકૃત લિંક",
+        central: "કેન્દ્ર",
+        typeMessage: "સંદેશ ટાઇપ કરો...",
+        micUnsupported: "આ બ્રાઉઝરમાં અવાજ ઇનપુટ સમર્થિત નથી.",
+        hearError: "માફ કરશો, હું સાંભળી શક્યો નહીં.",
+    },
+    kn: {
+        thinking: "ಯೋಚಿಸುತ್ತಿದ್ದೇನೆ...",
+        listening: "ಕೇಳುತ್ತಿದ್ದೇನೆ...",
+        understood: "ಅರ್ಥವಾಯಿತು!",
+        online: "ಆನ್‌ಲೈನ್",
+        offline: "ಆಫ್‌ಲೈನ್ (ಉಳಿಸಿದ ಮಾಹಿತಿ ಮಾತ್ರ)",
+        noCache: "ಇಂಟರ್ನೆಟ್ ಇಲ್ಲ ಮತ್ತು ಉಳಿಸಿದ ಮಾಹಿತಿ ಇಲ್ಲ.",
+        serverError: "ಸರ್ವರ್ ಅನ್ನು ಸಂಪರ್ಕಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.",
+        offlineAnswer: "ಆಫ್‌ಲೈನ್ ಉತ್ತರ",
+        savedAnswer: "ಉಳಿಸಿದ ಉತ್ತರ",
+        schemesHeading: "ಶಿಫಾರಸು ಮಾಡಿದ ಯೋಜನೆಗಳು",
+        usefulLinks: "ಉಪಯುಕ್ತ ಲಿಂಕ್‌ಗಳು",
+        nearbyCenters: "ಹತ್ತಿರದ ಕೇಂದ್ರಗಳು",
+        openMaps: "ನಕ್ಷೆಯಲ್ಲಿ ನೋಡಿ",
+        officialLink: "ಅಧಿಕೃತ ಲಿಂಕ್",
+        central: "ಕೇಂದ್ರ",
+        typeMessage: "ಸಂದೇಶ ಟೈಪ್ ಮಾಡಿ...",
+        micUnsupported: "ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಧ್ವನಿ ಇನ್‌ಪುಟ್ ಬೆಂಬಲಿತವಲ್ಲ.",
+        hearError: "ಕ್ಷಮಿಸಿ, ನನಗೆ ಕೇಳಲಾಗಲಿಲ್ಲ.",
+    },
+    or: {
+        thinking: "ଚିନ୍ତା କରୁଛି...",
+        listening: "ଶୁଣୁଛି...",
+        understood: "ବୁଝିଗଲି!",
+        online: "ଅନଲାଇନ୍",
+        offline: "ଅଫଲାଇନ୍ (ସଞ୍ଚିତ ତଥ୍ୟ ମାତ୍ର)",
+        noCache: "ଇଣ୍ଟର୍ନେଟ୍ ନାହିଁ ଏବଂ ସଞ୍ଚିତ ତଥ୍ୟ ନାହିଁ।",
+        serverError: "ସର୍ଭର ସହ ଯୋଗାଯୋଗ ହୋଇପାରିଲା ନାହିଁ।",
+        offlineAnswer: "ଅଫଲାଇନ୍ ଉତ୍ତର",
+        savedAnswer: "ସଞ୍ଚିତ ଉତ୍ତର",
+        schemesHeading: "ପରାମର୍ଶିତ ଯୋଜନାଗୁଡ଼ିକ",
+        usefulLinks: "ଉପଯୋଗୀ ଲିଙ୍କ",
+        nearbyCenters: "ନିକଟସ୍ଥ କେନ୍ଦ୍ର",
+        openMaps: "ମାନଚିତ୍ରରେ ଦେଖନ୍ତୁ",
+        officialLink: "ଅଧିକୃତ ଲିଙ୍କ",
+        central: "କେନ୍ଦ୍ର",
+        typeMessage: "ଏକ ସନ୍ଦେଶ ଟାଇପ୍ କରନ୍ତୁ...",
+        micUnsupported: "ଏହି ବ୍ରାଉଜରରେ ଭଏସ୍ ଇନପୁଟ୍ ସମର୍ଥିତ ନୁହେଁ।",
+        hearError: "କ୍ଷମା କରନ୍ତୁ, ମୁଁ ଶୁଣିପାରିଲି ନାହିଁ।",
+    },
+    ml: {
+        thinking: "ആലോചിക്കുന്നു...",
+        listening: "കേൾക്കുന്നു...",
+        understood: "മനസ്സിലായി!",
+        online: "ഓൺലൈൻ",
+        offline: "ഓഫ്‌ലൈൻ (സേവ് ചെയ്ത വിവരം മാത്രം)",
+        noCache: "ഇന്റർനെറ്റ് ഇല്ല, സേവ് ചെയ്ത വിവരവും ഇല്ല.",
+        serverError: "സെർവറുമായി ബന്ധപ്പെടാൻ കഴിയുന്നില്ല.",
+        offlineAnswer: "ഓഫ്‌ലൈൻ ഉത്തരം",
+        savedAnswer: "സേവ് ചെയ്ത ഉത്തരം",
+        schemesHeading: "ശുപാർശ ചെയ്ത പദ്ധതികൾ",
+        usefulLinks: "ഉപയോഗപ്രദമായ ലിങ്കുകൾ",
+        nearbyCenters: "സമീപത്തുള്ള കേന്ദ്രങ്ങൾ",
+        openMaps: "മാപ്പിൽ കാണുക",
+        officialLink: "ഔദ്യോഗിക ലിങ്ക്",
+        central: "കേന്ദ്ര",
+        typeMessage: "ഒരു സന്ദേശം ടൈപ്പ് ചെയ്യുക...",
+        micUnsupported: "ഈ ബ്രൗസറിൽ വോയ്‌സ് ഇൻപുട്ട് പിന്തുണയ്ക്കുന്നില്ല.",
+        hearError: "ക്ഷമിക്കണം, എനിക്ക് കേൾക്കാൻ കഴിഞ്ഞില്ല.",
+    },
+    pa: {
+        thinking: "ਸੋਚ ਰਿਹਾ ਹਾਂ...",
+        listening: "ਸੁਣ ਰਿਹਾ ਹਾਂ...",
+        understood: "ਸਮਝ ਲਿਆ!",
+        online: "ਔਨਲਾਈਨ",
+        offline: "ਔਫਲਾਈਨ (ਸੰਭਾਲੀ ਹੋਈ ਜਾਣਕਾਰੀ ਹੀ)",
+        noCache: "ਇੰਟਰਨੈੱਟ ਨਹੀਂ ਅਤੇ ਸੰਭਾਲੀ ਜਾਣਕਾਰੀ ਨਹੀਂ।",
+        serverError: "ਸਰਵਰ ਨਾਲ ਸੰਪਰਕ ਨਹੀਂ ਹੋ ਸਕਿਆ।",
+        offlineAnswer: "ਔਫਲਾਈਨ ਜਵਾਬ",
+        savedAnswer: "ਸੰਭਾਲਿਆ ਹੋਇਆ ਜਵਾਬ",
+        schemesHeading: "ਸਿਫ਼ਾਰਸ਼ ਕੀਤੀਆਂ ਯੋਜਨਾਵਾਂ",
+        usefulLinks: "ਲਾਭਦਾਇਕ ਲਿੰਕ",
+        nearbyCenters: "ਨੇੜਲੇ ਕੇਂਦਰ",
+        openMaps: "ਨਕਸ਼ੇ ਵਿੱਚ ਦੇਖੋ",
+        officialLink: "ਅਧਿਕਾਰਤ ਲਿੰਕ",
+        central: "ਕੇਂਦਰ",
+        typeMessage: "ਸੁਨੇਹਾ ਟਾਈਪ ਕਰੋ...",
+        micUnsupported: "ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਅਵਾਜ਼ ਇਨਪੁੱਟ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ।",
+        hearError: "ਮਾਫ਼ ਕਰਨਾ, ਮੈਂ ਸੁਣ ਨਹੀਂ ਸਕਿਆ।",
+    },
 };
 
 function getLang() {
@@ -57,6 +237,7 @@ function t(key) {
 
 function setLanguage(lang) {
     document.documentElement.lang = lang;
+    try { localStorage.setItem('saarthi_lang', lang); } catch(e) { console.warn('Could not persist language preference:', e); }
     const select = document.getElementById('language-select');
     if (select && select.value !== lang) {
         select.value = lang;
@@ -67,9 +248,8 @@ function setLanguage(lang) {
     updateMicHint();
 }
 
-window.toggleLanguage = function(lang) {
-    setLanguage(lang);
-};
+window.setLanguage = setLanguage;
+window.toggleLanguage = setLanguage;
 
 function isOnline() {
     return navigator.onLine;
@@ -108,7 +288,7 @@ function saveFarmerProfile(profile) {
 
 function getFarmerProfileSnapshot() {
     const p = loadFarmerProfile();
-    return `${p.state}|${p.district}|${p.landSize}|${p.crop}|${p.income}`;
+    return `${p.state || ""}|${p.district || ""}|${p.landSize || ""}|${p.crop || ""}|${p.income || ""}`;
 }
 
 function openProfileDrawer() {
@@ -116,36 +296,57 @@ function openProfileDrawer() {
     const overlay = document.getElementById("profile-overlay");
     const profile = loadFarmerProfile();
 
-    document.getElementById("prof-name").value = profile.name || "";
-    document.getElementById("prof-phone").value = profile.phone || "";
-    document.getElementById("prof-state").value = profile.state || "";
-    document.getElementById("prof-district").value = profile.district || "";
-    document.getElementById("prof-land").value = profile.landSize || "";
-    document.getElementById("prof-crop").value = profile.crop || "";
-    document.getElementById("prof-income").value = profile.income || "";
+    const nameInput = document.getElementById("prof-name");
+    if (nameInput) nameInput.value = profile.name || "";
+    const phoneInput = document.getElementById("prof-phone");
+    if (phoneInput) phoneInput.value = profile.phone || "";
+    const stateInput = document.getElementById("prof-state") || document.getElementById("profile-state");
+    if (stateInput) stateInput.value = profile.state || "";
+    const districtInput = document.getElementById("prof-district");
+    if (districtInput) districtInput.value = profile.district || "";
+    const landInput = document.getElementById("prof-land") || document.getElementById("profile-land");
+    if (landInput) landInput.value = profile.landSize || "";
+    const cropInput = document.getElementById("prof-crop") || document.getElementById("profile-crop");
+    if (cropInput) cropInput.value = profile.crop || "";
+    const incomeInput = document.getElementById("prof-income") || document.getElementById("profile-income");
+    if (incomeInput) incomeInput.value = profile.income || "";
 
-    drawer.classList.remove("translate-x-full");
-    overlay.classList.remove("hidden");
-    overlay.classList.add("block");
+    if (drawer) {
+        drawer.classList.remove("hidden");
+        drawer.classList.remove("translate-x-full");
+    }
+    if (overlay) {
+        overlay.classList.remove("hidden");
+        overlay.classList.add("block");
+    }
 }
 
 function closeProfileDrawer() {
     const drawer = document.getElementById("profile-drawer");
     const overlay = document.getElementById("profile-overlay");
-    drawer.classList.add("translate-x-full");
-    overlay.classList.remove("block");
-    overlay.classList.add("hidden");
+    if (drawer) {
+        drawer.classList.add("translate-x-full");
+        drawer.addEventListener("transitionend", () => drawer.classList.add("hidden"), { once: true });
+    }
+    if (overlay) {
+        overlay.classList.remove("block");
+        overlay.classList.add("hidden");
+    }
 }
 
 function saveProfileFromDrawer() {
+    const get = (id1, id2) => {
+        const el = document.getElementById(id1) || (id2 ? document.getElementById(id2) : null);
+        return el ? el.value : "";
+    };
     const profile = {
-        name: document.getElementById("prof-name").value,
-        phone: document.getElementById("prof-phone").value,
-        state: document.getElementById("prof-state").value,
-        district: document.getElementById("prof-district").value,
-        landSize: document.getElementById("prof-land").value,
-        crop: document.getElementById("prof-crop").value,
-        income: document.getElementById("prof-income").value,
+        name: get("prof-name"),
+        phone: get("prof-phone"),
+        state: get("prof-state", "profile-state"),
+        district: get("prof-district"),
+        landSize: get("prof-land", "profile-land"),
+        crop: get("prof-crop", "profile-crop"),
+        income: get("prof-income", "profile-income"),
     };
     saveFarmerProfile(profile);
     closeProfileDrawer();
@@ -287,7 +488,7 @@ async function sendTextMessage(textStr) {
     if (window.stopSpeaking) window.stopSpeaking();
 
     // Hide quick actions on first message
-    const quickActions = document.getElementById("quick-actions");
+    const quickActions = document.getElementById("quick-actions-section");
     if (quickActions) quickActions.classList.add("hidden");
 
     addMessageToChat(query, "user");
@@ -424,7 +625,7 @@ function displayResponse(data, isCached, isOfflineGenerated) {
                 <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:border-primary/40 transition-all">
                     <h4 class="font-bold text-primary text-[15px] mb-1">${escapeHtml(scheme.name)}</h4>
                     <p class="text-[14px] text-slate-600 leading-snug">${escapeHtml(scheme.description)}</p>
-                    ${scheme.documents_links ? `<div class="mt-3 flex gap-2">${scheme.documents_links.map(u => `<a href="${sanitizeUrl(u)}" target="_blank" class="text-[12px] text-primary font-bold flex items-center gap-1">LINK <span class="material-symbols-outlined text-[14px]">open_in_new</span></a>`).join("")}</div>` : ""}
+                    ${scheme.documents_links ? `<div class="mt-3 flex gap-2">${scheme.documents_links.map(u => { const safe = sanitizeUrl(u); return safe ? `<a href="${escapeHtml(safe)}" target="_blank" rel="noopener noreferrer" class="text-[12px] text-primary font-bold flex items-center gap-1">LINK <span class="material-symbols-outlined text-[14px]">open_in_new</span></a>` : ""; }).join("")}</div>` : ""}
                 </div>`;
         });
         htmlContent += '</div>';
@@ -438,8 +639,8 @@ function displayResponse(data, isCached, isOfflineGenerated) {
                     <div class="font-bold text-[14px] text-slate-700">${escapeHtml(c.name)}</div>
                     <div class="text-[12px] text-slate-500">${escapeHtml(c.address || "")}</div>
                     <div class="mt-2 flex gap-3">
-                        ${c.phone ? `<a href="tel:${c.phone}" class="text-primary text-[13px] font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">call</span> CALL</a>` : ""}
-                        ${c.maps_url ? `<a href="${sanitizeUrl(c.maps_url)}" target="_blank" class="text-primary text-[13px] font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">map</span> MAPS</a>` : ""}
+                        ${c.phone ? `<a href="tel:${escapeHtml(String(c.phone).replace(/[^0-9+]/g, ''))}" class="text-primary text-[13px] font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">call</span> CALL</a>` : ""}
+                        ${c.maps_url ? `<a href="${sanitizeUrl(c.maps_url)}" target="_blank" rel="noopener noreferrer" class="text-primary text-[13px] font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">map</span> MAPS</a>` : ""}
                     </div>
                 </div>`;
         });
@@ -479,8 +680,13 @@ function addRawHtmlToChat(htmlContent, sender) {
     wrapper.innerHTML = htmlContent;
     chatBox.appendChild(wrapper);
     
-    // Smooth scroll
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    // Scroll within the chat container
+    const chatContainer = document.getElementById("chat-container");
+    if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    } else {
+        wrapper.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
 }
 
 function showStatus(text) {
@@ -522,8 +728,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-    // Initialize branding state
-    setLanguage('hi'); 
+    // Initialize language from stored preference or document lang
+    const savedLang = (function() {
+        try { return localStorage.getItem('saarthi_lang'); } catch(e) { return null; }
+    })() || document.documentElement.lang || 'hi';
+    setLanguage(savedLang);
 });
 
 window.useChip = useChip;

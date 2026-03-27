@@ -84,12 +84,26 @@ def start_backend():
     return proc
 
 
+def _wait_for_backend(timeout=60):
+    """Poll the backend /health/ endpoint until it responds or timeout expires."""
+    import socket
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        try:
+            urllib.request.urlopen("http://127.0.0.1:8000/health/", timeout=2)
+            print("Backend is ready.")
+            return
+        except (urllib.error.URLError, socket.timeout, OSError):
+            time.sleep(1)
+    print("Warning: backend did not respond within timeout; proceeding anyway.")
+
+
 def main():
     print("Starting SaarthiAI backend on port 8000...")
     backend_proc = start_backend()
 
     print("Waiting for backend to start...")
-    time.sleep(10)
+    _wait_for_backend(timeout=60)
 
     port = int(os.environ.get("PORT", 5000))
     print(f"Starting frontend proxy server on port {port}...")
