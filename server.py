@@ -8,7 +8,7 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import urllib.request
 import urllib.error
 
-BACKEND_URL = "http://localhost:8000"
+BACKEND_URL = "http://127.0.0.1:8000"
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "frontend")
 
 
@@ -78,7 +78,7 @@ class ProxyHandler(SimpleHTTPRequestHandler):
 def start_backend():
     backend_dir = os.path.join(os.path.dirname(__file__), "backend")
     proc = subprocess.Popen(
-        [sys.executable, "-m", "uvicorn", "app.main:app", "--host", "localhost", "--port", "8000"],
+        [sys.executable, "-m", "uvicorn", "app.main:app", "--host", "127.0.0.1", "--port", "8000"],
         cwd=backend_dir
     )
     return proc
@@ -89,7 +89,7 @@ def main():
     backend_proc = start_backend()
 
     print("Waiting for backend to start...")
-    time.sleep(3)
+    time.sleep(10)
 
     port = int(os.environ.get("PORT", 5000))
     print(f"Starting frontend proxy server on port {port}...")
