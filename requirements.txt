@@ -22,3 +22,5 @@ pypdf
 python-dotenv
 requests
 uvicorn
+sqlalchemy
+sse-starlette

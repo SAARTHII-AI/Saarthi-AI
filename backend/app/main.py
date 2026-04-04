@@ -36,6 +36,10 @@ app.include_router(help_centers.router, prefix="/help-centers", tags=["help-cent
 @app.on_event("startup")
 async def startup_event():
     try:
+        from app.database import engine, Base
+        from app.models import Scheme
+        Base.metadata.create_all(bind=engine)
+
         rag_engine.load_documents()
         rag_engine.build_vector_index()
     except Exception as e:

@@ -960,6 +960,83 @@ function trackAssistantResponse(answer) {
     }
 }
 
+function createStreamingResponseContainer() {
+    const chatBox = document.getElementById("chat-box");
+    const containerItem = document.createElement("div");
+    containerItem.className = "flex items-start gap-2.5 max-w-[90%] message-fade-in mb-3";
+    
+    containerItem.innerHTML = `
+        <div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white shrink-0 mt-1">
+            <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1">agriculture</span>
+        </div>
+        <div class="flex flex-col gap-1 w-full flex-1">
+            <span class="text-[11px] font-medium text-slate-400 ml-0.5">SaarthiAI <span class="typing-indicator ml-1 opacity-60">Wait...</span></span>
+            <div class="bg-slate-50 rounded-2xl rounded-tl-md px-4 py-3 min-w-[200px]">
+                <div class="text-[14px] leading-relaxed text-slate-700 message-content whitespace-pre-line" id="stream-content"></div>
+                <div id="stream-extras"></div>
+            </div>
+        </div>
+    `;
+    chatBox.appendChild(containerItem);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    
+    return {
+        container: containerItem,
+        content: containerItem.querySelector('#stream-content'),
+        extras: containerItem.querySelector('#stream-extras'),
+        indicator: containerItem.querySelector('.typing-indicator')
+    };
+}
+
+function updateStreamingResponse(ui, textFragment) {
+    ui.content.innerHTML = renderMarkdown(textFragment);
+    const chatBox = document.getElementById("chat-box");
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function finalizeStreamingResponse(ui, data) {
+    ui.indicator.remove();
+    ui.content.removeAttribute("id");
+    ui.extras.removeAttribute("id");
+    
+    // Add schemes, links, etc based on original displayResponse logic
+    let extrasHtml = "";
+    if (data.recommended_schemes && data.recommended_schemes.length > 0) {
+        extrasHtml += `<div class="mt-3">
+            <div class="text-[12px] font-semibold text-slate-700 mb-2 uppercase tracking-wide flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px] text-primary">bookmark_star</span> Recommended Schemes
+            </div>
+            <div class="flex flex-col gap-2">`;
+        data.recommended_schemes.slice(0, 3).forEach(sc => {
+            extrasHtml += `
+                <div class="bg-white border border-slate-100 rounded-lg p-2 shadow-sm">
+                    <div class="font-medium text-primary text-[13px] mb-0.5">${escapeHtml(sc.name)}</div>
+                    <div class="text-[12px] text-slate-500 line-clamp-2">${escapeHtml(sc.description)}</div>
+                </div>`;
+        });
+        extrasHtml += `</div></div>`;
+    }
+    
+    if (data.doc_links && data.doc_links.length > 0) {
+        extrasHtml += `<div class="mt-3">
+            <div class="text-[12px] font-semibold text-slate-700 mb-2 uppercase tracking-wide flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px] text-blue-500">link</span> Useful Links
+            </div>
+            <div class="flex flex-wrap gap-1.5">`;
+        data.doc_links.forEach(l => {
+            extrasHtml += `<a href="${escapeHtml(sanitizeUrl(l.url))}" target="_blank" class="inline-flex items-center gap-1 bg-white border border-slate-200 rounded px-2 py-1 text-[11px] font-medium text-slate-600 hover:text-primary hover:border-primary transition-colors hover:shadow-sm">
+                <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+                <span class="truncate max-w-[150px]">${escapeHtml(l.title || l.url)}</span>
+            </a>`;
+        });
+        extrasHtml += `</div></div>`;
+    }
+    ui.extras.innerHTML = extrasHtml;
+    // ensure scroll depth is maintained
+    const chatBox = document.getElementById("chat-box");
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
 async function processQuery(query) {
     const resolvedLang = getLang();
     const profileSnapshot = getFarmerProfileSnapshot();
@@ -1010,14 +1087,82 @@ async function processQuery(query) {
 
         if (!response.ok) throw new Error("server_error");
 
-        const data = await response.json();
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        
+        let initialData = null;
+        let streamedAnswer = "";
+        let finalData = null;
+        
+        let ui = null;
+        let buffer = "";
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            if (myToken !== conversationToken) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            
+            let boundary = buffer.indexOf("\n\n");
+            while (boundary !== -1) {
+                const chunkStr = buffer.slice(0, boundary);
+                buffer = buffer.slice(boundary + 2);
+                
+                const lines = chunkStr.split("\n");
+                let eventType = "message";
+                let eventDataStr = "";
+                
+                for (const line of lines) {
+                    if (line.startsWith("event:")) {
+                        eventType = line.slice(6).trim();
+                    } else if (line.startsWith("data:")) {
+                        eventDataStr = line.slice(5).trim();
+                    }
+                }
+                
+                if (eventDataStr) {
+                    try {
+                        const parsed = JSON.parse(eventDataStr);
+                        if (eventType === "initial_data") {
+                            initialData = parsed;
+                            if (!ui && myToken === conversationToken) {
+                                ui = createStreamingResponseContainer();
+                            }
+                        } else if (eventType === "llm_chunk") {
+                            streamedAnswer += parsed.token;
+                            if (ui) updateStreamingResponse(ui, streamedAnswer);
+                        } else if (eventType === "final_data") {
+                            finalData = parsed;
+                        }
+                    } catch (e) {
+                         console.error("Parse error on chunk", e);
+                    }
+                }
+                boundary = buffer.indexOf("\n\n");
+            }
+        }
+        
         if (myToken !== conversationToken) return;
-        trackAssistantResponse(data.answer);
-        cacheResponse(cacheKey, data, query, resolvedLang);
-        displayResponse(data, false);
+        
+        let completeResponse = {
+            intent: initialData?.intent || "general_information",
+            answer: streamedAnswer,
+            answer_romanized: finalData?.answer_romanized,
+            recommended_schemes: initialData?.recommended_schemes || [],
+            doc_links: finalData?.doc_links || [],
+            nearest_centers: initialData?.nearest_centers || [],
+            response_language: resolvedLang
+        };
+        
+        trackAssistantResponse(completeResponse.answer);
+        cacheResponse(cacheKey, completeResponse, query, resolvedLang);
+        
+        if (ui) finalizeStreamingResponse(ui, completeResponse);
+        
     } catch (error) {
         if (myToken !== conversationToken) return;
-        const isNetworkErr = !navigator.onLine || error instanceof TypeError || error.message === "Failed to fetch" || error.name === "AbortError";
+        const isNetworkErr = !navigator.onLine || error instanceof TypeError;
 
         const exact   = getCachedResponse(cacheKey);
         const fallback = exact || findBestCachedAnswer(query, resolvedLang);
@@ -1040,7 +1185,6 @@ async function processQuery(query) {
         showStatus("");
     }
 }
-
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');

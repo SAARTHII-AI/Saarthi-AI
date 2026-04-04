@@ -2,6 +2,8 @@ import asyncio
 import logging
 import time
 from collections import defaultdict
+from sse_starlette.sse import EventSourceResponse
+import json
 from fastapi import APIRouter, HTTPException, Request
 from app.schemas import QueryRequest, QueryResponse
 from app.services.rag_engine import rag_engine
@@ -120,7 +122,7 @@ async def _run_transliterate(text, language):
         return None
 
 
-@router.post("/", response_model=QueryResponse)
+@router.post("/")
 async def handle_query(request: QueryRequest, raw_request: Request):
     client_ip = raw_request.client.host if raw_request.client else "unknown"
     _check_rate_limit(client_ip)
@@ -165,46 +167,13 @@ async def handle_query(request: QueryRequest, raw_request: Request):
     if gov_context:
         context = context + "\n\n" + gov_context if context else gov_context
 
-    conv_history = None
-    if request.conversation_history:
-        conv_history = [{"role": m.role, "content": m.content} for m in request.conversation_history]
-
-    answer = await asyncio.to_thread(
-        rag_engine.generate_answer,
-        context,
-        english_query,
-        farmer_profile=farmer_profile if farmer_profile else None,
-        language=detected_lang,
-        matched_schemes=top_schemes,
-        conversation_history=conv_history,
-    )
-
-    final_answer = answer
-    answer_romanized = None
-    if detected_lang != "en" and answer:
-        answer_has_target_lang = _text_likely_in_language(answer, detected_lang)
-        if not answer_has_target_lang:
-            translated = await _run_translate(answer, "en", detected_lang)
-            if translated and len(translated) > 20:
-                final_answer = translated
-
-        answer_romanized = await _run_transliterate(final_answer, detected_lang)
-
     include_schemes = intent in ("scheme_search", "eligibility_check", "benefits_query",
                                     "document_requirements", "application_process", "general_information")
     include_centers = intent in ("helpline_query", "application_process", "general_information")
     include_doc_links = intent not in ("helpline_query",)
 
     final_recommendations = []
-    doc_links_task = None
-    gov_links_task = None
-
-    if include_doc_links:
-        gov_links_task = _run_gov_links(english_query)
-        if top_schemes:
-            primary_scheme = top_schemes[0]
-            doc_links_task = _run_doc_link_search(english_query, primary_scheme["name"])
-
+    
     if include_schemes:
         raw_recommendations = recommend_schemes(request.model_dump())
         query_words = set(english_query.lower().split())
@@ -219,53 +188,14 @@ async def handle_query(request: QueryRequest, raw_request: Request):
         if not filtered_recs:
             filtered_recs = [r for _, r in scored_recs[:3]]
 
-        if detected_lang != "en" and filtered_recs:
-            translate_tasks = []
-            for rec in filtered_recs:
-                translate_tasks.append(_run_translate(rec["name"], "en", detected_lang))
-                translate_tasks.append(_run_translate(rec["description"], "en", detected_lang))
-            translated_texts = await asyncio.gather(*translate_tasks)
-
-            for i, rec in enumerate(filtered_recs):
-                final_recommendations.append({
-                    "name": translated_texts[i * 2],
-                    "description": translated_texts[i * 2 + 1],
-                    "type": rec.get("type"),
-                    "state": rec.get("state"),
-                    "documents_links": rec.get("documents_links")
-                })
-        else:
-            for rec in filtered_recs:
-                final_recommendations.append({
-                    "name": rec["name"],
-                    "description": rec["description"],
-                    "type": rec.get("type"),
-                    "state": rec.get("state"),
-                    "documents_links": rec.get("documents_links")
-                })
-
-    doc_links = []
-    if include_doc_links:
-        seen_urls = set()
-        for scheme in top_schemes:
-            for link in scheme.get("documents_links", []) or []:
-                if link not in seen_urls and _is_safe_url(link):
-                    seen_urls.add(link)
-                    doc_links.append({"title": scheme["name"], "url": link})
-
-        if doc_links_task:
-            enriched_links = await doc_links_task
-            for el in enriched_links:
-                if el["url"] not in seen_urls and _is_safe_url(el["url"]):
-                    seen_urls.add(el["url"])
-                    doc_links.append({"title": el["title"], "url": el["url"]})
-
-        if gov_links_task:
-            gov_links = await gov_links_task
-            for gl in gov_links:
-                if gl["url"] not in seen_urls and _is_safe_url(gl["url"]):
-                    seen_urls.add(gl["url"])
-                    doc_links.append({"title": gl["title"], "url": gl["url"]})
+        for rec in filtered_recs:
+            final_recommendations.append({
+                "name": rec["name"],
+                "description": rec["description"],
+                "type": rec.get("type"),
+                "state": rec.get("state"),
+                "documents_links": rec.get("documents_links")
+            })
 
     nearest_centers = []
     if include_centers:
@@ -281,12 +211,63 @@ async def handle_query(request: QueryRequest, raw_request: Request):
                 "maps_url": c.get("maps_url"),
             })
 
-    return QueryResponse(
-        intent=intent,
-        answer=final_answer,
-        answer_romanized=answer_romanized,
-        recommended_schemes=final_recommendations,
-        response_language=detected_lang,
-        doc_links=doc_links,
-        nearest_centers=nearest_centers,
-    )
+    conv_history = None
+    if request.conversation_history:
+        conv_history = [{"role": m.role, "content": m.content} for m in request.conversation_history]
+
+    async def event_generator():
+        yield {
+            "event": "initial_data",
+            "data": json.dumps({
+                "intent": intent,
+                "recommended_schemes": final_recommendations,
+                "response_language": detected_lang,
+                "nearest_centers": nearest_centers
+            })
+        }
+
+        answer_parts = []
+        for chunk in rag_engine.generate_answer_stream(context, english_query, farmer_profile, detected_lang, top_schemes, conv_history):
+            answer_parts.append(chunk)
+            yield {
+                "event": "llm_chunk",
+                "data": json.dumps({"token": chunk})
+            }
+            await asyncio.sleep(0.01)
+
+        final_answer = "".join(answer_parts)
+        answer_romanized = None
+        if detected_lang != "en" and final_answer:
+            try:
+                answer_romanized = await asyncio.to_thread(translator_service.transliterate_text, final_answer, detected_lang)
+            except:
+                pass
+                
+        doc_links = []
+        seen_urls = set()
+        if include_doc_links:
+            for scheme in top_schemes:
+                for link in scheme.get("documents_links", []) or []:
+                    if link not in seen_urls and _is_safe_url(link):
+                        seen_urls.add(link)
+                        doc_links.append({"title": scheme["name"], "url": link})
+
+            try:
+                doc_links_res = await asyncio.to_thread(_run_doc_link_search, english_query, top_schemes[0]["name"] if top_schemes else "")
+                if doc_links_res:
+                    for el in doc_links_res:
+                        if isinstance(el, dict) and el.get("url") not in seen_urls and _is_safe_url(el.get("url")):
+                            seen_urls.add(el["url"])
+                            doc_links.append({"title": el["title"], "url": el["url"]})
+            except:
+                pass
+
+        yield {
+            "event": "final_data",
+            "data": json.dumps({
+                "answer_romanized": answer_romanized,
+                "doc_links": doc_links
+            })
+        }
+
+    return EventSourceResponse(event_generator())

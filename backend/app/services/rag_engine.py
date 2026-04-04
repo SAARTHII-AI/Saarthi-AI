@@ -104,7 +104,15 @@ class RAGEngine:
 
     def load_documents(self):
         print("Loading schemes for RAG Engine...")
-        self.schemes = load_schemes()
+        schemes = load_schemes()
+        for scheme in schemes:
+            scheme['_name_lower'] = scheme['name'].lower()
+            scheme['_desc_lower'] = scheme.get('description', '').lower()
+            scheme['_target_lower'] = scheme.get('target_group', '').lower()
+            scheme['_elig_lower'] = scheme.get('eligibility', '').lower()
+            scheme['_benefits_lower'] = scheme.get('benefits', '').lower()
+            scheme['_state_lower'] = (scheme.get('state') or '').lower()
+        self.schemes = schemes
         return self.schemes
 
     def create_embeddings(self, texts):
@@ -130,12 +138,12 @@ class RAGEngine:
         scored_schemes = []
 
         for scheme in self.schemes:
-            name_lower = scheme['name'].lower()
-            desc_lower = scheme.get('description', '').lower()
-            target_lower = scheme.get('target_group', '').lower()
-            elig_lower = scheme.get('eligibility', '').lower()
-            benefits_lower = scheme.get('benefits', '').lower()
-            state_lower = (scheme.get('state') or '').lower()
+            name_lower = scheme.get('_name_lower', '')
+            desc_lower = scheme.get('_desc_lower', '')
+            target_lower = scheme.get('_target_lower', '')
+            elig_lower = scheme.get('_elig_lower', '')
+            benefits_lower = scheme.get('_benefits_lower', '')
+            state_lower = scheme.get('_state_lower', '')
 
             score = 0
 
@@ -317,6 +325,36 @@ class RAGEngine:
             del _answer_cache[oldest]
         _answer_cache[cache_key] = {"answer": answer, "ts": time.time()}
         return answer
+
+    def generate_answer_stream(self, context: str, question: str, farmer_profile: dict = None, language: str = "en", matched_schemes: list = None, conversation_history: list = None):
+        if not context:
+            yield generate_offline_answer(matched_schemes or [], question, farmer_profile, language)
+            return
+
+        client = _build_azure_client()
+        if client:
+            try:
+                system_prompt = self._build_system_prompt(language, farmer_profile)
+                messages = self._build_conversation_messages(
+                    system_prompt, context, question, conversation_history
+                )
+                response = client.chat.completions.create(
+                    model=settings.azure_openai_deployment,
+                    messages=messages,
+                    max_completion_tokens=1500,
+                    stream=True
+                )
+                for chunk in response:
+                    content = chunk.choices[0].delta.content if chunk.choices and chunk.choices[0].delta else None
+                    if content:
+                        yield content
+                return
+            except Exception as e:
+                logger.warning(f"Azure OpenAI stream failed: {e}")
+
+        # Fallback offline string stream
+        answer = generate_offline_answer(matched_schemes or [], question, farmer_profile, language)
+        yield answer
 
 
 rag_engine = RAGEngine()
