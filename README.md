@@ -1,57 +1,17 @@
-# SaarthiAI
+<div align="center">
 
-A voice-first AI assistant that helps citizens discover and understand government schemes in Hindi and Tamil. The system works with low bandwidth and provides simplified explanations using a Retrieval-Augmented Generation (RAG) pipeline.
+# Community Access Platform
 
-## Architecture Description
+**Inclusive Digital Community Platform**
 
-The system includes:
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind](https://img.shields.io/badge/Tailwind-CSS-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/Adit-Jain-srm/community-access-platform)](https://github.com/Adit-Jain-srm/community-access-platform)
 
-- **FastAPI Backend**: Serves the API endpoints for querying and fetching schemes.
-- **RAG Engine**: Uses a local Vector Database (FAISS) and SentenceTransformers to retrieve the top matching schemes for a user's query and generate a response.
-- **Intent Detection**: Rule-based detection routing queries appropriately based on keywords.
-- **Recommendation Engine**: Rules for recommending extra schemes based on location, age, income.
-- **Lightweight Frontend**: HTML/JS frontend using Web Speech API for offline speech-to-text and text-to-speech interaction.
+*Building inclusive digital spaces for community engagement and resource sharing.*
 
-## Setup Instructions
+</div>
 
-### Local Development Steps
-
-1. Create a virtual environment and activate it:
-
-```bash
-python -m venv venv
-# On Windows
-venv\Scripts\activate
-# On macOS/Linux
-source venv/bin/activate
-```
-
-2. Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-3. Ingest schemes text data into FAISS vector database:
-
-```bash
-python scripts/ingest_schemes.py
-```
-
-4. Run the FastAPI development server:
-
-```bash
-uvicorn app.main:app --reload
-```
-
-5. Open `frontend/index.html` in your browser.
-
-### Docker Deployment Guide
-
-To run via Docker:
-
-```bash
-docker-compose up --build
-```
-
-This will start the backend service on port 8000.
+---
