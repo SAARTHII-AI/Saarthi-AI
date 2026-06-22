@@ -1,20 +1,64 @@
-# SaarthiAI
+<div align="center">
 
-A voice-first AI assistant helping Indian farmers discover and **apply for** government schemes step-by-step through natural voice conversations. Built with FastAPI, Azure OpenAI (GPT-5.3), and a mobile-first PWA frontend supporting **11 Indian languages**.
+# Saarthi AI
 
-## What It Does
+**Voice-first AI assistant helping Indian farmers discover and apply for government schemes — in their own language.**
 
-SaarthiAI acts as a patient, knowledgeable village-level guide that helps farmers:
-- **Discover** relevant government schemes based on their profile (state, crop, land size, income)
-- **Understand** eligibility criteria, benefits, and required documents in their own language
-- **Apply** step-by-step with guided instructions, picking up where they left off across conversations
-- **Check mandi prices** with live data from eNAM and AgMarkNet portals
-- **Find help centers** with phone numbers and Google Maps directions
-- **Access emergency info offline** including agriculture helplines and critical URLs
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Azure OpenAI](https://img.shields.io/badge/Azure_OpenAI-GPT--5.3-0078D4?style=flat&logo=microsoftazure&logoColor=white)](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
+[![PWA](https://img.shields.io/badge/PWA-Offline_Ready-5A0FC8?style=flat&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
+[![Languages](https://img.shields.io/badge/Languages-11_Indian-FF9933?style=flat)]()
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## Supported Languages
+*Over 100 million Indian farmers are eligible for government schemes they never hear about. Saarthi AI bridges this gap with a patient, multilingual voice assistant that speaks the way they do.*
 
-Hindi, English, Bengali, Telugu, Marathi, Tamil, Gujarati, Kannada, Malayalam, Punjabi, Odia
+</div>
+
+---
+
+## Overview
+
+Saarthi AI is a mobile-first progressive web app that acts as a knowledgeable, patient guide for Indian farmers navigating government welfare schemes. Through natural voice conversations in 11 languages, farmers can discover schemes they qualify for, understand eligibility and required documents, and receive step-by-step application guidance — all without needing to read complex government portals or fill forms alone.
+
+The assistant also provides live mandi (market) prices, nearby help center locations with directions, and critical agriculture helpline access even when offline.
+
+---
+
+## Features
+
+### Voice-First Conversations
+- Natural speech interaction via Web Speech API in all 11 supported languages
+- Animated voice orb with visual feedback (listening, speaking, idle states)
+- Voice interrupt: tap or type to stop speech instantly
+- Optimized TTS with sentence-boundary chunking for natural delivery
+
+### Scheme Discovery and Application Guidance
+- RAG pipeline over 60+ central and state government schemes
+- Profile-aware recommendations based on state, crop, land size, income, and occupation
+- Multi-turn conversation memory (6 turns) for step-by-step walkthroughs
+- Anti-hallucination guardrails to ensure only verified scheme information is shared
+
+### Live Market Prices
+- Real-time mandi price queries routed to eNAM and AgMarkNet portals
+- Bright Data SERP enrichment for the latest data from official government sources
+
+### Help Center Locator
+- 50+ agriculture help centers with phone numbers
+- Google Maps directions to the nearest center based on farmer's state
+
+### Offline Emergency Access
+- Service worker caches the full app shell for instant loading without connectivity
+- 6 agriculture helplines and 5 emergency URLs stored locally
+- Offline answer engine with keyword search and template responses in all 11 languages
+- Automatic sync when connectivity returns (with graceful fallback to cached data)
+
+### Security and Performance
+- URL and phone number sanitization on both frontend and backend
+- Rate limiting (20 req/min) and CORS configuration
+- GZip compression (74% payload reduction)
+- Resilient error handling on all external service calls
+
+---
 
 ## Architecture
 
@@ -52,150 +96,93 @@ Hindi, English, Bengali, Telugu, Marathi, Tamil, Gujarati, Kannada, Malayalam, P
               +-------------+          +---------------+
 ```
 
-## Key Features
+---
 
-### Voice-First Interaction
-- Web Speech API for speech-to-text and text-to-speech in all 11 languages
-- Animated voice orb (green pulse = listening, purple glow = speaking)
-- Voice interrupt: tap mic or start typing to stop speech instantly
-- Smart voice selection: prefers female, premium/neural voices for clarity
-- Text chunking: splits long responses at sentence boundaries for natural TTS
+## Supported Languages
 
-### AI-Powered Responses (RAG Pipeline)
-- **Azure OpenAI GPT-5.3** with anti-hallucination guardrails in system prompt
-- Keyword-based RAG search with state/occupation boosting over 60+ government schemes
-- **Multi-turn conversation tracking**: AI remembers context across 6 turns, guides step-by-step
-- **Intent-aware filtering**: 7 intents route queries to show only relevant response sections
-- **Bright Data SERP enrichment**: fetches latest info from official government websites
-- **Mandi price routing**: price queries automatically target agmarknet.gov.in and enam.gov.in
-- Conversation-aware caching (500 entries, 1-hour TTL)
+| Language | Language | Language |
+|----------|----------|----------|
+| Hindi | Telugu | Kannada |
+| English | Marathi | Malayalam |
+| Bengali | Tamil | Punjabi |
+| Gujarati | Odia | |
 
-### Farmer Profile Personalization
-- Profile drawer captures state, crop, land size, income, occupation
-- Profile data sent to Azure OpenAI for personalized scheme recommendations
-- State-specific scheme filtering (central + state-level schemes)
-- Relevance scoring for recommendations based on query word overlap
+---
 
-### Offline-First PWA
-- Service worker caches app shell for instant loading
-- **Emergency info cache**: 6 agriculture helplines + 5 emergency URLs in localStorage
-- **Offline answer engine**: keyword search over cached schemes with template responses in all 11 languages
-- **Sync on reconnect**: atomically refreshes scheme data when internet returns (keeps old cache on failure)
-- **GZip compression**: 74% reduction (67KB to 17KB for schemes endpoint)
-- Localized offline feature banner in all 11 languages
+## Getting Started
 
-### Security
-- URL sanitization on both frontend and backend (validates http/https before rendering)
-- Phone number sanitization in tel: links
-- CORS properly configured
-- Rate limiting (20 requests/minute on query endpoint)
-- All external service calls wrapped in try/except for resilient error handling
+### Prerequisites
 
-## Project Structure
+- Python 3.10+
+- Azure OpenAI API access (GPT-5.3 deployment)
+- Bright Data API token (optional, for SERP enrichment)
 
-```
-saarthi-ai/
-├── server.py                          # Entry point: starts backend + proxy
-├── backend/
-│   ├── app/
-│   │   ├── main.py                    # FastAPI app with GZip + CORS middleware
-│   │   ├── config.py                  # Environment-based settings (pydantic)
-│   │   ├── schemas.py                 # Request/response Pydantic models
-│   │   ├── api/
-│   │   │   ├── query.py               # Main query endpoint (orchestrator)
-│   │   │   ├── schemes.py             # Scheme listing endpoint
-│   │   │   ├── help_centers.py        # Help centers endpoint
-│   │   │   └── health.py              # Health check endpoint
-│   │   ├── services/
-│   │   │   ├── rag_engine.py          # RAG + Azure OpenAI + conversation tracking
-│   │   │   ├── intent_detection.py    # 7-intent rule-based classifier
-│   │   │   ├── recommendation_engine.py # Profile-based scheme scoring
-│   │   │   ├── brightdata_service.py  # SERP enrichment + mandi price routing
-│   │   │   ├── gov_data_service.py    # data.gov.in API + gov portal links
-│   │   │   ├── translator.py          # Google Translator with fallback
-│   │   │   ├── offline_answer_engine.py # Template responses in 11 languages
-│   │   │   ├── help_center_service.py # 50+ centers + Google Maps URLs
-│   │   │   ├── scheme_loader.py       # Scheme data normalization
-│   │   │   └── speech_service.py      # Azure Speech Services (TTS/STT)
-│   │   └── data/
-│   │       └── schemes.json           # 60+ government schemes dataset
-│   └── tests/
-│       ├── test_api.py                # API endpoint tests
-│       └── test_services.py           # Service integration tests
-├── frontend/
-│   ├── index.html                     # Mobile-first chat UI (Tailwind CSS)
-│   ├── script.js                      # App logic, i18n, caching, API calls
-│   ├── voice.js                       # Web Speech API integration
-│   ├── style.css                      # Custom styles
-│   ├── sw.js                          # Service worker (offline PWA)
-│   └── manifest.json                  # PWA manifest
-├── design.md                          # System design document
-├── requirements.md                    # Requirements specification
-└── replit.md                          # Technical reference (for developers)
+### Installation
+
+```bash
+git clone https://github.com/your-username/saarthi-ai.git
+cd saarthi-ai
+pip install -r requirements.txt
 ```
 
-## API Endpoints
+### Configuration
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/query` | POST | Main query endpoint. Accepts query, language, farmer profile, conversation history. Returns AI answer, scheme recommendations, document links, nearby centers. |
-| `/schemes` | GET | List all schemes. Filter by `type` (central/state) and `state`. |
-| `/health` | GET | Health check with loaded scheme count. |
-| `/api/help-centers` | GET | Help centers with phone numbers and Google Maps URLs. Filter by `state`. |
-
-## Environment Variables
+Copy `.env.example` to `.env` and provide:
 
 | Variable | Required | Purpose |
 |----------|----------|---------|
 | `AZURE_OPENAI_API_KEY` | Yes | Azure OpenAI authentication |
 | `AZURE_OPENAI_ENDPOINT` | Yes | Azure OpenAI resource URL |
-| `AZURE_OPENAI_DEPLOYMENT` | Yes | Model deployment name (gpt-5.3-chat) |
-| `AZURE_OPENAI_API_VERSION` | No | API version (default: 2025-01-01-preview) |
-| `BRIGHTDATA_API_TOKEN` | No | Bright Data SERP API authentication |
-| `BRIGHTDATA_SERP_ZONE` | No | SERP zone name |
-| `BRIGHTDATA_DC_PASS` | No | Datacenter proxy password |
-| `OFFLINE_ONLY` | No | Set `true` to disable all external API calls |
+| `AZURE_OPENAI_DEPLOYMENT` | Yes | Model deployment name |
+| `BRIGHTDATA_API_TOKEN` | No | SERP enrichment for live government data |
+| `OFFLINE_ONLY` | No | Set `true` to run without external APIs |
 
-## Setup & Running
+### Run
 
-### On Replit
-The "Start application" workflow runs `python server.py`, which starts both the FastAPI backend (port 8000) and the frontend proxy server (port 5000).
-
-### Local Development
-
-1. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-2. Set environment variables (copy `.env.example` to `.env` and fill in values).
-
-3. Start the application:
 ```bash
 python server.py
 ```
 
-4. Open `http://localhost:5000` in your browser.
+Open `http://localhost:5000` in a mobile browser (or use responsive mode in desktop).
 
-## Testing
+### Tests
 
 ```bash
 cd backend && python -m pytest tests/ -v
 ```
 
-**145 tests** covering: API endpoints, intent detection, scheme loading, recommendations, help centers, RAG cache, offline answer engine, farmer profile queries, multi-language support, state scheme validation, edge cases, and error handling.
+145 tests covering API endpoints, intent detection, RAG, recommendations, offline engine, and multi-language support.
+
+---
 
 ## Tech Stack
 
-| Component | Technology |
-|-----------|-----------|
-| Backend Framework | FastAPI (Python) |
-| AI/LLM | Azure OpenAI GPT-5.3 |
-| Web Search | Bright Data SERP API |
-| Translation | deep-translator (Google) |
-| Frontend | Vanilla HTML/CSS/JS + Tailwind CSS |
+| Layer | Technology |
+|-------|-----------|
+| Backend | FastAPI (Python) |
+| AI / LLM | Azure OpenAI GPT-5.3 |
+| Search Enrichment | Bright Data SERP API |
 | Voice | Web Speech API (browser-native) |
-| Caching | In-memory LRU (backend) + localStorage (frontend) |
-| Compression | GZip middleware |
+| Frontend | Vanilla JS + Tailwind CSS (PWA) |
 | Offline | Service Worker + localStorage |
-| Testing | pytest (145 tests) |
+| Translation | deep-translator (Google) |
+| Testing | pytest |
+
+---
+
+## API Reference
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/query` | POST | Main conversational endpoint — accepts query, language, profile, and history |
+| `/schemes` | GET | List schemes, filterable by type and state |
+| `/api/help-centers` | GET | Help centers with phone and directions, filterable by state |
+| `/health` | GET | Health check with loaded scheme count |
+
+---
+
+<div align="center">
+
+*Built to serve the farmers who feed a nation.*
+
+</div>
